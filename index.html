@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Conexão Street</title>
-
   <style>
     :root{
       --bg:#07070A; --card:#0f0f14; --muted:#a6a6b3; --txt:#f3f3f7;
@@ -45,7 +44,7 @@
       border:1px solid var(--line); background:rgba(255,255,255,.04);
       color:var(--txt); outline:none;
     }
-    .right{display:flex; align-items:center; gap:10px; position:relative}
+    .right{display:flex; align-items:center; gap:10px}
     .pill{
       padding:9px 12px; border-radius:999px; border:1px solid var(--line);
       background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;
@@ -63,6 +62,7 @@
       border:1px solid rgba(122,43,255,.35);
       pointer-events:none;
     }
+
     .grid{
       display:grid; gap:14px;
       grid-template-columns: 1.2fr .8fr;
@@ -73,6 +73,7 @@
       .search{display:none}
       .grid{grid-template-columns: 1fr}
     }
+
     .hero{
       border:1px solid var(--line); background: rgba(255,255,255,.03);
       border-radius: var(--r); overflow:hidden; position:relative;
@@ -92,69 +93,78 @@
       padding:11px 14px; border-radius:14px; border:1px solid var(--line);
       background:rgba(255,255,255,.04); color:var(--txt);
       display:inline-flex; align-items:center; gap:10px; font-weight:600;
-      cursor:pointer;
     }
     .btn.primary{
       border-color: rgba(122,43,255,.55);
       background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
       box-shadow:0 14px 35px rgba(122,43,255,.22);
     }
-    .cards{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:16px}
-    @media (max-width: 540px){ .cards{grid-template-columns:1fr} }
-    .card{
+
+    .panel{
       border:1px solid var(--line); background:rgba(255,255,255,.03);
-      border-radius: var(--r); padding:14px;
+      border-radius: var(--r); overflow:hidden;
+      box-shadow:0 18px 60px rgba(0,0,0,.25);
     }
-    .card small{color:var(--muted)}
-    .card b{font-size:18px}
-    .kpi{display:flex; align-items:flex-end; justify-content:space-between; gap:10px}
+    .panel .ph{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
+    .panel .ph b{font-size:14px}
+    .list{padding:14px}
+
+    .plan{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      border-radius:18px;
+      padding:14px;
+      margin-bottom:12px;
+    }
+    .plan h3{margin:0 0 6px; font-size:16px}
+    .price{
+      margin:0 0 8px;
+      font-weight:900;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .muted{color:var(--muted); line-height:1.45}
+    .row2{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+
     .chip{
       font-size:12px; padding:6px 10px; border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
       color:rgba(255,255,255,.9);
       background:rgba(255,255,255,.04);
-      white-space:nowrap;
     }
     .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
-    .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
-    .panel{
-      border:1px solid var(--line); background:rgba(255,255,255,.03);
-      border-radius: var(--r); overflow:hidden;
-    }
-    .panel .ph{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
-    .panel .ph b{font-size:14px}
-    .list{padding:8px}
-    .row{
-      display:flex; gap:10px; padding:12px; border-radius:16px;
-      border:1px solid transparent;
-    }
-    .row:hover{border-color: rgba(255,255,255,.10); background: rgba(255,255,255,.02)}
-    .dot{width:10px;height:10px;border-radius:99px;margin-top:4px}
-    .dot.p{background:var(--p)}
-    .dot.w{background:var(--warn)}
-    .meta{flex:1}
-    .meta .t{font-weight:700}
-    .meta .d{color:var(--muted); font-size:12px; margin-top:3px}
-    .amt{font-weight:800}
+
     .footer{
       color:rgba(255,255,255,.55);
       padding:20px 14px; text-align:center; border-top:1px solid var(--line)
     }
-    .menu{
-      border:1px solid var(--line); background:rgba(15,15,20,.92);
-      border-radius:18px; padding:10px;
-      box-shadow:0 20px 70px rgba(0,0,0,.55);
+
+    /* dropdown do avatar */
+    .dd{
+      position:absolute;
+      right:0;
+      top:46px;
+      width:240px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,15,20,.96);
+      box-shadow:0 22px 70px rgba(0,0,0,.55);
+      padding:10px;
+      display:none;
     }
-    .mi{
-      display:flex; justify-content:space-between; padding:10px 10px; border-radius:14px;
+    .dd.open{display:block}
+    .dd a{
+      display:flex;
+      justify-content:space-between;
+      padding:10px 10px;
+      border-radius:14px;
       color:rgba(255,255,255,.92);
-      cursor:pointer;
     }
-    .mi:hover{background:rgba(255,255,255,.05)}
-    .mi small{color:var(--muted)}
+    .dd a:hover{background:rgba(255,255,255,.05)}
+    .dd small{color:var(--muted)}
+    .avatarWrap{position:relative}
   </style>
 </head>
-
 <body>
 
   <div class="top">
@@ -169,12 +179,21 @@
         </div>
 
         <div class="search">
-          <input id="q" class="inp" placeholder="Buscar produtos, categorias, fornecedores..." />
+          <input id="q" class="inp" placeholder="Buscar planos, dúvidas, como funciona..." />
         </div>
 
         <div class="right">
-          <div class="pill">🛒 <b style="color:var(--txt)">2</b> <span style="color:var(--muted)">itens</span></div>
-          <button id="avatarBtn" class="avatar" title="Conta / Login" style="cursor:pointer"></button>
+          <div class="pill">🛒 <b style="color:var(--txt)">2</b> <span style="color:var(--muted)">planos</span></div>
+
+          <div class="avatarWrap">
+            <div id="avatar" class="avatar" title="Conta / Login"></div>
+            <div id="dd" class="dd">
+              <a href="#como"><span>Como funciona</span><small>passos</small></a>
+              <a href="#suporte"><span>Suporte</span><small>contato</small></a>
+              <a href="#" id="btnLogin"><span>Login</span><small>cliente</small></a>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -184,142 +203,93 @@
     <div class="grid">
 
       <div>
-
         <div class="hero">
           <div class="hwrap">
-            <span class="tag"><i></i> acesso liberado após compra + aprovação</span>
+            <span class="tag"><i></i> acesso liberado após compra e aprovação</span>
 
-            <h1>Fornecedores VIP — compra rápida e liberação pelo admin.</h1>
+            <h1>Fornecedores VIP com compra rápida e liberação pelo admin.</h1>
 
             <div class="sub">
-              Escolha um dos 2 planos abaixo. Após pagar, você cria login e aguarda aprovação.
-              (Aprovação manual + 1 dispositivo por pessoa)
+              Escolha um dos 2 planos abaixo. Após pagar, você cria seu login e aguarda aprovação.
+              Regras: aprovação manual e 1 dispositivo por pessoa.
             </div>
 
             <div class="cta">
-              <a id="btnProdutos" class="btn primary" href="#">Ver fornecedores</a>
-              <a id="btnComo" class="btn" href="#">Como funciona</a>
-              <a id="btnSuporte" class="btn" href="#">Suporte</a>
+              <a class="btn primary" href="#planos" id="goPlanos">Ver fornecedores</a>
+              <a class="btn" href="#como" id="goComo">Como funciona</a>
+              <a class="btn" href="#suporte" id="goSuporte">Suporte</a>
             </div>
 
-            <div class="cards">
-              <div class="card">
-                <small>Plano 01</small>
-                <div class="kpi">
-                  <b>Fornecedores Logistas</b>
-                  <span class="chip ok">R$ 30,00</span>
-                </div>
-                <div style="margin-top:10px; color:var(--muted); line-height:1.35; font-size:13px">
-                  Lista focada em quem revende/loja. Curadoria + atualização.
-                </div>
-                <div style="margin-top:12px">
-                  <a id="buyLojista" class="btn primary" href="#" style="width:100%; justify-content:center">Comprar Logistas</a>
-                </div>
-              </div>
-
-              <div class="card">
-                <small>Plano 02</small>
-                <div class="kpi">
-                  <b>Fornecedores Consumidor Final</b>
-                  <span class="chip ok">R$ 25,00</span>
-                </div>
-                <div style="margin-top:10px; color:var(--muted); line-height:1.35; font-size:13px">
-                  Lista focada em compra pra uso próprio (consumo).
-                </div>
-                <div style="margin-top:12px">
-                  <a id="buyFinal" class="btn primary" href="#" style="width:100%; justify-content:center">Comprar Consumidor Final</a>
-                </div>
-              </div>
-
-              <div class="card">
-                <small>Status</small>
-                <div class="kpi"><b id="statusTxt">Visitante</b><span class="chip">site</span></div>
-                <div style="margin-top:10px; color:var(--muted); line-height:1.35; font-size:13px">
-                  Se você for o admin e estiver logado, o painel aparece automaticamente.
-                </div>
-              </div>
+            <div style="margin-top:14px">
+              <span class="chip ok">2 opções disponíveis</span>
+              <span class="chip" style="margin-left:8px">liberação manual</span>
+              <span class="chip" style="margin-left:8px">1 dispositivo</span>
             </div>
-
           </div>
         </div>
 
         <div style="height:14px"></div>
 
-        <div id="sec-fornecedores" class="panel">
+        <div id="planos" class="panel">
           <div class="ph">
             <b>Fornecedores para comprar</b>
-            <span class="chip">2 opções</span>
+            <span class="chip">2 planos</span>
           </div>
-          <div class="list" style="padding:14px">
-            <div style="color:var(--muted); line-height:1.5">
-              • Logistas: R$ 30,00<br/>
-              • Consumidor Final: R$ 25,00<br/><br/>
-              Após pagamento: criar login → aguardar aprovação → acesso liberado.
+
+          <div class="list">
+            <div class="plan">
+              <h3>Plano 01</h3>
+              <div class="price">Fornecedores Logistas R$ 30,00</div>
+              <div class="muted">Lista focada em quem revende e tem loja. Curadoria e atualização.</div>
+              <div class="row2">
+                <a class="btn primary" href="#" id="buyLogistas">Comprar Logistas</a>
+                <a class="btn" href="#como">Ver regras</a>
+              </div>
+            </div>
+
+            <div class="plan">
+              <h3>Plano 02</h3>
+              <div class="price">Fornecedores Consumidor Final R$ 25,00</div>
+              <div class="muted">Lista focada em compra para uso próprio (consumo).</div>
+              <div class="row2">
+                <a class="btn primary" href="#" id="buyFinal">Comprar Consumidor Final</a>
+                <a class="btn" href="#como">Ver regras</a>
+              </div>
+            </div>
+
+            <div class="muted" style="margin-top:10px">
+              Após pagamento: criar login, aguardar aprovação, acesso liberado.
             </div>
           </div>
         </div>
 
         <div style="height:14px"></div>
 
-        <div id="sec-como" class="panel">
+        <div id="como" class="panel">
           <div class="ph">
             <b>Como funciona</b>
             <span class="chip">simples</span>
           </div>
-          <div class="list" style="padding:14px; color:var(--muted); line-height:1.5">
-            1) Compra um dos planos<br/>
-            2) Cria seu login<br/>
-            3) Admin aprova manualmente<br/>
-            4) Acesso liberado (1 dispositivo por pessoa)
+          <div class="list">
+            <div class="muted">
+              1) Compra um dos planos<br/>
+              2) Cria seu login<br/>
+              3) Admin aprova manualmente<br/>
+              4) Acesso liberado (1 dispositivo por pessoa)
+            </div>
           </div>
         </div>
 
         <div style="height:14px"></div>
 
-        <div id="sec-suporte" class="panel">
+        <div id="suporte" class="panel">
           <div class="ph">
             <b>Suporte</b>
             <span class="chip">contato</span>
           </div>
-          <div class="list" style="padding:14px; color:var(--muted); line-height:1.5">
-            Coloque aqui seu WhatsApp/Instagram depois.
-          </div>
-        </div>
-
-        <div style="height:14px"></div>
-
-        <div id="adminPanel" class="panel" style="display:none">
-          <div class="ph">
-            <b>PAINEL ADMINISTRADOR</b>
-            <span class="chip ok">somente você</span>
-          </div>
-
           <div class="list">
-            <div class="row">
-              <div class="dot p"></div>
-              <div class="meta">
-                <div class="t">Pedidos pendentes</div>
-                <div class="d">aprovar / rejeitar / liberar acesso</div>
-              </div>
-              <div class="amt" id="admPend">—</div>
-            </div>
-
-            <div class="row">
-              <div class="dot w"></div>
-              <div class="meta">
-                <div class="t">Vendas (7 dias)</div>
-                <div class="d">timeseries / cards</div>
-              </div>
-              <div class="amt" id="admSales">—</div>
-            </div>
-
-            <div class="row">
-              <div class="dot p"></div>
-              <div class="meta">
-                <div class="t">Logs de acesso</div>
-                <div class="d">ip / user-agent / device</div>
-              </div>
-              <div class="amt" id="admLogs">—</div>
+            <div class="muted">
+              Coloque aqui seu WhatsApp/Instagram depois. Vamos plugar no JS já já.
             </div>
           </div>
         </div>
@@ -330,23 +300,17 @@
         <div class="panel">
           <div class="ph">
             <b>Conta</b>
-            <span class="chip">menu</span>
+            <span class="chip">cliente</span>
           </div>
-
           <div class="list">
-            <div class="card">
-              <small>Login</small>
-              <div style="margin-top:8px; color:var(--muted); line-height:1.45">
-                Entrar com <b style="color:var(--txt)">e-mail</b>. (vamos plugar Supabase já já)
+            <div class="plan" style="margin-bottom:0">
+              <div class="muted">
+                Login do cliente vai ser conectado no Supabase depois.<br/>
+                Por agora, é só layout e botões.
               </div>
-            </div>
-
-            <div style="height:10px"></div>
-
-            <div class="card">
-              <small>Seus produtos</small>
-              <div style="margin-top:8px; color:var(--muted); line-height:1.45">
-                Depois de aprovado, aparece seu acesso.
+              <div class="row2">
+                <a class="btn" href="#" id="loginFake">Entrar</a>
+                <a class="btn" href="#planos">Comprar</a>
               </div>
             </div>
           </div>
@@ -357,21 +321,6 @@
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <div id="menuOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:99">
-    <div class="menu" style="position:absolute; top:74px; right:14px; width:min(360px, calc(100% - 28px)); z-index:100">
-      <div class="mi" id="miAdd"><span>Adicionar fornecedor</span><small>admin</small></div>
-      <div class="mi" id="miAdmin"><span>Painel administrador</span><small>cards</small></div>
-      <div class="mi" id="miLogs"><span>Logs</span><small>acessos</small></div>
-      <div class="mi" id="miGraf"><span>Gráfico</span><small>vendas</small></div>
-      <div class="mi" id="miPay"><span>Pagamentos</span><small>pendentes</small></div>
-
-      <div style="height:8px"></div>
-
-      <div class="mi" id="miLogin"><span>Login</span><small>entrar</small></div>
-      <div class="mi" id="miLogout"><span>Sair</span><small>logout</small></div>
     </div>
   </div>
 
