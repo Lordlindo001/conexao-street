@@ -4,27 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Conexão Street</title>
+
   <style>
     :root{
-      --bg:#07070A;
-      --card:#0f0f14;
-      --muted:#a6a6b3;
-      --txt:#f3f3f7;
-      --p:#7A2BFF;
-      --p2:#9b6bff;
-      --ok:#24d18d;
-      --warn:#ffb020;
+      --bg:#07070A; --card:#0f0f14; --muted:#a6a6b3; --txt:#f3f3f7;
+      --p:#7A2BFF; --p2:#9b6bff; --ok:#24d18d; --warn:#ffb020;
       --line:rgba(255,255,255,.08);
       --r:18px;
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
       font-synthesis-weight:none;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;
-      background:
+      margin:0; background:
         radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.22), transparent 55%),
         radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.14), transparent 60%),
         var(--bg);
@@ -33,61 +25,9 @@
       overflow-x:hidden;
     }
     a{color:inherit; text-decoration:none}
-    button{font-family:inherit}
 
-    /* loader */
-    .loaderWrap{
-      position:fixed; inset:0; z-index:9999;
-      background:
-        radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.18), transparent 55%),
-        radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.12), transparent 60%),
-        rgba(7,7,10,.92);
-      display:flex; align-items:center; justify-content:center;
-      padding:18px;
-      transition: opacity .25s ease, visibility .25s ease;
-    }
-    .loaderWrap.off{opacity:0; visibility:hidden; pointer-events:none}
-    .loaderCard{
-      width:min(520px, 96vw);
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.03);
-      box-shadow: 0 26px 90px rgba(0,0,0,.55);
-      overflow:hidden;
-      position:relative;
-    }
-    .shine{
-      position:absolute; inset:-2px;
-      background: linear-gradient(120deg, transparent 0%, rgba(122,43,255,.18) 25%, rgba(155,107,255,.12) 45%, transparent 70%);
-      transform: translateX(-60%);
-      animation: shine 1.2s linear infinite;
-      opacity:.9;
-      pointer-events:none;
-    }
-    @keyframes shine{
-      0%{transform: translateX(-60%)}
-      100%{transform: translateX(60%)}
-    }
-    .loaderInner{
-      padding:18px;
-      display:flex; gap:14px; align-items:center;
-    }
-    .spinner{
-      width:44px; height:44px;
-      border-radius:99px;
-      border:3px solid rgba(255,255,255,.12);
-      border-top-color: rgba(122,43,255,.9);
-      border-right-color: rgba(155,107,255,.55);
-      animation: spin .75s linear infinite;
-      box-shadow: 0 10px 30px rgba(122,43,255,.18);
-    }
-    @keyframes spin{to{transform: rotate(360deg)}}
-    .loaderTxt b{display:block; font-size:14px}
-    .loaderTxt small{display:block; color:var(--muted); margin-top:4px; line-height:1.35}
-
-    /* top bar */
     .top{
-      position:sticky; top:0; z-index:50;
+      position:sticky; top:0; z-index:30;
       backdrop-filter: blur(10px);
       background: rgba(7,7,10,.65);
       border-bottom:1px solid var(--line);
@@ -109,23 +49,13 @@
       width:100%; padding:11px 12px; border-radius:14px;
       border:1px solid var(--line); background:rgba(255,255,255,.04);
       color:var(--txt); outline:none;
-      transition: border-color .15s ease, background .15s ease;
-    }
-    .inp:focus{
-      border-color: rgba(122,43,255,.45);
-      background: rgba(122,43,255,.08);
     }
     .right{display:flex; align-items:center; gap:10px}
     .pill{
       padding:9px 12px; border-radius:999px; border:1px solid var(--line);
       background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;
       display:flex; gap:8px; align-items:center;
-      transition: transform .12s ease, background .15s ease, border-color .15s ease;
-      -webkit-tap-highlight-color: transparent;
     }
-    .pill:active{transform: scale(.985)}
-    .pill:hover{border-color: rgba(122,43,255,.30); background: rgba(122,43,255,.10)}
-
     .avatarBtn{
       width:38px; height:38px; border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
@@ -134,16 +64,13 @@
       position:relative;
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
-      transition: transform .12s ease;
     }
-    .avatarBtn:active{transform: scale(.985)}
     .avatarBtn:after{
       content:""; position:absolute; inset:-1px; border-radius:14px;
       border:1px solid rgba(122,43,255,.35);
       pointer-events:none;
     }
 
-    /* layout */
     .grid{
       display:grid; gap:14px;
       grid-template-columns: 1.2fr .8fr;
@@ -155,144 +82,101 @@
       .grid{grid-template-columns: 1fr}
     }
 
-    .panel, .hero, .card{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
-      border-radius: var(--r);
-    }
-
     .hero{
-      overflow:hidden;
-      position:relative;
-      box-shadow: var(--shadow);
+      border:1px solid var(--line); background: rgba(255,255,255,.03);
+      border-radius: var(--r); overflow:hidden; position:relative;
+      box-shadow:0 18px 60px rgba(0,0,0,.35);
     }
-    .heroGlow{
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(500px 220px at 20% 10%, rgba(122,43,255,.25), transparent 60%),
-        radial-gradient(420px 240px at 90% 20%, rgba(155,107,255,.18), transparent 65%);
-      pointer-events:none;
-      opacity:.9;
-    }
-    .hwrap{padding:18px; position:relative}
-    .tag{
-      display:inline-flex; align-items:center; gap:8px; font-size:12px;
-      color:rgba(255,255,255,.92);
-      background:rgba(122,43,255,.16);
-      border:1px solid rgba(122,43,255,.25);
+    .hero .hwrap{padding:18px}
+    .tag{display:inline-flex; align-items:center; gap:8px; font-size:12px;
+      color:rgba(255,255,255,.9);
+      background:rgba(122,43,255,.16); border:1px solid rgba(122,43,255,.25);
       padding:7px 10px; border-radius:999px;
     }
     .tag i{width:8px;height:8px;border-radius:99px;background:var(--ok);display:inline-block}
     h1{margin:14px 0 8px; font-size:26px; line-height:1.15}
-    .sub{color:var(--muted); line-height:1.45}
+    .sub{color:var(--muted); line-height:1.4}
 
     .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
     .btn{
       padding:11px 14px; border-radius:14px; border:1px solid var(--line);
       background:rgba(255,255,255,.04); color:var(--txt);
-      display:inline-flex; align-items:center; gap:10px; font-weight:800;
+      display:inline-flex; align-items:center; gap:10px; font-weight:700;
       cursor:pointer;
-      transition: transform .12s ease, background .15s ease, border-color .15s ease;
-      user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
-    .btn:hover{border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.06)}
-    .btn:active{transform: scale(.985)}
     .btn.primary{
       border-color: rgba(122,43,255,.55);
       background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
       box-shadow:0 14px 35px rgba(122,43,255,.22);
     }
 
-    .cards{display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin-top:16px}
-    @media (max-width: 640px){ .cards{grid-template-columns:1fr} }
-    .card{padding:14px; overflow:hidden; position:relative}
-    .card small{color:var(--muted)}
-    .card h2{margin:10px 0 6px; font-size:18px}
-    .price{font-weight:900; font-size:22px; letter-spacing:.2px}
-    .bullets{margin:10px 0 0; padding:0 0 0 18px; color:rgba(255,255,255,.88)}
-    .bullets li{margin:6px 0}
-    .buyRow{margin-top:12px; display:flex; gap:10px; flex-wrap:wrap}
-    .buyRow .btn{flex:1; justify-content:center}
-
-    .panel{overflow:hidden}
-    .ph{
-      padding:14px; border-bottom:1px solid var(--line);
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    .panel{
+      border:1px solid var(--line); background:rgba(255,255,255,.03);
+      border-radius: var(--r); overflow:hidden;
     }
-    .ph b{font-size:14px}
+    .panel .ph{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
+    .panel .ph b{font-size:14px}
+    .list{padding:12px}
+    .card{
+      border:1px solid var(--line); background:rgba(255,255,255,.03);
+      border-radius: var(--r); padding:14px;
+    }
+    .card small{color:var(--muted)}
+    .card b{font-size:20px}
+    .kpi{display:flex; align-items:flex-end; justify-content:space-between; gap:10px}
     .chip{
       font-size:12px; padding:6px 10px; border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
-      color:rgba(255,255,255,.92);
+      color:rgba(255,255,255,.9);
       background:rgba(255,255,255,.04);
       white-space:nowrap;
     }
+    .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
+    .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
 
-    .list{padding:12px}
-    .mini{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:12px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.02);
-    }
-    .mini b{font-size:13px}
-    .mini small{color:var(--muted)}
+    .productGrid{display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin-top:12px}
+    @media (max-width: 540px){ .productGrid{grid-template-columns:1fr} }
+    .price{font-weight:900; font-size:22px; letter-spacing:.2px}
+    .muted{color:var(--muted); line-height:1.45}
+
     .footer{
       color:rgba(255,255,255,.55);
       padding:20px 14px; text-align:center; border-top:1px solid var(--line)
     }
 
-    /* menu overlay */
+    /* Overlay do menu do avatar */
     .overlay{
-      position:fixed; inset:0; z-index:80;
-      background: rgba(0,0,0,.45);
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
       display:none;
+      z-index:50;
       padding:18px;
     }
     .menuBox{
-      width:min(520px, 96vw);
-      margin:80px auto 0;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(15,15,20,.95);
+      width:min(420px, 96vw);
+      margin:70px auto 0;
       border-radius:18px;
+      border:1px solid var(--line);
+      background: rgba(15,15,20,.92);
+      box-shadow:0 22px 70px rgba(0,0,0,.55);
       overflow:hidden;
-      box-shadow: 0 26px 90px rgba(0,0,0,.55);
-      animation: pop .14s ease both;
-    }
-    @keyframes pop{
-      from{opacity:0; transform: translateY(8px) scale(.98)}
-      to{opacity:1; transform: translateY(0) scale(1)}
     }
     .mi{
-      display:flex; justify-content:space-between; gap:10px;
+      display:flex; justify-content:space-between; align-items:center;
       padding:12px 12px;
+      color:rgba(255,255,255,.92);
       border-top:1px solid rgba(255,255,255,.06);
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
     }
     .mi:first-child{border-top:none}
-    .mi:hover{background: rgba(255,255,255,.04)}
-    .mi b{font-size:13px}
+    .mi:hover{background:rgba(255,255,255,.05)}
     .mi small{color:var(--muted)}
-    .mi .r{display:flex; align-items:center; gap:8px}
-    .hide{display:none !important}
   </style>
 </head>
-<body>
 
-  <div class="loaderWrap" id="loader">
-    <div class="loaderCard">
-      <div class="shine"></div>
-      <div class="loaderInner">
-        <div class="spinner" aria-hidden="true"></div>
-        <div class="loaderTxt">
-          <b>Carregando</b>
-          <small>Conexão Street</small>
-        </div>
-      </div>
-    </div>
-  </div>
+<body>
 
   <div class="top">
     <div class="wrap">
@@ -301,19 +185,32 @@
           <div class="logo" aria-hidden="true"></div>
           <div>
             <b>Conexão Street</b><br/>
-            <span style="color:var(--muted); font-size:12px;">Lista VIP</span>
+            <span style="color:var(--muted); font-size:12px;">VIP Fornecedores</span>
           </div>
         </div>
 
         <div class="search">
-          <input class="inp" placeholder="Buscar" />
+          <input class="inp" placeholder="Buscar categorias e produtos" />
         </div>
 
         <div class="right">
-          <div class="pill" id="statusPill">Visitante</div>
-          <button class="avatarBtn" id="avatarBtn" title="Menu" type="button" aria-label="Menu"></button>
+          <div class="pill">🛒 <b style="color:var(--txt)">2</b> <span style="color:var(--muted)">listas</span></div>
+          <div id="avatarBtn" class="avatarBtn" title="Conta"></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Menu overlay -->
+  <div id="menuOverlay" class="overlay" aria-hidden="true">
+    <div class="menuBox">
+      <div class="mi" id="miAdmin"><span>Painel administrador</span><small>somente dono</small></div>
+      <div class="mi" id="miAdd"><span>Adicionar fornecedor</span><small>admin</small></div>
+      <div class="mi" id="miLogs"><span>Logs</span><small>admin</small></div>
+      <div class="mi" id="miGraf"><span>Grafico</span><small>admin</small></div>
+      <div class="mi" id="miPay"><span>Pagamentos</span><small>admin</small></div>
+      <div class="mi" id="miLogin"><span>Entrar como admin</span><small>senha</small></div>
+      <div class="mi" id="miLogout"><span>Sair</span><small>limpar</small></div>
     </div>
   </div>
 
@@ -322,52 +219,58 @@
 
       <div>
         <div class="hero">
-          <div class="heroGlow"></div>
           <div class="hwrap">
-            <span class="tag"><i></i> acesso liberado apos compra</span>
-            <h1>Escolha sua lista de fornecedores</h1>
+            <span class="tag"><i></i> acesso liberado após compra e aprovação</span>
+            <h1>Compre sua lista e entre na área VIP</h1>
             <div class="sub">
-              Compre a lista, faça login e acesse seus produtos. Depois a gente liga tudo no Supabase.
+              Aqui ficam as duas listas principais para comprar. Depois da compra, você recebe acesso.
             </div>
 
             <div class="cta">
-              <a class="btn primary" href="#sec-comprar" id="btnComprar">Ver opcoes</a>
-              <a class="btn" href="#sec-como" id="btnComo">Como funciona</a>
-              <a class="btn" href="#sec-suporte" id="btnSuporte">Suporte</a>
+              <button class="btn primary" id="btnProdutos" type="button">Ver listas</button>
+              <button class="btn" id="btnComo" type="button">Como funciona</button>
+              <button class="btn" id="btnSuporte" type="button">Suporte</button>
             </div>
+          </div>
+        </div>
 
-            <div id="sec-comprar" class="cards">
+        <div style="height:14px"></div>
+
+        <div class="panel" id="sec-fornecedores">
+          <div class="ph">
+            <b>Listas para comprar</b>
+            <span class="chip">VIP</span>
+          </div>
+
+          <div class="list">
+            <div class="productGrid">
               <div class="card">
-                <small>Plano</small>
-                <h2>Fornecedores logistas</h2>
-                <div class="price">R$ 30,00</div>
-                <ul class="bullets">
-                  <li>Lista para quem vende e revende</li>
-                  <li>Acesso na area de produtos</li>
-                  <li>Atualizacoes futuras</li>
-                </ul>
-                <div class="buyRow">
-                  <button class="btn primary" id="buyLojista" type="button">Comprar</button>
-                  <button class="btn" id="detLojista" type="button">Detalhes</button>
+                <small>Lista</small>
+                <div style="margin-top:6px"><b>Fornecedores logistas</b></div>
+                <div class="muted" style="margin-top:8px">
+                  Lista focada em fornecedores para lojistas, revenda e volume.
                 </div>
+                <div style="margin-top:12px" class="price">R$ 30,00</div>
+                <div style="height:10px"></div>
+                <button class="btn primary" id="buyLojista" type="button">Comprar agora</button>
               </div>
 
               <div class="card">
-                <small>Plano</small>
-                <h2>Fornecedores consumidor final</h2>
-                <div class="price">R$ 25,00</div>
-                <ul class="bullets">
-                  <li>Lista para compra pessoal</li>
-                  <li>Acesso na area de produtos</li>
-                  <li>Atualizacoes futuras</li>
-                </ul>
-                <div class="buyRow">
-                  <button class="btn primary" id="buyFinal" type="button">Comprar</button>
-                  <button class="btn" id="detFinal" type="button">Detalhes</button>
+                <small>Lista</small>
+                <div style="margin-top:6px"><b>Fornecedores consumidor final</b></div>
+                <div class="muted" style="margin-top:8px">
+                  Lista focada em consumidor final e compras avulsas.
                 </div>
+                <div style="margin-top:12px" class="price">R$ 25,00</div>
+                <div style="height:10px"></div>
+                <button class="btn primary" id="buyFinal" type="button">Comprar agora</button>
               </div>
             </div>
 
+            <div style="height:10px"></div>
+            <div class="muted">
+              Após o pagamento, o dono aprova e libera seu acesso.
+            </div>
           </div>
         </div>
 
@@ -379,28 +282,13 @@
             <span class="chip">passo a passo</span>
           </div>
           <div class="list">
-            <div class="mini">
-              <div>
-                <b>1. Compra</b><br/>
-                <small>voce escolhe a lista e paga</small>
+            <div class="card">
+              <div class="muted">
+                1 Você compra uma das listas<br/>
+                2 O pagamento aparece para o dono<br/>
+                3 O dono aprova e libera seu acesso<br/>
+                4 Você entra e acessa seu conteúdo
               </div>
-              <div class="r"><span class="chip">ok</span></div>
-            </div>
-            <div style="height:10px"></div>
-            <div class="mini">
-              <div>
-                <b>2. Login</b><br/>
-                <small>entra e acessa seus produtos</small>
-              </div>
-              <div class="r"><span class="chip">em breve</span></div>
-            </div>
-            <div style="height:10px"></div>
-            <div class="mini">
-              <div>
-                <b>3. Acesso</b><br/>
-                <small>conteudo liberado apos aprovacao</small>
-              </div>
-              <div class="r"><span class="chip">em breve</span></div>
             </div>
           </div>
         </div>
@@ -413,12 +301,36 @@
             <span class="chip">contato</span>
           </div>
           <div class="list">
-            <div class="mini">
-              <div>
-                <b>Atendimento</b><br/>
-                <small>canal de suporte em breve</small>
+            <div class="card">
+              <div class="muted">
+                Se deu algum problema, chama o suporte pelo canal oficial do grupo.
               </div>
-              <div class="r"><span class="chip">ok</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <!-- Painel do dono dentro do index, fica escondido se nao for admin -->
+        <div class="panel" id="adminPanel" style="display:none">
+          <div class="ph">
+            <b>Painel administrador</b>
+            <span class="chip ok">dono</span>
+          </div>
+          <div class="list">
+            <div class="productGrid">
+              <div class="card">
+                <small>Vendas</small>
+                <div class="kpi"><b>R$ 29,90</b><span class="chip ok">aprovado</span></div>
+              </div>
+              <div class="card">
+                <small>Pendentes</small>
+                <div class="kpi"><b>1</b><span class="chip warn">aguardando</span></div>
+              </div>
+            </div>
+            <div style="height:10px"></div>
+            <div class="muted">
+              Isso aqui é demo. Segurança real depois é Supabase com RLS.
             </div>
           </div>
         </div>
@@ -429,81 +341,30 @@
         <div class="panel">
           <div class="ph">
             <b>Conta</b>
-            <span class="chip">menu do avatar</span>
+            <span class="chip" id="statusTxt">Visitante</span>
           </div>
           <div class="list">
-            <div class="mini">
-              <div>
-                <b>Status</b><br/>
-                <small id="statusTxt">visitante</small>
+            <div class="card">
+              <small>Acesso</small>
+              <div class="muted" style="margin-top:8px">
+                Para admin, toque no avatar e entre com a senha do dono.
               </div>
-              <div class="r"><span class="chip" id="roleChip">off</span></div>
             </div>
-
-            <div style="height:12px"></div>
-
-            <div class="mini">
-              <div>
-                <b>Seus produtos</b><br/>
-                <small>aparece apos login</small>
+            <div style="height:10px"></div>
+            <div class="card">
+              <small>Dica</small>
+              <div class="muted" style="margin-top:8px">
+                Se o menu nao abrir, atualiza a pagina ou limpa cache do navegador.
               </div>
-              <div class="r"><span class="chip">em breve</span></div>
-            </div>
-
-            <div style="height:12px"></div>
-
-            <div class="mini">
-              <div>
-                <b>Comprar mais</b><br/>
-                <small>volte aqui para novas listas</small>
-              </div>
-              <div class="r"><span class="chip">ok</span></div>
-            </div>
-
-            <div class="footer">
-              © Conexão Street
             </div>
           </div>
         </div>
-      </div>
 
-    </div>
-  </div>
-
-  <!-- overlay menu -->
-  <div class="overlay" id="menuOverlay" aria-hidden="true">
-    <div class="menuBox" role="dialog" aria-label="Menu">
-      <div class="mi" data-go="products">
-        <div>
-          <b>Seus produtos</b><br/>
-          <small>acesso apos login</small>
+        <div class="footer">
+          © Conexão Street
         </div>
-        <div class="r"><span class="chip">em breve</span></div>
       </div>
 
-      <div class="mi" data-go="buy">
-        <div>
-          <b>Comprar mais</b><br/>
-          <small>ver opcoes</small>
-        </div>
-        <div class="r"><span class="chip">ok</span></div>
-      </div>
-
-      <div class="mi hide" id="miAdmin" data-go="admin">
-        <div>
-          <b>Painel administrador</b><br/>
-          <small>somente dono</small>
-        </div>
-        <div class="r"><span class="chip">admin</span></div>
-      </div>
-
-      <div class="mi" data-go="close">
-        <div>
-          <b>Fechar</b><br/>
-          <small>voltar</small>
-        </div>
-        <div class="r"><span class="chip">esc</span></div>
-      </div>
     </div>
   </div>
 
