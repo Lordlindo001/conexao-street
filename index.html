@@ -44,7 +44,10 @@
       border:1px solid var(--line); background:rgba(255,255,255,.04);
       color:var(--txt); outline:none;
     }
-    .right{display:flex; align-items:center; gap:10px}
+
+    /* ✅ importante: position relative pra ancorar o menu */
+    .right{display:flex; align-items:center; gap:10px; position:relative}
+
     .pill{
       padding:9px 12px; border-radius:999px; border:1px solid var(--line);
       background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;
@@ -56,12 +59,35 @@
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 45%),
                   linear-gradient(135deg, rgba(122,43,255,.75), rgba(7,7,10,.6));
       position:relative;
+      cursor:pointer;
     }
     .avatar:after{
       content:""; position:absolute; inset:-1px; border-radius:14px;
       border:1px solid rgba(122,43,255,.35);
       pointer-events:none;
     }
+
+    /* ✅ dropdown do avatar */
+    .dropdown{
+      position:absolute;
+      right:0;
+      top:52px;
+      width:min(320px, 92vw);
+      border:1px solid var(--line);
+      background:rgba(15,15,20,.96);
+      border-radius:18px;
+      padding:10px;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
+      z-index:999;
+    }
+    .dropdown .mi{
+      display:flex; justify-content:space-between;
+      padding:10px 10px; border-radius:14px;
+      color:rgba(255,255,255,.92);
+    }
+    .dropdown .mi:hover{background:rgba(255,255,255,.05)}
+    .dropdown .mi small{color:var(--muted)}
+
     .grid{
       display:grid; gap:14px;
       grid-template-columns: 1.2fr .8fr;
@@ -176,7 +202,18 @@
 
         <div class="right">
           <div class="pill">🛒 <b style="color:var(--txt)">2</b> <span style="color:var(--muted)">itens</span></div>
-          <div class="avatar" title="Conta / Login"></div>
+
+          <!-- ✅ avatar com id -->
+          <div class="avatar" id="avatarBtn" title="Conta / Login"></div>
+
+          <!-- ✅ menu real (começa escondido) -->
+          <div class="dropdown" id="avatarMenu" style="display:none;">
+            <a class="mi" href="#" data-go="add_supplier"><span>Adicionar fornecedor</span><small>admin</small></a>
+            <a class="mi" href="#" data-go="admin"><span>Painel administrador</span><small>cards</small></a>
+            <a class="mi" href="#" data-go="logs"><span>Logs</span><small>acessos</small></a>
+            <a class="mi" href="#" data-go="chart"><span>Gráfico</span><small>vendas</small></a>
+            <a class="mi" href="#" data-go="payments"><span>Pagamentos</span><small>pendentes</small></a>
+          </div>
         </div>
       </div>
     </div>
@@ -195,9 +232,9 @@
               O dono tem painel admin com cards, gráfico, logs e pagamentos — estilo Cakto.
             </div>
             <div class="cta">
-              <a class="btn primary" href="#">Ver produtos</a>
-              <a class="btn" href="#">Como funciona</a>
-              <a class="btn" href="#">Suporte</a>
+              <a class="btn primary" href="#" data-go="products">Ver produtos</a>
+              <a class="btn" href="#" data-go="how">Como funciona</a>
+              <a class="btn" href="#" data-go="support">Suporte</a>
             </div>
 
             <div class="cards">
@@ -295,8 +332,6 @@
     </div>
   </div>
 
-  <!-- ✅ ÚNICA COISA QUE MUDA NO INDEX -->
   <script src="./app.js"></script>
-
 </body>
 </html>
