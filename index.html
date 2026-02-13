@@ -25,15 +25,29 @@
 
     *{box-sizing:border-box}
     html,body{height:100%}
+
+    /* ✅ Fundo base SEM roxo (pra não aparecer faixa no scroll) */
+    html{background:var(--bg)}
     body{
       margin:0;
-      background:
-        radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.16), transparent 55%),
-        radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.10), transparent 60%),
-        var(--bg);
+      background:transparent; /* <- antes tinha radial-gradient aqui */
       color:var(--txt);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
       overflow-x:hidden;
+      position:relative; /* pro ::before funcionar */
+    }
+
+    /* ✅ Roxo só no começo (topo) */
+    body::before{
+      content:"";
+      position:absolute;
+      top:0; left:0; right:0;
+      height:280px; /* controla até onde o roxo aparece */
+      background:
+        radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.16), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.10), transparent 60%);
+      pointer-events:none;
+      z-index:-1;
     }
 
     a{color:inherit; text-decoration:none}
