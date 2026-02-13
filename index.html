@@ -7,62 +7,83 @@
 
   <style>
     :root{
-      --bg:#07070A; --card:#0f0f14; --muted:#a6a6b3; --txt:#f3f3f7;
-      --p:#7A2BFF; --p2:#9b6bff; --ok:#24d18d; --warn:#ffb020;
+      --bg:#07070A;
+      --card:#0f0f14;
+      --muted:#a6a6b3;
+      --txt:#f3f3f7;
+
+      --p:#7A2BFF;
+      --p2:#9b6bff;
+      --ok:#24d18d;
+      --warn:#ffb020;
+
       --line:rgba(255,255,255,.08);
       --r:18px;
+      --shadow: 0 18px 60px rgba(0,0,0,.38);
       font-synthesis-weight:none;
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; background:
-        radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.22), transparent 55%),
-        radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.14), transparent 60%),
+      margin:0;
+      background:
+        radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.16), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.10), transparent 60%),
         var(--bg);
       color:var(--txt);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
       overflow-x:hidden;
     }
+
     a{color:inherit; text-decoration:none}
+    button{font-family:inherit}
 
     .top{
-      position:sticky; top:0; z-index:30;
+      position:sticky; top:0; z-index:40;
       backdrop-filter: blur(10px);
-      background: rgba(7,7,10,.65);
+      background: rgba(7,7,10,.70);
       border-bottom:1px solid var(--line);
     }
     .wrap{max-width:1100px; margin:0 auto; padding:14px 14px}
     .bar{display:flex; align-items:center; gap:12px; justify-content:space-between}
+
     .brand{display:flex; align-items:center; gap:10px}
     .logo{
       width:38px; height:38px; border-radius:12px;
-      background: linear-gradient(135deg, rgba(122,43,255,.9), rgba(155,107,255,.35));
+      background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.35));
       box-shadow:0 10px 30px rgba(122,43,255,.25);
       border:1px solid rgba(255,255,255,.12);
+      flex:0 0 auto;
     }
     .brand b{letter-spacing:.2px}
-    .search{
-      flex:1; max-width:520px; display:flex; gap:10px; margin:0 8px;
-    }
-    .inp{
-      width:100%; padding:11px 12px; border-radius:14px;
-      border:1px solid var(--line); background:rgba(255,255,255,.04);
-      color:var(--txt); outline:none;
-    }
+    .brand small{color:var(--muted)}
+
     .right{display:flex; align-items:center; gap:10px}
+
     .pill{
-      padding:9px 12px; border-radius:999px; border:1px solid var(--line);
-      background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;
+      padding:9px 12px; border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:13px;
       display:flex; gap:8px; align-items:center;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
+    .pill:active{transform: scale(.98)}
+    .pill:hover{border-color: rgba(122,43,255,.30); background: rgba(122,43,255,.10)}
+
     .avatarBtn{
       width:38px; height:38px; border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 45%),
-                  linear-gradient(135deg, rgba(122,43,255,.75), rgba(7,7,10,.6));
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 45%),
+        linear-gradient(135deg, rgba(122,43,255,.75), rgba(7,7,10,.6));
       position:relative;
       cursor:pointer;
+      flex:0 0 auto;
       -webkit-tap-highlight-color: transparent;
     }
     .avatarBtn:after{
@@ -78,105 +99,271 @@
       padding:16px 14px 28px;
     }
     @media (max-width: 920px){
-      .search{display:none}
       .grid{grid-template-columns: 1fr}
     }
 
-    .hero{
-      border:1px solid var(--line); background: rgba(255,255,255,.03);
-      border-radius: var(--r); overflow:hidden; position:relative;
-      box-shadow:0 18px 60px rgba(0,0,0,.35);
+    .panel, .hero, .card{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      border-radius: var(--r);
     }
-    .hero .hwrap{padding:18px}
-    .tag{display:inline-flex; align-items:center; gap:8px; font-size:12px;
-      color:rgba(255,255,255,.9);
-      background:rgba(122,43,255,.16); border:1px solid rgba(122,43,255,.25);
-      padding:7px 10px; border-radius:999px;
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    .heroGlow{
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(520px 240px at 20% 10%, rgba(122,43,255,.22), transparent 60%),
+        radial-gradient(480px 260px at 90% 20%, rgba(155,107,255,.14), transparent 65%);
+      pointer-events:none;
+      opacity:.95;
+      z-index:0;
+    }
+    .hwrap{padding:18px; position:relative; z-index:1}
+
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px;
+      color:rgba(255,255,255,.92);
+      background:rgba(122,43,255,.16);
+      border:1px solid rgba(122,43,255,.25);
+      padding:7px 10px;
+      border-radius:999px;
     }
     .tag i{width:8px;height:8px;border-radius:99px;background:var(--ok);display:inline-block}
-    h1{margin:14px 0 8px; font-size:26px; line-height:1.15}
-    .sub{color:var(--muted); line-height:1.4}
 
-    .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+    h1{margin:12px 0 8px; font-size:24px; line-height:1.2}
+    .sub{color:var(--muted); line-height:1.45}
+
+    .btnRow{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
     .btn{
-      padding:11px 14px; border-radius:14px; border:1px solid var(--line);
-      background:rgba(255,255,255,.04); color:var(--txt);
-      display:inline-flex; align-items:center; gap:10px; font-weight:700;
+      padding:11px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--txt);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight:800;
       cursor:pointer;
+      transition: transform .12s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
+    .btn:hover{border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.06)}
+    .btn:active{transform: scale(.985)}
     .btn.primary{
       border-color: rgba(122,43,255,.55);
       background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
       box-shadow:0 14px 35px rgba(122,43,255,.22);
     }
 
-    .panel{
-      border:1px solid var(--line); background:rgba(255,255,255,.03);
-      border-radius: var(--r); overflow:hidden;
+    .sectionTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin:14px 0 10px;
     }
-    .panel .ph{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
-    .panel .ph b{font-size:14px}
-    .list{padding:12px}
-    .card{
-      border:1px solid var(--line); background:rgba(255,255,255,.03);
-      border-radius: var(--r); padding:14px;
-    }
-    .card small{color:var(--muted)}
-    .card b{font-size:20px}
-    .kpi{display:flex; align-items:flex-end; justify-content:space-between; gap:10px}
+    .sectionTitle b{font-size:14px}
     .chip{
-      font-size:12px; padding:6px 10px; border-radius:999px;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
-      color:rgba(255,255,255,.9);
+      color:rgba(255,255,255,.92);
       background:rgba(255,255,255,.04);
       white-space:nowrap;
     }
     .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
     .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
 
-    .productGrid{display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin-top:12px}
-    @media (max-width: 540px){ .productGrid{grid-template-columns:1fr} }
-    .price{font-weight:900; font-size:22px; letter-spacing:.2px}
-    .muted{color:var(--muted); line-height:1.45}
+    .card{
+      padding:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
+      position:relative;
+      overflow:hidden;
+    }
+
+    .cardGlow{
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(420px 220px at 20% 10%, rgba(122,43,255,.14), transparent 62%),
+        radial-gradient(380px 220px at 90% 10%, rgba(155,107,255,.10), transparent 65%);
+      pointer-events:none;
+      opacity:.9;
+      z-index:0;
+    }
+    .cardInner{position:relative; z-index:1}
+
+    .planTitle{color:var(--muted); font-size:12px}
+    .planName{font-size:22px; font-weight:900; margin-top:6px}
+    .price{font-size:26px; font-weight:950; margin:8px 0 10px}
+    .ul{margin:0; padding-left:18px; color:rgba(255,255,255,.88)}
+    .ul li{margin:6px 0}
+    .twoBtn{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px;
+    }
+
+    .steps{
+      display:grid; gap:10px;
+    }
+    .step{
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      border-radius:16px;
+      padding:12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .step b{font-size:13px}
+    .step small{display:block; color:var(--muted); margin-top:4px; line-height:1.35}
+
+    .supportCard{
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      border-radius:16px;
+      padding:12px;
+    }
+    .hint{color:var(--muted); font-size:12px; line-height:1.45}
 
     .footer{
       color:rgba(255,255,255,.55);
-      padding:20px 14px; text-align:center; border-top:1px solid var(--line)
+      padding:20px 14px;
+      text-align:center;
+      border-top:1px solid var(--line);
     }
 
-    /* Overlay do menu do avatar */
-    .overlay{
+    .menuOverlay{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
+      z-index:80;
+      background: rgba(0,0,0,.35);
       display:none;
-      z-index:50;
-      padding:18px;
+      padding:16px;
     }
-    .menuBox{
-      width:min(420px, 96vw);
+    .menuCard{
+      width:min(520px, 96vw);
       margin:70px auto 0;
       border-radius:18px;
-      border:1px solid var(--line);
-      background: rgba(15,15,20,.92);
-      box-shadow:0 22px 70px rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(15,15,20,.95);
+      box-shadow: 0 26px 90px rgba(0,0,0,.55);
       overflow:hidden;
+      position:relative;
     }
+    .menuCard:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(420px 240px at 20% 0%, rgba(122,43,255,.16), transparent 60%),
+        radial-gradient(420px 240px at 90% 0%, rgba(155,107,255,.10), transparent 65%);
+      pointer-events:none;
+      opacity:.9;
+      z-index:0;
+    }
+    .menuList{position:relative; z-index:1}
     .mi{
-      display:flex; justify-content:space-between; align-items:center;
-      padding:12px 12px;
-      color:rgba(255,255,255,.92);
-      border-top:1px solid rgba(255,255,255,.06);
+      display:flex; justify-content:space-between; gap:10px;
+      padding:14px 14px;
+      border-bottom:1px solid rgba(255,255,255,.06);
       cursor:pointer;
+      user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
-    .mi:first-child{border-top:none}
-    .mi:hover{background:rgba(255,255,255,.05)}
+    .mi:last-child{border-bottom:none}
+    .mi:hover{background: rgba(255,255,255,.04)}
+    .mi b{font-size:14px}
     .mi small{color:var(--muted)}
+
+    .loaderWrap{
+      position:fixed; inset:0;
+      z-index:9999;
+      background:
+        radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.12), transparent 60%),
+        rgba(7,7,10,.92);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    .loaderWrap.off{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+    .loaderCard{
+      width:min(520px, 96vw);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      box-shadow: 0 26px 90px rgba(0,0,0,.55);
+      overflow:hidden;
+      position:relative;
+    }
+    .shine{
+      position:absolute; inset:-2px;
+      background: linear-gradient(120deg, transparent 0%, rgba(122,43,255,.18) 25%, rgba(155,107,255,.12) 45%, transparent 70%);
+      transform: translateX(-60%);
+      animation: shine 1.2s linear infinite;
+      opacity:.9;
+      pointer-events:none;
+    }
+    @keyframes shine{
+      0%{transform: translateX(-60%)}
+      100%{transform: translateX(60%)}
+    }
+    .loaderInner{
+      padding:18px;
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+    .spinner{
+      width:44px; height:44px;
+      border-radius:99px;
+      border:3px solid rgba(255,255,255,.12);
+      border-top-color: rgba(122,43,255,.9);
+      border-right-color: rgba(155,107,255,.55);
+      animation: spin .75s linear infinite;
+      box-shadow: 0 10px 30px rgba(122,43,255,.18);
+    }
+    @keyframes spin{to{transform: rotate(360deg)}}
+    .loaderTxt b{display:block; font-size:14px}
+    .loaderTxt small{display:block; color:var(--muted); margin-top:4px; line-height:1.35}
   </style>
 </head>
 
 <body>
+
+  <div class="loaderWrap" id="loader">
+    <div class="loaderCard">
+      <div class="shine"></div>
+      <div class="loaderInner">
+        <div class="spinner" aria-hidden="true"></div>
+        <div class="loaderTxt">
+          <b>Carregando</b>
+          <small>Conexão Street</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="menuOverlay" id="menuOverlay">
+    <div class="menuCard" role="dialog" aria-modal="true">
+      <div class="menuList">
+        <div class="mi" id="miAdmin"><b>Painel administrador</b><small>somente dono</small></div>
+        <div class="mi" id="miAdd"><b>Adicionar fornecedor</b><small>admin</small></div>
+        <div class="mi" id="miLogs"><b>Logs</b><small>admin</small></div>
+        <div class="mi" id="miGraf"><b>Grafico</b><small>admin</small></div>
+        <div class="mi" id="miPay"><b>Pagamentos</b><small>admin</small></div>
+        <div class="mi" id="miLogin"><b>Entrar como admin</b><small>senha</small></div>
+        <div class="mi" id="miLogout"><b>Sair</b><small>limpar</small></div>
+      </div>
+    </div>
+  </div>
 
   <div class="top">
     <div class="wrap">
@@ -185,32 +372,15 @@
           <div class="logo" aria-hidden="true"></div>
           <div>
             <b>Conexão Street</b><br/>
-            <span style="color:var(--muted); font-size:12px;">VIP Fornecedores</span>
+            <small id="statusTxt">Lista VIP</small>
           </div>
         </div>
 
-        <div class="search">
-          <input class="inp" placeholder="Buscar categorias e produtos" />
-        </div>
-
         <div class="right">
-          <div class="pill">🛒 <b style="color:var(--txt)">2</b> <span style="color:var(--muted)">listas</span></div>
-          <div id="avatarBtn" class="avatarBtn" title="Conta"></div>
+          <div class="pill">🛒 <b style="color:var(--txt)" id="cartCount">2</b> <span style="color:var(--muted)">listas</span></div>
+          <div class="avatarBtn" id="avatarBtn" title="Conta"></div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Menu overlay -->
-  <div id="menuOverlay" class="overlay" aria-hidden="true">
-    <div class="menuBox">
-      <div class="mi" id="miAdmin"><span>Painel administrador</span><small>somente dono</small></div>
-      <div class="mi" id="miAdd"><span>Adicionar fornecedor</span><small>admin</small></div>
-      <div class="mi" id="miLogs"><span>Logs</span><small>admin</small></div>
-      <div class="mi" id="miGraf"><span>Grafico</span><small>admin</small></div>
-      <div class="mi" id="miPay"><span>Pagamentos</span><small>admin</small></div>
-      <div class="mi" id="miLogin"><span>Entrar como admin</span><small>senha</small></div>
-      <div class="mi" id="miLogout"><span>Sair</span><small>limpar</small></div>
     </div>
   </div>
 
@@ -218,92 +388,109 @@
     <div class="grid">
 
       <div>
-        <div class="hero">
+
+        <div class="hero" id="topo">
+          <div class="heroGlow"></div>
           <div class="hwrap">
-            <span class="tag"><i></i> acesso liberado após compra e aprovação</span>
-            <h1>Compre sua lista e entre na área VIP</h1>
+            <span class="tag"><i></i> acesso liberado apos compra e aprovacao</span>
+            <h1>Fornecedores VIP com compra rapida e liberacao pelo admin</h1>
             <div class="sub">
-              Aqui ficam as duas listas principais para comprar. Depois da compra, você recebe acesso.
+              Escolha uma das 2 listas. Depois do pagamento voce cria login e aguarda aprovacao.
+              Aprovacao manual e 1 dispositivo por pessoa.
             </div>
 
-            <div class="cta">
-              <button class="btn primary" id="btnProdutos" type="button">Ver listas</button>
-              <button class="btn" id="btnComo" type="button">Como funciona</button>
-              <button class="btn" id="btnSuporte" type="button">Suporte</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="height:14px"></div>
-
-        <div class="panel" id="sec-fornecedores">
-          <div class="ph">
-            <b>Listas para comprar</b>
-            <span class="chip">VIP</span>
-          </div>
-
-          <div class="list">
-            <div class="productGrid">
-              <div class="card">
-                <small>Lista</small>
-                <div style="margin-top:6px"><b>Fornecedores logistas</b></div>
-                <div class="muted" style="margin-top:8px">
-                  Lista focada em fornecedores para lojistas, revenda e volume.
-                </div>
-                <div style="margin-top:12px" class="price">R$ 30,00</div>
-                <div style="height:10px"></div>
-                <button class="btn primary" id="buyLojista" type="button">Comprar agora</button>
-              </div>
-
-              <div class="card">
-                <small>Lista</small>
-                <div style="margin-top:6px"><b>Fornecedores consumidor final</b></div>
-                <div class="muted" style="margin-top:8px">
-                  Lista focada em consumidor final e compras avulsas.
-                </div>
-                <div style="margin-top:12px" class="price">R$ 25,00</div>
-                <div style="height:10px"></div>
-                <button class="btn primary" id="buyFinal" type="button">Comprar agora</button>
-              </div>
-            </div>
-
-            <div style="height:10px"></div>
-            <div class="muted">
-              Após o pagamento, o dono aprova e libera seu acesso.
+            <div class="btnRow">
+              <a class="btn primary" href="#" id="btnProdutos">Ver fornecedores</a>
+              <a class="btn" href="#" id="btnComo">Como funciona</a>
+              <a class="btn" href="#" id="btnSuporte">Suporte</a>
             </div>
           </div>
         </div>
 
         <div style="height:14px"></div>
 
-        <div class="panel" id="sec-como">
-          <div class="ph">
-            <b>Como funciona</b>
-            <span class="chip">passo a passo</span>
+        <div id="sec-fornecedores" class="panel">
+          <div style="padding:14px 14px 0">
+            <div class="sectionTitle">
+              <b>Fornecedores para comprar</b>
+              <span class="chip">2 opcoes</span>
+            </div>
           </div>
-          <div class="list">
+
+          <div style="padding:14px; display:grid; gap:12px">
+
             <div class="card">
-              <div class="muted">
-                1 Você compra uma das listas<br/>
-                2 O pagamento aparece para o dono<br/>
-                3 O dono aprova e libera seu acesso<br/>
-                4 Você entra e acessa seu conteúdo
+              <div class="cardGlow"></div>
+              <div class="cardInner">
+                <div class="planTitle">Plano</div>
+                <div class="planName">Fornecedores logistas</div>
+                <div class="price">R$ 30,00</div>
+                <ul class="ul">
+                  <li>Lista focada em quem revende e tem loja</li>
+                  <li>Curadoria e atualizacoes futuras</li>
+                  <li>Acesso na area de produtos</li>
+                </ul>
+
+                <div class="twoBtn">
+                  <button class="btn primary" id="buyLojista" type="button">Comprar</button>
+                  <button class="btn" id="detLojista" type="button">Detalhes</button>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div style="height:14px"></div>
-
-        <div class="panel" id="sec-suporte">
-          <div class="ph">
-            <b>Suporte</b>
-            <span class="chip">contato</span>
-          </div>
-          <div class="list">
             <div class="card">
-              <div class="muted">
-                Se deu algum problema, chama o suporte pelo canal oficial do grupo.
+              <div class="cardGlow"></div>
+              <div class="cardInner">
+                <div class="planTitle">Plano</div>
+                <div class="planName">Fornecedores consumidor final</div>
+                <div class="price">R$ 25,00</div>
+                <ul class="ul">
+                  <li>Lista para compra pessoal</li>
+                  <li>Curadoria e atualizacoes futuras</li>
+                  <li>Acesso na area de produtos</li>
+                </ul>
+
+                <div class="twoBtn">
+                  <button class="btn primary" id="buyFinal" type="button">Comprar</button>
+                  <button class="btn" id="detFinal" type="button">Detalhes</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div id="sec-como" class="panel">
+          <div style="padding:14px">
+            <div class="sectionTitle">
+              <b>Como funciona</b>
+              <span class="chip">passo a passo</span>
+            </div>
+          </div>
+          <div style="padding:14px">
+            <div class="steps">
+              <div class="step">
+                <div>
+                  <b>1. Compra</b>
+                  <small>voce escolhe a lista e paga</small>
+                </div>
+                <span class="chip ok">ok</span>
+              </div>
+              <div class="step">
+                <div>
+                  <b>2. Login</b>
+                  <small>entra e acessa seus produtos</small>
+                </div>
+                <span class="chip">em breve</span>
+              </div>
+              <div class="step">
+                <div>
+                  <b>3. Acesso</b>
+                  <small>conteudo liberado apos aprovacao</small>
+                </div>
+                <span class="chip">em breve</span>
               </div>
             </div>
           </div>
@@ -311,26 +498,22 @@
 
         <div style="height:14px"></div>
 
-        <!-- Painel do dono dentro do index, fica escondido se nao for admin -->
-        <div class="panel" id="adminPanel" style="display:none">
-          <div class="ph">
-            <b>Painel administrador</b>
-            <span class="chip ok">dono</span>
+        <div id="sec-suporte" class="panel">
+          <div style="padding:14px">
+            <div class="sectionTitle">
+              <b>Suporte</b>
+              <span class="chip">contato</span>
+            </div>
           </div>
-          <div class="list">
-            <div class="productGrid">
-              <div class="card">
-                <small>Vendas</small>
-                <div class="kpi"><b>R$ 29,90</b><span class="chip ok">aprovado</span></div>
-              </div>
-              <div class="card">
-                <small>Pendentes</small>
-                <div class="kpi"><b>1</b><span class="chip warn">aguardando</span></div>
+          <div style="padding:14px">
+            <div class="supportCard">
+              <b>Atendimento</b>
+              <div class="hint" style="margin-top:6px">
+                Canal de suporte em breve.
               </div>
             </div>
-            <div style="height:10px"></div>
-            <div class="muted">
-              Isso aqui é demo. Segurança real depois é Supabase com RLS.
+            <div class="hint" style="margin-top:10px">
+              Se der algum problema, chama o suporte pelo canal oficial do grupo.
             </div>
           </div>
         </div>
@@ -338,22 +521,25 @@
       </div>
 
       <div>
+
         <div class="panel">
-          <div class="ph">
-            <b>Conta</b>
-            <span class="chip" id="statusTxt">Visitante</span>
-          </div>
-          <div class="list">
-            <div class="card">
-              <small>Acesso</small>
-              <div class="muted" style="margin-top:8px">
-                Para admin, toque no avatar e entre com a senha do dono.
-              </div>
+          <div style="padding:14px">
+            <div class="sectionTitle">
+              <b>Conta</b>
+              <span class="chip">menu do avatar</span>
             </div>
+          </div>
+          <div style="padding:14px">
+            <div class="hint">
+              Toque no avatar no topo direito para abrir o menu.
+              Para admin, entre com a senha do dono.
+            </div>
+
             <div style="height:10px"></div>
-            <div class="card">
-              <small>Dica</small>
-              <div class="muted" style="margin-top:8px">
+
+            <div class="supportCard">
+              <b>Dica</b>
+              <div class="hint" style="margin-top:6px">
                 Se o menu nao abrir, atualiza a pagina ou limpa cache do navegador.
               </div>
             </div>
@@ -363,6 +549,7 @@
         <div class="footer">
           © Conexão Street
         </div>
+
       </div>
 
     </div>
