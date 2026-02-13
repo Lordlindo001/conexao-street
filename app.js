@@ -1,40 +1,225 @@
-// app.js — Conexão Street
-// ✅ Abre/fecha menu do avatar
-// ✅ Fecha ao clicar fora / apertar ESC
-// ✅ Botões com data-go respondem (por enquanto com alert e navegação demo)
+"use strict";
 
-(function () {
-  const $ = (sel) => document.querySelector(sel);
+const $ = (sel) => document.querySelector(sel);
 
+function scrollToEl(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+const ADMIN_STORAGE_KEY = "cs_admin_ok";
+
+/*
+  IMPORTANTE:
+  GitHub Pages nao protege admin de verdade.
+  Isso aqui e apenas UI. A seguranca real vem do Supabase (auth) + RLS.
+*/
+const ADMIN_CODE = "TROQUE_ESSA_SENHA";
+
+function setStatus(text) {
+  const s = $("#statusTxt");
+  if (s) s.textContent = text;
+}
+
+function showAdminPanel(show) {
+  const p = $("#adminPanel");
+  if (p) p.style.display = show ? "block" : "none";
+}
+
+function isAdmin() {
+  return localStorage.getItem(ADMIN_STORAGE_KEY) === "1";
+}
+
+function applyRoleUI() {
+  if (isAdmin()) {
+    setStatus("Admin");
+    showAdminPanel(true);
+
+    const pend = $("#admPend");
+    const sales = $("#admSales");
+    const logs = $("#admLogs");
+
+    if (pend) pend.textContent = "1";
+    if (sales) sales.textContent = "R$ 29,90";
+    if (logs) logs.textContent = "18";
+  } else {
+    setStatus("Visitante");
+    showAdminPanel(false);
+  }
+}
+
+function openMenu() {
+  const overlay = $("#menuOverlay");
+  if (!overlay) return;
+  overlay.style.display = "block";
+}
+
+function closeMenu() {
+  const overlay = $("#menuOverlay");
+  if (!overlay) return;
+  overlay.style.display = "none";
+}
+
+function toggleMenu() {
+  const overlay = $("#menuOverlay");
+  if (!overlay) return;
+  overlay.style.display = overlay.style.display === "block" ? "none" : "block";
+}
+
+function wireMenu() {
   const avatarBtn = $("#avatarBtn");
-  const avatarMenu = $("#avatarMenu");
+  const overlay = $("#menuOverlay");
 
-  function isMenuOpen() {
-    return avatarMenu && avatarMenu.style.display !== "none";
-  }
-
-  function openMenu() {
-    if (!avatarMenu) return;
-    avatarMenu.style.display = "block";
-    avatarBtn?.setAttribute("aria-expanded", "true");
-  }
-
-  function closeMenu() {
-    if (!avatarMenu) return;
-    avatarMenu.style.display = "none";
-    avatarBtn?.setAttribute("aria-expanded", "false");
-  }
-
-  function toggleMenu() {
-    if (!avatarMenu) return;
-    isMenuOpen() ? closeMenu() : openMenu();
-  }
-
-  // 1) Clique no avatar
   if (avatarBtn) {
     avatarBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      e.stopPropagation(); // não deixa o clique "vazar" e fechar na hora
+      toggleMenu();
+    });
+  }
+
+  if (overlay) {
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeMenu();
+    });
+  }
+
+  const miAdmin = $("#miAdmin");
+  if (miAdmin) {
+    miAdmin.addEventListener("click", () => {
+      closeMenu();
+      if (!isAdmin()) {
+        alert("Acesso admin: somente o dono.");
+        return;
+      }
+      scrollToEl("adminPanel");
+    });
+  }
+
+  const miAdd = $("#miAdd");
+  if (miAdd) {
+    miAdd.addEventListener("click", () => {
+      closeMenu();
+      if (!isAdmin()) {
+        alert("Somente o admin pode adicionar fornecedor.");
+        return;
+      }
+      alert("Adicionar fornecedor (em breve)");
+    });
+  }
+
+  const miLogs = $("#miLogs");
+  if (miLogs) {
+    miLogs.addEventListener("click", () => {
+      closeMenu();
+      if (!isAdmin()) {
+        alert("Somente o admin pode ver logs.");
+        return;
+      }
+      alert("Logs (em breve)");
+    });
+  }
+
+  const miGraf = $("#miGraf");
+  if (miGraf) {
+    miGraf.addEventListener("click", () => {
+      closeMenu();
+      if (!isAdmin()) {
+        alert("Somente o admin pode ver grafico.");
+        return;
+      }
+      alert("Grafico (em breve)");
+    });
+  }
+
+  const miPay = $("#miPay");
+  if (miPay) {
+    miPay.addEventListener("click", () => {
+      closeMenu();
+      if (!isAdmin()) {
+        alert("Somente o admin pode ver pagamentos.");
+        return;
+      }
+      alert("Pagamentos (em breve)");
+    });
+  }
+
+  const miLogin = $("#miLogin");
+  if (miLogin) {
+    miLogin.addEventListener("click", () => {
+      closeMenu();
+
+      const code = prompt("Codigo do admin:");
+      if (!code) return;
+
+      if (code === ADMIN_CODE) {
+        localStorage.setItem(ADMIN_STORAGE_KEY, "1");
+        applyRoleUI();
+        alert("Admin ativado.");
+      } else {
+        alert("Codigo invalido.");
+      }
+    });
+  }
+
+  const miLogout = $("#miLogout");
+  if (miLogout) {
+    miLogout.addEventListener("click", () => {
+      closeMenu();
+      localStorage.removeItem(ADMIN_STORAGE_KEY);
+      applyRoleUI();
+      alert("Saiu.");
+    });
+  }
+}
+
+function wireButtons() {
+  const btnProdutos = $("#btnProdutos");
+  if (btnProdutos) {
+    btnProdutos.addEventListener("click", (e) => {
+      e.preventDefault();
+      scrollToEl("sec-fornecedores");
+    });
+  }
+
+  const btnComo = $("#btnComo");
+  if (btnComo) {
+    btnComo.addEventListener("click", (e) => {
+      e.preventDefault();
+      scrollToEl("sec-como");
+    });
+  }
+
+  const btnSuporte = $("#btnSuporte");
+  if (btnSuporte) {
+    btnSuporte.addEventListener("click", (e) => {
+      e.preventDefault();
+      scrollToEl("sec-suporte");
+    });
+  }
+
+  const buyLojista = $("#buyLojista");
+  if (buyLojista) {
+    buyLojista.addEventListener("click", (e) => {
+      e.preventDefault();
+      alert("Abrir checkout: Fornecedores Logistas R$ 30,00 (em breve)");
+    });
+  }
+
+  const buyFinal = $("#buyFinal");
+  if (buyFinal) {
+    buyFinal.addEventListener("click", (e) => {
+      e.preventDefault();
+      alert("Abrir checkout: Fornecedores Consumidor Final R$ 25,00 (em breve)");
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyRoleUI();
+  wireMenu();
+  wireButtons();
+});      e.stopPropagation(); // não deixa o clique "vazar" e fechar na hora
       toggleMenu();
     });
   }
