@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin | Conexão Street</title>
+  <style>
+    :root{
+      --bg:#07070A; --card:#0f0f14; --muted:#a6a6b3; --txt:#f3f3f7;
+      --p:#7A2BFF; --p2:#9b6bff; --ok:#24d18d; --warn:#ffb020;
+      --line:rgba(255,255,255,.08);
+      --r:18px;
+      font-synthesis-weight:none;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.22), transparent 55%),
+              radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.14), transparent 60%),
+              var(--bg);
+      color:var(--txt); font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    }
+    a{color:inherit; text-decoration:none}
+    .top{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: rgba(7,7,10,.65);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:14px 14px}
+    .bar{display:flex; align-items:center; gap:12px; justify-content:space-between}
+    .brand{display:flex; align-items:center; gap:10px}
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(122,43,255,.9), rgba(155,107,255,.35));
+      box-shadow:0 10px 30px rgba(122,43,255,.25);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .brand b{letter-spacing:.2px}
+    .right{display:flex; align-items:center; gap:10px}
+    .pill{
+      padding:9px 12px; border-radius:999px; border:1px solid var(--line);
+      background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;
+      display:flex; gap:8px; align-items:center;
+    }
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: 1.2fr .8fr;
+      align-items:start;
+      padding:16px 14px 28px;
+    }
+    @media (max-width: 920px){
+      .grid{grid-template-columns: 1fr}
+    }
+    .hero{
+      border:1px solid var(--line); background: rgba(255,255,255,.03);
+      border-radius: var(--r); overflow:hidden; position:relative;
+      box-shadow:0 18px 60px rgba(0,0,0,.35);
+    }
+    .hero .hwrap{padding:18px}
+    h1{margin:0 0 8px; font-size:22px; line-height:1.2}
+    .sub{color:var(--muted); line-height:1.4}
+    .btn{
+      padding:11px 14px; border-radius:14px; border:1px solid var(--line);
+      background:rgba(255,255,255,.04); color:var(--txt);
+      display:inline-flex; align-items:center; gap:10px; font-weight:600;
+      cursor:pointer;
+    }
+    .btn.primary{
+      border-color: rgba(122,43,255,.55);
+      background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
+      box-shadow:0 14px 35px rgba(122,43,255,.22);
+    }
+    .panel{
+      border:1px solid var(--line); background:rgba(255,255,255,.03);
+      border-radius: var(--r); overflow:hidden;
+    }
+    .panel .ph{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
+    .panel .ph b{font-size:14px}
+    .list{padding:12px}
+    .row{
+      display:flex; gap:10px; padding:12px; border-radius:16px;
+      border:1px solid transparent;
+      align-items:flex-start;
+    }
+    .row:hover{border-color: rgba(255,255,255,.10); background: rgba(255,255,255,.02)}
+    .dot{width:10px;height:10px;border-radius:99px;margin-top:4px}
+    .dot.p{background:var(--p)}
+    .dot.w{background:var(--warn)}
+    .meta{flex:1}
+    .meta .t{font-weight:700}
+    .meta .d{color:var(--muted); font-size:12px; margin-top:3px}
+    .amt{font-weight:900}
+    .cards{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:12px}
+    @media (max-width: 540px){ .cards{grid-template-columns:1fr} }
+    .card{
+      border:1px solid var(--line); background:rgba(255,255,255,.03);
+      border-radius: var(--r); padding:14px;
+    }
+    .card small{color:var(--muted)}
+    .card b{font-size:20px}
+    .kpi{display:flex; align-items:flex-end; justify-content:space-between}
+    .chip{
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.9);
+      background:rgba(255,255,255,.04);
+    }
+    .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
+    .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
+    .footer{
+      color:rgba(255,255,255,.55);
+      padding:20px 14px; text-align:center; border-top:1px solid var(--line)
+    }
+
+    .gate{
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      border-radius:18px;
+      padding:14px;
+    }
+    .inp{
+      width:100%; padding:11px 12px; border-radius:14px;
+      border:1px solid var(--line); background:rgba(255,255,255,.04);
+      color:var(--txt); outline:none;
+    }
+    .hint{color:var(--muted); font-size:12px; margin-top:8px; line-height:1.4}
+  </style>
+</head>
+<body>
+
+  <div class="top">
+    <div class="wrap">
+      <div class="bar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <b>Conexão Street</b><br/>
+            <span style="color:var(--muted); font-size:12px;">Admin</span>
+          </div>
+        </div>
+
+        <div class="right">
+          <a class="pill" href="./">Voltar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="grid">
+
+      <div>
+        <div class="hero">
+          <div class="hwrap">
+            <h1>Painel administrador</h1>
+            <div class="sub">
+              Aqui é seu painel. Agora está com uma trava simples. Depois a gente troca por login real do Supabase, só pra você.
+            </div>
+
+            <div class="cards" id="kpis" style="display:none">
+              <div class="card">
+                <small>Vendas (7 dias)</small>
+                <div class="kpi"><b>R$ 29,90</b><span class="chip ok">aprovado</span></div>
+              </div>
+              <div class="card">
+                <small>Pendentes</small>
+                <div class="kpi"><b>1</b><span class="chip warn">aguardando</span></div>
+              </div>
+              <div class="card">
+                <small>Acessos</small>
+                <div class="kpi"><b>18</b><span class="chip">hoje</span></div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px" id="gateBox" class="gate">
+              <b>Trava simples do admin</b>
+              <div class="hint">Por enquanto é só pra esconder de curioso. Segurança real vem no Supabase.</div>
+              <div style="height:10px"></div>
+              <input id="pin" class="inp" placeholder="Digite um PIN" />
+              <div style="height:10px"></div>
+              <button id="enter" class="btn primary" type="button">Entrar</button>
+              <button id="leave" class="btn" type="button" style="display:none">Sair</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="panel" id="orders" style="display:none">
+          <div class="ph">
+            <b>Pagamentos pendentes</b>
+            <span class="chip">demo</span>
+          </div>
+          <div class="list">
+            <div class="row">
+              <div class="dot w"></div>
+              <div class="meta">
+                <div class="t">Pagamento recebido pendente de liberacao</div>
+                <div class="d">Vitor • teste2@exemplo.com • provider • test_seed_pending_001</div>
+              </div>
+              <div class="amt">R$ 49,90</div>
+            </div>
+            <div class="row">
+              <div class="dot p"></div>
+              <div class="meta">
+                <div class="t">Pagamento aprovado</div>
+                <div class="d">Vitor • teste@exemplo.com • provider • test_005</div>
+              </div>
+              <div class="amt">R$ 29,90</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="ph">
+            <b>Atalhos</b>
+            <span class="chip">admin</span>
+          </div>
+          <div class="list">
+            <button class="btn" type="button" id="goAdd">Adicionar fornecedor</button>
+            <div style="height:10px"></div>
+            <button class="btn" type="button" id="goLogs">Logs</button>
+            <div style="height:10px"></div>
+            <button class="btn" type="button" id="goChart">Grafico</button>
+            <div style="height:10px"></div>
+            <button class="btn" type="button" id="goPay">Pagamentos</button>
+            <div class="hint" style="margin-top:10px">
+              Esses botoes por enquanto so mostram avisos. Depois a gente liga em paginas reais.
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          © Conexão Street
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const PIN = "0103";
+
+    const pin = document.getElementById("pin");
+    const enter = document.getElementById("enter");
+    const leave = document.getElementById("leave");
+    const gateBox = document.getElementById("gateBox");
+    const kpis = document.getElementById("kpis");
+    const orders = document.getElementById("orders");
+
+    const show = (el) => el.style.display = "";
+    const hide = (el) => el.style.display = "none";
+
+    function setAuthed(v){
+      if(v){
+        localStorage.setItem("cs_admin_ok","1");
+        hide(gateBox);
+        show(kpis);
+        show(orders);
+      }else{
+        localStorage.removeItem("cs_admin_ok");
+        show(gateBox);
+        hide(kpis);
+        hide(orders);
+        pin.value = "";
+      }
+    }
+
+    enter.addEventListener("click", () => {
+      if(pin.value.trim() === PIN){
+        setAuthed(true);
+      }else{
+        alert("PIN incorreto");
+      }
+    });
+
+    leave.addEventListener("click", () => setAuthed(false));
+
+    const saved = localStorage.getItem("cs_admin_ok") === "1";
+    if(saved){
+      setAuthed(true);
+    }else{
+      setAuthed(false);
+    }
+
+    function toast(msg){
+      alert(msg);
+    }
+
+    document.getElementById("goAdd").addEventListener("click", () => toast("Adicionar fornecedor em breve"));
+    document.getElementById("goLogs").addEventListener("click", () => toast("Logs em breve"));
+    document.getElementById("goChart").addEventListener("click", () => toast("Grafico em breve"));
+    document.getElementById("goPay").addEventListener("click", () => {
+      if(localStorage.getItem("cs_admin_ok") === "1"){
+        document.getElementById("orders").scrollIntoView({behavior:"smooth"});
+      }else{
+        toast("Entre no admin primeiro");
+      }
+    });
+  </script>
+</body>
+</html>
