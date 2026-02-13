@@ -15,7 +15,7 @@ const ADMIN_STORAGE_KEY = "cs_admin_ok";
   GitHub Pages não protege admin de verdade.
   Isso aqui é apenas UI. A segurança real vem do Supabase (auth) + RLS.
 */
-const ADMIN_CODE = "TROQUE_ESSA_SENHA";
+const ADMIN_CODE = "Euteamoluptameuamor010324c";
 
 function setStatus(text) {
   const s = $("#statusTxt");
@@ -27,30 +27,50 @@ function isAdmin() {
 }
 
 function applyRoleUI() {
-  if (isAdmin()) {
-    setStatus("admin");
+  setStatus(isAdmin() ? "admin" : "Lista VIP");
+}
+
+/* ===== Menu (Android-friendly) ===== */
+
+let __prevBodyOverflow = "";
+let __prevHtmlOverflow = "";
+
+function lockScroll(lock) {
+  const html = document.documentElement;
+  const body = document.body;
+
+  if (lock) {
+    __prevHtmlOverflow = html.style.overflow;
+    __prevBodyOverflow = body.style.overflow;
+
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
   } else {
-    setStatus("Lista VIP");
+    html.style.overflow = __prevHtmlOverflow || "";
+    body.style.overflow = __prevBodyOverflow || "";
   }
 }
 
-/* ✅ Menu animado (usa .on no overlay) */
 function openMenu() {
   const overlay = $("#menuOverlay");
   if (!overlay) return;
   overlay.classList.add("on");
+  lockScroll(true);
 }
 
 function closeMenu() {
   const overlay = $("#menuOverlay");
   if (!overlay) return;
   overlay.classList.remove("on");
+  lockScroll(false);
 }
 
 function toggleMenu() {
   const overlay = $("#menuOverlay");
   if (!overlay) return;
-  overlay.classList.toggle("on");
+  const willOpen = !overlay.classList.contains("on");
+  if (willOpen) openMenu();
+  else closeMenu();
 }
 
 function wireMenu() {
@@ -58,18 +78,18 @@ function wireMenu() {
   const overlay = $("#menuOverlay");
   const menuCard = overlay ? overlay.querySelector(".menuCard") : null;
 
-  // 1) Botão do avatar abre/fecha
+  // 1) Avatar abre/fecha (pointerdown é melhor no Android)
   if (avatarBtn) {
-    avatarBtn.addEventListener("click", (e) => {
+    avatarBtn.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       e.stopPropagation();
       toggleMenu();
     });
   }
 
-  // 2) Clique fora do card fecha (evita fechar quando clica dentro)
+  // 2) Clique fora fecha (sem fechar quando clica dentro)
   if (overlay) {
-    overlay.addEventListener("click", (e) => {
+    overlay.addEventListener("pointerdown", (e) => {
       const clickedInsideCard = menuCard && menuCard.contains(e.target);
       if (!clickedInsideCard) closeMenu();
     });
@@ -89,7 +109,6 @@ function wireMenu() {
         alert("Acesso admin: somente o dono.");
         return;
       }
-      // abre o admin.html direto
       window.location.href = "./admin.html";
     });
   }
@@ -98,10 +117,7 @@ function wireMenu() {
   if (miAdd) {
     miAdd.addEventListener("click", () => {
       closeMenu();
-      if (!isAdmin()) {
-        alert("Somente o admin pode adicionar fornecedor.");
-        return;
-      }
+      if (!isAdmin()) return alert("Somente o admin pode adicionar fornecedor.");
       alert("Adicionar fornecedor (em breve)");
     });
   }
@@ -110,10 +126,7 @@ function wireMenu() {
   if (miLogs) {
     miLogs.addEventListener("click", () => {
       closeMenu();
-      if (!isAdmin()) {
-        alert("Somente o admin pode ver logs.");
-        return;
-      }
+      if (!isAdmin()) return alert("Somente o admin pode ver logs.");
       alert("Logs (em breve)");
     });
   }
@@ -122,10 +135,7 @@ function wireMenu() {
   if (miGraf) {
     miGraf.addEventListener("click", () => {
       closeMenu();
-      if (!isAdmin()) {
-        alert("Somente o admin pode ver grafico.");
-        return;
-      }
+      if (!isAdmin()) return alert("Somente o admin pode ver grafico.");
       alert("Grafico (em breve)");
     });
   }
@@ -134,10 +144,7 @@ function wireMenu() {
   if (miPay) {
     miPay.addEventListener("click", () => {
       closeMenu();
-      if (!isAdmin()) {
-        alert("Somente o admin pode ver pagamentos.");
-        return;
-      }
+      if (!isAdmin()) return alert("Somente o admin pode ver pagamentos.");
       alert("Pagamentos (em breve)");
     });
   }
@@ -150,7 +157,7 @@ function wireMenu() {
       const code = prompt("Codigo do admin:");
       if (!code) return;
 
-      if (code === ADMIN_CODE) {
+      if (code.trim() === ADMIN_CODE) {
         localStorage.setItem(ADMIN_STORAGE_KEY, "1");
         applyRoleUI();
         alert("Admin ativado.");
@@ -213,18 +220,10 @@ function wireButtons() {
   }
 
   const detLojista = $("#detLojista");
-  if (detLojista) {
-    detLojista.addEventListener("click", () => {
-      alert("Detalhes do plano Lojista (em breve)");
-    });
-  }
+  if (detLojista) detLojista.addEventListener("click", () => alert("Detalhes do plano Lojista (em breve)"));
 
   const detFinal = $("#detFinal");
-  if (detFinal) {
-    detFinal.addEventListener("click", () => {
-      alert("Detalhes do plano Consumidor Final (em breve)");
-    });
-  }
+  if (detFinal) detFinal.addEventListener("click", () => alert("Detalhes do plano Consumidor Final (em breve)"));
 }
 
 /* Loader do index (some quando DOM estiver pronto) */
@@ -232,7 +231,6 @@ function initLoader() {
   const loader = $("#loader");
   if (!loader) return;
 
-  // dá um tempinho pra animação aparecer e não piscar
   setTimeout(() => {
     loader.classList.add("off");
   }, 250);
