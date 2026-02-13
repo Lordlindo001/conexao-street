@@ -1,3 +1,160 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Conexão Street</title>
+
+  <style>
+    :root{
+      --bg:#07070A; --card:#0f0f14; --muted:#a6a6b3; --txt:#f3f3f7;
+      --p:#7A2BFF; --p2:#9b6bff; --ok:#24d18d; --warn:#ffb020;
+      --line:rgba(255,255,255,.08);
+      --r:18px;
+      font-synthesis-weight:none;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.22), transparent 55%),
+              radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.14), transparent 60%),
+              var(--bg);
+      color:var(--txt); font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    }
+    a{color:inherit; text-decoration:none}
+    .top{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: rgba(7,7,10,.65);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:14px 14px}
+    .bar{display:flex; align-items:center; gap:12px; justify-content:space-between}
+    .brand{display:flex; align-items:center; gap:10px}
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(122,43,255,.9), rgba(155,107,255,.35));
+      box-shadow:0 10px 30px rgba(122,43,255,.25);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .brand b{letter-spacing:.2px}
+    .search{
+      flex:1; max-width:520px; display:flex; gap:10px; margin:0 8px;
+    }
+    .inp{
+      width:100%; padding:11px 12px; border-radius:14px;
+      border:1px solid var(--line); background:rgba(255,255,255,.04);
+      color:var(--txt); outline:none;
+    }
+    .right{display:flex; align-items:center; gap:10px; position:relative}
+    .pill{
+      padding:9px 12px; border-radius:999px; border:1px solid var(--line);
+      background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;
+      display:flex; gap:8px; align-items:center;
+    }
+    .avatar{
+      width:38px; height:38px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 45%),
+                  linear-gradient(135deg, rgba(122,43,255,.75), rgba(7,7,10,.6));
+      position:relative;
+    }
+    .avatar:after{
+      content:""; position:absolute; inset:-1px; border-radius:14px;
+      border:1px solid rgba(122,43,255,.35);
+      pointer-events:none;
+    }
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: 1.2fr .8fr;
+      align-items:start;
+      padding:16px 14px 28px;
+    }
+    @media (max-width: 920px){
+      .search{display:none}
+      .grid{grid-template-columns: 1fr}
+    }
+    .hero{
+      border:1px solid var(--line); background: rgba(255,255,255,.03);
+      border-radius: var(--r); overflow:hidden; position:relative;
+      box-shadow:0 18px 60px rgba(0,0,0,.35);
+    }
+    .hero .hwrap{padding:18px}
+    .tag{display:inline-flex; align-items:center; gap:8px; font-size:12px;
+      color:rgba(255,255,255,.9);
+      background:rgba(122,43,255,.16); border:1px solid rgba(122,43,255,.25);
+      padding:7px 10px; border-radius:999px;
+    }
+    .tag i{width:8px;height:8px;border-radius:99px;background:var(--ok);display:inline-block}
+    h1{margin:14px 0 8px; font-size:26px; line-height:1.15}
+    .sub{color:var(--muted); line-height:1.4}
+    .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+    .btn{
+      padding:11px 14px; border-radius:14px; border:1px solid var(--line);
+      background:rgba(255,255,255,.04); color:var(--txt);
+      display:inline-flex; align-items:center; gap:10px; font-weight:600;
+      cursor:pointer;
+    }
+    .btn.primary{
+      border-color: rgba(122,43,255,.55);
+      background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
+      box-shadow:0 14px 35px rgba(122,43,255,.22);
+    }
+    .cards{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:16px}
+    @media (max-width: 540px){ .cards{grid-template-columns:1fr} }
+    .card{
+      border:1px solid var(--line); background:rgba(255,255,255,.03);
+      border-radius: var(--r); padding:14px;
+    }
+    .card small{color:var(--muted)}
+    .card b{font-size:18px}
+    .kpi{display:flex; align-items:flex-end; justify-content:space-between; gap:10px}
+    .chip{
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.9);
+      background:rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+    .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
+    .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
+    .panel{
+      border:1px solid var(--line); background:rgba(255,255,255,.03);
+      border-radius: var(--r); overflow:hidden;
+    }
+    .panel .ph{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
+    .panel .ph b{font-size:14px}
+    .list{padding:8px}
+    .row{
+      display:flex; gap:10px; padding:12px; border-radius:16px;
+      border:1px solid transparent;
+    }
+    .row:hover{border-color: rgba(255,255,255,.10); background: rgba(255,255,255,.02)}
+    .dot{width:10px;height:10px;border-radius:99px;margin-top:4px}
+    .dot.p{background:var(--p)}
+    .dot.w{background:var(--warn)}
+    .meta{flex:1}
+    .meta .t{font-weight:700}
+    .meta .d{color:var(--muted); font-size:12px; margin-top:3px}
+    .amt{font-weight:800}
+    .footer{
+      color:rgba(255,255,255,.55);
+      padding:20px 14px; text-align:center; border-top:1px solid var(--line)
+    }
+    .menu{
+      border:1px solid var(--line); background:rgba(15,15,20,.92);
+      border-radius:18px; padding:10px;
+      box-shadow:0 20px 70px rgba(0,0,0,.55);
+    }
+    .mi{
+      display:flex; justify-content:space-between; padding:10px 10px; border-radius:14px;
+      color:rgba(255,255,255,.92);
+      cursor:pointer;
+    }
+    .mi:hover{background:rgba(255,255,255,.05)}
+    .mi small{color:var(--muted)}
+  </style>
+</head>
+
 <body>
 
   <div class="top">
@@ -17,8 +174,6 @@
 
         <div class="right">
           <div class="pill">🛒 <b style="color:var(--txt)">2</b> <span style="color:var(--muted)">itens</span></div>
-
-          <!-- AVATAR CLICÁVEL (abre menu) -->
           <button id="avatarBtn" class="avatar" title="Conta / Login" style="cursor:pointer"></button>
         </div>
       </div>
@@ -28,10 +183,8 @@
   <div class="wrap">
     <div class="grid">
 
-      <!-- COLUNA ESQUERDA -->
       <div>
 
-        <!-- HERO -->
         <div class="hero">
           <div class="hwrap">
             <span class="tag"><i></i> acesso liberado após compra + aprovação</span>
@@ -49,8 +202,7 @@
               <a id="btnSuporte" class="btn" href="#">Suporte</a>
             </div>
 
-            <!-- ✅ AS 2 LISTAS/PRODUTOS PRA COMPRAR -->
-            <div class="cards" style="margin-top:16px">
+            <div class="cards">
               <div class="card">
                 <small>Plano 01</small>
                 <div class="kpi">
@@ -93,7 +245,6 @@
 
         <div style="height:14px"></div>
 
-        <!-- SEÇÕES (pra botões rolarem) -->
         <div id="sec-fornecedores" class="panel">
           <div class="ph">
             <b>Fornecedores para comprar</b>
@@ -131,13 +282,12 @@
             <span class="chip">contato</span>
           </div>
           <div class="list" style="padding:14px; color:var(--muted); line-height:1.5">
-            Coloque aqui seu WhatsApp/Instagram depois. (vamos plugar no JS já já)
+            Coloque aqui seu WhatsApp/Instagram depois.
           </div>
         </div>
 
         <div style="height:14px"></div>
 
-        <!-- ✅ PAINEL ADMIN (SÓ PRA VOCÊ) -->
         <div id="adminPanel" class="panel" style="display:none">
           <div class="ph">
             <b>PAINEL ADMINISTRADOR</b>
@@ -176,7 +326,6 @@
 
       </div>
 
-      <!-- COLUNA DIREITA -->
       <div>
         <div class="panel">
           <div class="ph">
@@ -188,7 +337,7 @@
             <div class="card">
               <small>Login</small>
               <div style="margin-top:8px; color:var(--muted); line-height:1.45">
-                Entrar com <b style="color:var(--txt)">e-mail</b>. (vamos colocar Supabase já já)
+                Entrar com <b style="color:var(--txt)">e-mail</b>. (vamos plugar Supabase já já)
               </div>
             </div>
 
@@ -211,7 +360,6 @@
     </div>
   </div>
 
-  <!-- MENU DO AVATAR (AGORA É OVERLAY DE VERDADE) -->
   <div id="menuOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:99">
     <div class="menu" style="position:absolute; top:74px; right:14px; width:min(360px, calc(100% - 28px)); z-index:100">
       <div class="mi" id="miAdd"><span>Adicionar fornecedor</span><small>admin</small></div>
@@ -224,305 +372,6 @@
 
       <div class="mi" id="miLogin"><span>Login</span><small>entrar</small></div>
       <div class="mi" id="miLogout"><span>Sair</span><small>logout</small></div>
-    </div>
-  </div>
-
-  <script src="./app.js"></script>
-</body>    }
-    .brand b{letter-spacing:.2px}
-    .search{
-      flex:1; max-width:520px; display:flex; gap:10px; margin:0 8px;
-    }
-    .inp{
-      width:100%; padding:11px 12px; border-radius:14px;
-      border:1px solid var(--line); background:rgba(255,255,255,.04);
-      color:var(--txt); outline:none;
-    }
-
-    /* ✅ importante: position relative pra ancorar o menu */
-    .right{display:flex; align-items:center; gap:10px; position:relative}
-
-    .pill{
-      padding:9px 12px; border-radius:999px; border:1px solid var(--line);
-      background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;
-      display:flex; gap:8px; align-items:center;
-    }
-    .avatar{
-      width:38px; height:38px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 45%),
-                  linear-gradient(135deg, rgba(122,43,255,.75), rgba(7,7,10,.6));
-      position:relative;
-      cursor:pointer;
-    }
-    .avatar:after{
-      content:""; position:absolute; inset:-1px; border-radius:14px;
-      border:1px solid rgba(122,43,255,.35);
-      pointer-events:none;
-    }
-
-    /* ✅ dropdown do avatar */
-    .dropdown{
-      position:absolute;
-      right:0;
-      top:52px;
-      width:min(320px, 92vw);
-      border:1px solid var(--line);
-      background:rgba(15,15,20,.96);
-      border-radius:18px;
-      padding:10px;
-      box-shadow:0 20px 60px rgba(0,0,0,.45);
-      z-index:999;
-    }
-    .dropdown .mi{
-      display:flex; justify-content:space-between;
-      padding:10px 10px; border-radius:14px;
-      color:rgba(255,255,255,.92);
-    }
-    .dropdown .mi:hover{background:rgba(255,255,255,.05)}
-    .dropdown .mi small{color:var(--muted)}
-
-    .grid{
-      display:grid; gap:14px;
-      grid-template-columns: 1.2fr .8fr;
-      align-items:start;
-      padding:16px 14px 28px;
-    }
-    @media (max-width: 920px){
-      .search{display:none}
-      .grid{grid-template-columns: 1fr}
-    }
-    .hero{
-      border:1px solid var(--line); background: rgba(255,255,255,.03);
-      border-radius: var(--r); overflow:hidden; position:relative;
-      box-shadow:0 18px 60px rgba(0,0,0,.35);
-    }
-    .hero .hwrap{padding:18px}
-    .tag{display:inline-flex; align-items:center; gap:8px; font-size:12px;
-      color:rgba(255,255,255,.9);
-      background:rgba(122,43,255,.16); border:1px solid rgba(122,43,255,.25);
-      padding:7px 10px; border-radius:999px;
-    }
-    .tag i{width:8px;height:8px;border-radius:99px;background:var(--ok);display:inline-block}
-    h1{margin:14px 0 8px; font-size:26px; line-height:1.15}
-    .sub{color:var(--muted); line-height:1.4}
-    .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
-    .btn{
-      padding:11px 14px; border-radius:14px; border:1px solid var(--line);
-      background:rgba(255,255,255,.04); color:var(--txt);
-      display:inline-flex; align-items:center; gap:10px; font-weight:600;
-    }
-    .btn.primary{
-      border-color: rgba(122,43,255,.55);
-      background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
-      box-shadow:0 14px 35px rgba(122,43,255,.22);
-    }
-    .cards{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:16px}
-    @media (max-width: 540px){ .cards{grid-template-columns:1fr} }
-    .card{
-      border:1px solid var(--line); background:rgba(255,255,255,.03);
-      border-radius: var(--r); padding:14px;
-    }
-    .card small{color:var(--muted)}
-    .card b{font-size:20px}
-    .kpi{display:flex; align-items:flex-end; justify-content:space-between}
-    .chip{
-      font-size:12px; padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      color:rgba(255,255,255,.9);
-      background:rgba(255,255,255,.04);
-    }
-    .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
-    .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
-    .panel{
-      border:1px solid var(--line); background:rgba(255,255,255,.03);
-      border-radius: var(--r); overflow:hidden;
-    }
-    .panel .ph{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
-    .panel .ph b{font-size:14px}
-    .panel .ph .filters{display:flex; gap:8px}
-    .f{
-      font-size:12px; padding:7px 10px; border-radius:999px;
-      border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--muted)
-    }
-    .f.active{background:rgba(122,43,255,.16); color:rgba(255,255,255,.92); border-color: rgba(122,43,255,.35)}
-    .list{padding:8px}
-    .row{
-      display:flex; gap:10px; padding:12px; border-radius:16px;
-      border:1px solid transparent;
-    }
-    .row:hover{border-color: rgba(255,255,255,.10); background: rgba(255,255,255,.02)}
-    .dot{width:10px;height:10px;border-radius:99px;margin-top:4px}
-    .dot.p{background:var(--p)}
-    .dot.w{background:var(--warn)}
-    .meta{flex:1}
-    .meta .t{font-weight:700}
-    .meta .d{color:var(--muted); font-size:12px; margin-top:3px}
-    .amt{font-weight:800}
-    .footer{
-      color:rgba(255,255,255,.55);
-      padding:20px 14px; text-align:center; border-top:1px solid var(--line)
-    }
-    /* “mini menu” do avatar (só visual) */
-    .menu{
-      margin-top:14px;
-      border:1px solid var(--line); background:rgba(15,15,20,.92);
-      border-radius:18px; padding:10px;
-    }
-    .mi{
-      display:flex; justify-content:space-between; padding:10px 10px; border-radius:14px;
-      color:rgba(255,255,255,.92);
-    }
-    .mi:hover{background:rgba(255,255,255,.05)}
-    .mi small{color:var(--muted)}
-  </style>
-</head>
-<body>
-
-  <div class="top">
-    <div class="wrap">
-      <div class="bar">
-        <div class="brand">
-          <div class="logo" aria-hidden="true"></div>
-          <div>
-            <b>Conexão Street</b><br/>
-            <span style="color:var(--muted); font-size:12px;">VIP • Fornecedores</span>
-          </div>
-        </div>
-
-        <div class="search">
-          <input class="inp" placeholder="Buscar produtos, categorias, fornecedores..." />
-        </div>
-
-        <div class="right">
-          <div class="pill">🛒 <b style="color:var(--txt)">2</b> <span style="color:var(--muted)">itens</span></div>
-
-          <!-- ✅ avatar com id -->
-          <div class="avatar" id="avatarBtn" title="Conta / Login"></div>
-
-          <!-- ✅ menu real (começa escondido) -->
-          <div class="dropdown" id="avatarMenu" style="display:none;">
-            <a class="mi" href="#" data-go="add_supplier"><span>Adicionar fornecedor</span><small>admin</small></a>
-            <a class="mi" href="#" data-go="admin"><span>Painel administrador</span><small>cards</small></a>
-            <a class="mi" href="#" data-go="logs"><span>Logs</span><small>acessos</small></a>
-            <a class="mi" href="#" data-go="chart"><span>Gráfico</span><small>vendas</small></a>
-            <a class="mi" href="#" data-go="payments"><span>Pagamentos</span><small>pendentes</small></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="wrap">
-    <div class="grid">
-
-      <div>
-        <div class="hero">
-          <div class="hwrap">
-            <span class="tag"><i></i> acesso liberado após compra + aprovação</span>
-            <h1>Produtos digitais com entrega rápida, e área VIP com fornecedores.</h1>
-            <div class="sub">
-              Você entra, compra, faz login e vê “Seus produtos”.
-              O dono tem painel admin com cards, gráfico, logs e pagamentos — estilo Cakto.
-            </div>
-            <div class="cta">
-              <a class="btn primary" href="#" data-go="products">Ver produtos</a>
-              <a class="btn" href="#" data-go="how">Como funciona</a>
-              <a class="btn" href="#" data-go="support">Suporte</a>
-            </div>
-
-            <div class="cards">
-              <div class="card">
-                <small>Vendas (7 dias)</small>
-                <div class="kpi"><b>R$ 29,90</b><span class="chip ok">+ aprovado</span></div>
-              </div>
-              <div class="card">
-                <small>Pendentes</small>
-                <div class="kpi"><b>1</b><span class="chip warn">aguardando</span></div>
-              </div>
-              <div class="card">
-                <small>Acessos</small>
-                <div class="kpi"><b>18</b><span class="chip">hoje</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style="height:14px"></div>
-
-        <div class="panel">
-          <div class="ph">
-            <b>Pedidos pendentes</b>
-            <div class="filters">
-              <span class="f active">7d</span>
-              <span class="f">30d</span>
-              <span class="f">1a</span>
-              <span class="f">sempre</span>
-            </div>
-          </div>
-          <div class="list">
-            <div class="row">
-              <div class="dot w"></div>
-              <div class="meta">
-                <div class="t">Pagamento recebido (pendente de liberação)</div>
-                <div class="d">Vitor • teste2@exemplo.com • cakto • test_seed_pending_001</div>
-              </div>
-              <div class="amt">R$ 49,90</div>
-            </div>
-            <div class="row">
-              <div class="dot p"></div>
-              <div class="meta">
-                <div class="t">Pagamento aprovado</div>
-                <div class="d">Vitor • teste@exemplo.com • cakto • test_005</div>
-              </div>
-              <div class="amt">R$ 29,90</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div>
-        <div class="panel">
-          <div class="ph">
-            <b>Conta</b>
-            <span class="chip">menu do avatar</span>
-          </div>
-          <div class="list">
-            <div class="menu">
-              <div class="mi"><span>Adicionar fornecedor</span><small>admin</small></div>
-              <div class="mi"><span>Painel administrador</span><small>cards</small></div>
-              <div class="mi"><span>Logs</span><small>acessos</small></div>
-              <div class="mi"><span>Gráfico</span><small>vendas</small></div>
-              <div class="mi"><span>Pagamentos</span><small>pendentes</small></div>
-            </div>
-
-            <div style="height:10px"></div>
-
-            <div class="card">
-              <small>Login</small>
-              <div style="margin-top:8px; color:var(--muted); line-height:1.45">
-                Entrar com <b style="color:var(--txt)">e-mail / Google / telefone</b>.
-                2FA via <b style="color:var(--txt)">código</b>. Dono: lista de códigos “fixos”.
-              </div>
-            </div>
-
-            <div style="height:10px"></div>
-
-            <div class="card">
-              <small>Seus produtos</small>
-              <div style="margin-top:8px; color:var(--muted); line-height:1.45">
-                Após login, aparece “Seus produtos” e “Comprar mais”.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer">
-          © Conexão Street • layout demo (print fake) • preto/branco/roxo
-        </div>
-      </div>
-
     </div>
   </div>
 
