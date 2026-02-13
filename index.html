@@ -3,12 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin | Conexão Street</title>
+  <title>Conexão Street</title>
   <style>
     :root{
       --bg:#07070A;
       --card:#0f0f14;
-      --card2:#12121a;
       --muted:#a6a6b3;
       --txt:#f3f3f7;
       --p:#7A2BFF;
@@ -18,7 +17,8 @@
       --bad:#ff3b5c;
       --line:rgba(255,255,255,.08);
       --r:18px;
-      --shadow: 0 18px 60px rgba(0,0,0,.38);
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --ease:cubic-bezier(.2,.9,.2,1);
       font-synthesis-weight:none;
     }
 
@@ -34,38 +34,65 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
       overflow-x:hidden;
     }
-
     a{color:inherit; text-decoration:none}
 
     .top{
-      position:sticky; top:0; z-index:20;
+      position:sticky; top:0; z-index:30;
       backdrop-filter: blur(10px);
-      background: rgba(7,7,10,.70);
+      background: rgba(7,7,10,.65);
       border-bottom:1px solid var(--line);
     }
     .wrap{max-width:1100px; margin:0 auto; padding:14px 14px}
     .bar{display:flex; align-items:center; gap:12px; justify-content:space-between}
+
     .brand{display:flex; align-items:center; gap:10px}
     .logo{
       width:38px; height:38px; border-radius:12px;
-      background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.35));
+      background: linear-gradient(135deg, rgba(122,43,255,.9), rgba(155,107,255,.35));
       box-shadow:0 10px 30px rgba(122,43,255,.25);
       border:1px solid rgba(255,255,255,.12);
     }
     .brand b{letter-spacing:.2px}
-    .right{display:flex; align-items:center; gap:10px}
 
-    .pill{
-      padding:9px 12px; border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      color:var(--muted);
-      font-size:13px;
-      display:flex; gap:8px; align-items:center;
-      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    .search{flex:1; max-width:520px; display:flex; gap:10px; margin:0 8px}
+    .inp{
+      width:100%; padding:11px 12px; border-radius:14px;
+      border:1px solid var(--line); background:rgba(255,255,255,.04);
+      color:var(--txt); outline:none;
+      transition:border-color .15s var(--ease), background .15s var(--ease);
     }
-    .pill:active{transform: scale(.98)}
-    .pill:hover{border-color: rgba(122,43,255,.30); background: rgba(122,43,255,.10)}
+    .inp:focus{border-color: rgba(122,43,255,.45); background: rgba(122,43,255,.08)}
+
+    .right{display:flex; align-items:center; gap:10px}
+    .pill{
+      padding:9px 12px; border-radius:999px; border:1px solid var(--line);
+      background:rgba(255,255,255,.04); color:var(--muted); font-size:13px;
+      display:flex; gap:8px; align-items:center;
+      transition: transform .14s var(--ease), background .15s var(--ease), border-color .15s var(--ease);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pill:hover{border-color: rgba(122,43,255,.30); background: rgba(122,43,255,.10); transform: translateY(-1px)}
+    .pill:active{transform: translateY(0) scale(.985)}
+
+    .avatarBtn{
+      width:38px; height:38px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 45%),
+        linear-gradient(135deg, rgba(122,43,255,.75), rgba(7,7,10,.6));
+      position:relative;
+      cursor:pointer;
+      transition: transform .14s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    .avatarBtn:active{transform: scale(.98)}
+    .avatarBtn:after{
+      content:""; position:absolute; inset:-1px; border-radius:14px;
+      border:1px solid rgba(122,43,255,.35);
+      pointer-events:none;
+    }
 
     .grid{
       display:grid; gap:14px;
@@ -74,12 +101,13 @@
       padding:16px 14px 28px;
     }
     @media (max-width: 920px){
+      .search{display:none}
       .grid{grid-template-columns: 1fr}
     }
 
-    .panel, .hero, .card, .toast{
+    .hero, .panel, .card{
       border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
+      background: rgba(255,255,255,.03);
       border-radius: var(--r);
     }
 
@@ -87,109 +115,119 @@
       overflow:hidden;
       position:relative;
       box-shadow: var(--shadow);
+      transform: translateY(10px);
+      opacity:0;
+      animation: pageIn .55s var(--ease) .08s forwards;
     }
-
     .heroGlow{
       position:absolute; inset:-2px;
       background:
-        radial-gradient(500px 220px at 20% 10%, rgba(122,43,255,.25), transparent 60%),
-        radial-gradient(420px 240px at 90% 20%, rgba(155,107,255,.18), transparent 65%);
+        radial-gradient(520px 260px at 20% 10%, rgba(122,43,255,.25), transparent 62%),
+        radial-gradient(440px 260px at 90% 20%, rgba(155,107,255,.18), transparent 68%);
       pointer-events:none;
       opacity:.9;
     }
 
     .hwrap{padding:18px; position:relative}
-    h1{margin:0 0 8px; font-size:22px; line-height:1.2}
-    .sub{color:var(--muted); line-height:1.45}
-
     .tag{
-      display:inline-flex; align-items:center; gap:8px;
-      font-size:12px;
-      color:rgba(255,255,255,.92);
+      display:inline-flex; align-items:center; gap:8px; font-size:12px;
+      color:rgba(255,255,255,.9);
       background:rgba(122,43,255,.16);
       border:1px solid rgba(122,43,255,.25);
-      padding:7px 10px;
-      border-radius:999px;
+      padding:7px 10px; border-radius:999px;
     }
     .tag i{width:8px;height:8px;border-radius:99px;background:var(--ok);display:inline-block}
 
+    h1{margin:14px 0 8px; font-size:26px; line-height:1.15}
+    .sub{color:var(--muted); line-height:1.4}
+
+    .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
     .btn{
-      width:100%;
-      padding:11px 14px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      color:var(--txt);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      font-weight:700;
-      cursor:pointer;
-      transition: transform .12s ease, background .15s ease, border-color .15s ease;
-      user-select:none;
+      padding:11px 14px; border-radius:14px; border:1px solid var(--line);
+      background:rgba(255,255,255,.04); color:var(--txt);
+      display:inline-flex; align-items:center; gap:10px; font-weight:800;
+      transition: transform .14s var(--ease), background .15s var(--ease), border-color .15s var(--ease), box-shadow .15s var(--ease);
       -webkit-tap-highlight-color: transparent;
+      user-select:none;
     }
-    .btn:hover{border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.06)}
-    .btn:active{transform: scale(.985)}
+    .btn:hover{border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.06); transform: translateY(-1px); box-shadow:0 10px 25px rgba(0,0,0,.22)}
+    .btn:active{transform: translateY(0) scale(.985)}
     .btn.primary{
       border-color: rgba(122,43,255,.55);
       background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
       box-shadow:0 14px 35px rgba(122,43,255,.22);
     }
 
-    .panel{overflow:hidden}
-    .ph{
+    .cards{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:16px}
+    @media (max-width: 540px){ .cards{grid-template-columns:1fr} }
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
+      border-radius: var(--r);
       padding:14px;
-      border-bottom:1px solid var(--line);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
+      transform: translateY(10px);
+      opacity:0;
     }
-    .ph b{font-size:14px}
+    .card.show{animation: popIn .5s var(--ease) forwards}
+    .card small{color:var(--muted)}
+    .card b{font-size:20px}
+    .kpi{display:flex; align-items:flex-end; justify-content:space-between}
     .chip{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
+      font-size:12px; padding:6px 10px; border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
-      color:rgba(255,255,255,.92);
+      color:rgba(255,255,255,.9);
       background:rgba(255,255,255,.04);
       white-space:nowrap;
     }
     .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
     .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
-    .chip.bad{border-color: rgba(255,59,92,.35); background: rgba(255,59,92,.10)}
 
+    .panel{overflow:hidden; transform: translateY(10px); opacity:0; animation: pageIn .55s var(--ease) .14s forwards}
+    .ph{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center}
+    .ph b{font-size:14px}
     .list{padding:12px}
-    .hint{color:var(--muted); font-size:12px; line-height:1.45}
 
-    .cards{
+    .prod{
       display:grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap:12px;
-      margin-top:12px;
     }
-    @media (max-width: 540px){ .cards{grid-template-columns:1fr} }
-    .card{
+    @media (max-width: 720px){ .prod{grid-template-columns:1fr} }
+
+    .prodCard{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius:18px;
       padding:14px;
-      background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
       position:relative;
       overflow:hidden;
+      transition: transform .16s var(--ease), border-color .16s var(--ease), background .16s var(--ease);
     }
-    .card small{color:var(--muted)}
-    .card b{font-size:20px}
-    .kpi{display:flex; align-items:flex-end; justify-content:space-between; gap:10px}
-    .kpi b{letter-spacing:.2px}
+    .prodCard:hover{
+      transform: translateY(-2px);
+      border-color: rgba(122,43,255,.28);
+      background: rgba(122,43,255,.06);
+    }
+    .price{font-weight:900; font-size:22px; letter-spacing:.2px; margin-top:6px}
+    .desc{color:var(--muted); line-height:1.45; margin-top:6px; font-size:13px}
+
+    .prodBtns{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    @media (max-width: 420px){ .prodBtns{grid-template-columns:1fr} }
+
+    .btnFull{
+      width:100%;
+      justify-content:center;
+    }
 
     .row{
-      display:flex;
-      gap:10px;
-      padding:12px;
-      border-radius:16px;
+      display:flex; gap:10px; padding:12px; border-radius:16px;
       border:1px solid transparent;
-      align-items:flex-start;
-      transition: background .15s ease, border-color .15s ease, transform .15s ease;
+      transition: background .15s var(--ease), border-color .15s var(--ease), transform .15s var(--ease);
     }
     .row:hover{border-color: rgba(255,255,255,.10); background: rgba(255,255,255,.02)}
     .row:active{transform: scale(.995)}
@@ -197,59 +235,57 @@
     .dot.p{background:var(--p)}
     .dot.w{background:var(--warn)}
     .meta{flex:1}
-    .meta .t{font-weight:800}
+    .meta .t{font-weight:900}
     .meta .d{color:var(--muted); font-size:12px; margin-top:3px}
     .amt{font-weight:900}
 
-    .gate{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.03);
-      border-radius:18px;
-      padding:14px;
-      margin-top:12px;
-    }
-    .inp{
-      width:100%;
-      padding:11px 12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      color:var(--txt);
-      outline:none;
-      transition: border-color .15s ease, background .15s ease;
-    }
-    .inp:focus{
-      border-color: rgba(122,43,255,.45);
-      background: rgba(122,43,255,.08);
-    }
-
-    .sideGrid{
-      display:grid;
-      gap:12px;
-    }
-
-    .mini{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.02);
-    }
-    .mini b{font-size:13px}
-    .mini small{color:var(--muted)}
-    .mini .righty{display:flex; align-items:center; gap:8px}
-
     .footer{
       color:rgba(255,255,255,.55);
-      padding:20px 14px;
-      text-align:center;
-      border-top:1px solid var(--line);
+      padding:20px 14px; text-align:center;
+      border-top:1px solid var(--line)
     }
 
-    /* Loader bonito */
+    /* Menu overlay */
+    .menuOverlay{
+      position:fixed; inset:0;
+      z-index:40;
+      display:none;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(4px);
+    }
+    .menuBox{
+      position:absolute;
+      top:68px;
+      right:14px;
+      width:min(320px, 92vw);
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(15,15,20,.92);
+      box-shadow: 0 26px 90px rgba(0,0,0,.55);
+      overflow:hidden;
+      transform: translateY(10px);
+      opacity:0;
+      transition: opacity .18s var(--ease), transform .18s var(--ease);
+    }
+    .menuOverlay.on .menuBox{
+      transform: translateY(0);
+      opacity:1;
+    }
+    .mi{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      color:rgba(255,255,255,.92);
+      cursor:pointer;
+      transition: background .14s var(--ease);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mi:hover{background: rgba(255,255,255,.05)}
+    .mi:last-child{border-bottom:none}
+    .mi small{color:var(--muted)}
+
+    /* Loader */
     .loaderWrap{
       position:fixed; inset:0;
       z-index:9999;
@@ -261,7 +297,7 @@
       align-items:center;
       justify-content:center;
       padding:18px;
-      transition: opacity .25s ease, visibility .25s ease;
+      transition: opacity .35s var(--ease), visibility .35s var(--ease);
     }
     .loaderWrap.off{
       opacity:0;
@@ -276,6 +312,9 @@
       box-shadow: 0 26px 90px rgba(0,0,0,.55);
       overflow:hidden;
       position:relative;
+      transform: translateY(12px);
+      opacity:0;
+      animation: popIn .55s var(--ease) .05s forwards;
     }
     .shine{
       position:absolute; inset:-2px;
@@ -308,48 +347,37 @@
     .loaderTxt b{display:block; font-size:14px}
     .loaderTxt small{display:block; color:var(--muted); margin-top:4px; line-height:1.35}
 
-    /* Skeleton para quando liberar admin */
-    .sk{
-      position:relative;
-      overflow:hidden;
-      border-radius:14px;
-      background: rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.06);
-    }
-    .sk:after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.10), transparent);
-      transform: translateX(-60%);
-      animation: sk 1.1s ease-in-out infinite;
-    }
-    @keyframes sk{
-      0%{transform: translateX(-60%)}
-      100%{transform: translateX(60%)}
-    }
+    @keyframes pageIn{from{opacity:0; transform: translateY(12px)} to{opacity:1; transform: translateY(0)}}
+    @keyframes popIn{from{opacity:0; transform: translateY(12px) scale(.99)} to{opacity:1; transform: translateY(0) scale(1)}}
+    @keyframes spin{to{transform: rotate(360deg)}}
 
-    .fadeIn{
-      animation: fadeIn .22s ease both;
-    }
-    @keyframes fadeIn{
-      from{opacity:0; transform: translateY(6px)}
-      to{opacity:1; transform: translateY(0)}
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important; transition:none !important}
+      .loaderWrap{display:none !important}
     }
   </style>
 </head>
 <body>
 
-  <!-- Loader -->
   <div class="loaderWrap" id="loader">
     <div class="loaderCard">
       <div class="shine"></div>
       <div class="loaderInner">
         <div class="spinner" aria-hidden="true"></div>
         <div class="loaderTxt">
-          <b>Carregando painel</b>
-          <small>Conexão Street, Admin</small>
+          <b>Carregando</b>
+          <small>Conexão Street</small>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="menuOverlay" id="menuOverlay">
+    <div class="menuBox" role="menu" aria-label="Menu">
+      <div class="mi" id="miAdmin"><span>Painel admin</span><small>dono</small></div>
+      <div class="mi" id="miSupport"><span>Suporte</span><small>ajuda</small></div>
+      <div class="mi" id="miHow"><span>Como funciona</span><small>info</small></div>
+      <div class="mi" id="miClose"><span>Fechar</span><small>ok</small></div>
     </div>
   </div>
 
@@ -360,12 +388,17 @@
           <div class="logo" aria-hidden="true"></div>
           <div>
             <b>Conexão Street</b><br/>
-            <span style="color:var(--muted); font-size:12px;">Admin</span>
+            <span style="color:var(--muted); font-size:12px;">VIP</span>
           </div>
         </div>
 
+        <div class="search">
+          <input class="inp" id="q" placeholder="Buscar" />
+        </div>
+
         <div class="right">
-          <a class="pill" href="./">Voltar</a>
+          <div class="pill">🛒 <b style="color:var(--txt)">2</b> <span style="color:var(--muted)">itens</span></div>
+          <div class="avatarBtn" id="avatarBtn" title="Menu"></div>
         </div>
       </div>
     </div>
@@ -375,171 +408,161 @@
     <div class="grid">
 
       <div>
-        <div class="hero">
+        <div class="hero" id="topo">
           <div class="heroGlow"></div>
           <div class="hwrap">
-            <span class="tag"><i></i> acesso do dono</span>
-            <h1>Painel administrador</h1>
+            <span class="tag"><i></i> listas para comprar</span>
+            <h1>Fornecedores da Conexão Street</h1>
             <div class="sub">
-              Trava simples só pra esconder de curioso. Segurança real depois vai ser Supabase.
+              Compre uma das listas e receba o acesso ao conteúdo.
+              Depois a gente liga checkout real e Supabase.
             </div>
 
-            <div class="cards" id="kpis" style="display:none">
-              <div class="card fadeIn">
-                <small>Vendas (7 dias)</small>
-                <div class="kpi">
-                  <b id="kpiSales">R$ 0,00</b>
-                  <span class="chip ok">aprovado</span>
-                </div>
-              </div>
-              <div class="card fadeIn">
-                <small>Pendentes</small>
-                <div class="kpi">
-                  <b id="kpiPend">0</b>
-                  <span class="chip warn">aguardando</span>
-                </div>
-              </div>
-              <div class="card fadeIn">
-                <small>Acessos</small>
-                <div class="kpi">
-                  <b id="kpiLogs">0</b>
-                  <span class="chip">hoje</span>
-                </div>
-              </div>
+            <div class="cta">
+              <a class="btn primary" id="btnProdutos" href="#">Ver listas</a>
+              <a class="btn" id="btnComo" href="#">Como funciona</a>
+              <a class="btn" id="btnSuporte" href="#">Suporte</a>
             </div>
 
-            <div class="gate" id="gateBox">
-              <b>Trava simples do admin</b>
-              <div class="hint" style="margin-top:6px">
-                Digite a senha e entre. Isso fica salvo nesse aparelho.
+            <div class="cards">
+              <div class="card" id="k1">
+                <small>Entrega</small>
+                <div class="kpi"><b>rápida</b><span class="chip ok">ok</span></div>
               </div>
-              <div style="height:10px"></div>
-
-              <input id="pin" class="inp" placeholder="Digite a senha" autocomplete="off" />
-              <div style="height:10px"></div>
-
-              <div style="display:grid; gap:10px; grid-template-columns: 1fr 1fr">
-                <button id="enter" class="btn primary" type="button">Entrar</button>
-                <button id="leave" class="btn" type="button" style="display:none">Sair</button>
+              <div class="card" id="k2">
+                <small>Conteúdo</small>
+                <div class="kpi"><b>VIP</b><span class="chip">lista</span></div>
               </div>
-
-              <div class="hint" style="margin-top:10px">
-                Dica: se trocar a senha, talvez precise sair e entrar de novo.
+              <div class="card" id="k3">
+                <small>Acesso</small>
+                <div class="kpi"><b>após compra</b><span class="chip warn">manual</span></div>
               </div>
             </div>
-
-            <div style="height:12px"></div>
-
-            <div class="panel" id="alerts">
-              <div class="ph">
-                <b>Notificacoes</b>
-                <span class="chip">demo</span>
-              </div>
-              <div class="list">
-                <div class="mini">
-                  <div>
-                    <b>Checkout</b><br/>
-                    <small>Integração em breve</small>
-                  </div>
-                  <div class="righty">
-                    <span class="chip warn">pendente</span>
-                  </div>
-                </div>
-                <div style="height:10px"></div>
-                <div class="mini">
-                  <div>
-                    <b>Seguranca</b><br/>
-                    <small>Depois vira Supabase</small>
-                  </div>
-                  <div class="righty">
-                    <span class="chip ok">ok</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
 
         <div style="height:14px"></div>
 
-        <div class="panel" id="orders" style="display:none">
+        <div class="panel" id="sec-fornecedores">
           <div class="ph">
-            <b>Pagamentos pendentes</b>
+            <b>Listas disponíveis</b>
+            <span class="chip">compra</span>
+          </div>
+          <div class="list">
+            <div class="prod" id="prodGrid">
+
+              <div class="prodCard" data-key="lojista">
+                <div class="chip">Fornecedores</div>
+                <div style="height:8px"></div>
+                <b>Fornecedores logistas</b>
+                <div class="price">R$ 30,00</div>
+                <div class="desc">
+                  Lista para quem vende e quer fornecedor para revenda.
+                  Acesso liberado após compra e aprovação.
+                </div>
+                <div class="prodBtns">
+                  <a class="btn primary btnFull" id="buyLojista" href="#">Comprar</a>
+                  <a class="btn btnFull" id="seeLojista" href="#">Ver detalhes</a>
+                </div>
+              </div>
+
+              <div class="prodCard" data-key="final">
+                <div class="chip">Fornecedores</div>
+                <div style="height:8px"></div>
+                <b>Fornecedores consumidor final</b>
+                <div class="price">R$ 25,00</div>
+                <div class="desc">
+                  Lista para quem compra para uso próprio e quer fornecedor confiável.
+                  Acesso liberado após compra e aprovação.
+                </div>
+                <div class="prodBtns">
+                  <a class="btn primary btnFull" id="buyFinal" href="#">Comprar</a>
+                  <a class="btn btnFull" id="seeFinal" href="#">Ver detalhes</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="panel" id="sec-como">
+          <div class="ph">
+            <b>Como funciona</b>
+            <span class="chip">passos</span>
+          </div>
+          <div class="list">
+            <div class="row">
+              <div class="dot p"></div>
+              <div class="meta">
+                <div class="t">Você escolhe uma lista</div>
+                <div class="d">Logistas ou consumidor final</div>
+              </div>
+              <div class="amt">1</div>
+            </div>
+            <div class="row">
+              <div class="dot w"></div>
+              <div class="meta">
+                <div class="t">Você compra</div>
+                <div class="d">Checkout será ligado depois</div>
+              </div>
+              <div class="amt">2</div>
+            </div>
+            <div class="row">
+              <div class="dot p"></div>
+              <div class="meta">
+                <div class="t">Liberação</div>
+                <div class="d">Acesso após aprovação do dono</div>
+              </div>
+              <div class="amt">3</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="panel" id="sec-suporte">
+          <div class="ph">
+            <b>Suporte</b>
+            <span class="chip">contato</span>
+          </div>
+          <div class="list">
+            <div class="row">
+              <div class="dot p"></div>
+              <div class="meta">
+                <div class="t">Fale com a Conexão Street</div>
+                <div class="d">Coloca aqui teu WhatsApp ou Instagram depois</div>
+              </div>
+              <div class="amt">ok</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="ph">
+            <b>Status</b>
             <span class="chip">demo</span>
           </div>
           <div class="list">
             <div class="row">
+              <div class="dot p"></div>
+              <div class="meta">
+                <div class="t">Admin</div>
+                <div class="d">Somente o dono tem acesso ao painel</div>
+              </div>
+              <div class="amt">1</div>
+            </div>
+            <div class="row">
               <div class="dot w"></div>
               <div class="meta">
-                <div class="t">Pagamento recebido pendente de liberacao</div>
-                <div class="d">Vitor • teste2@exemplo.com • provider • test_seed_pending_001</div>
+                <div class="t">Checkout</div>
+                <div class="d">Em breve</div>
               </div>
-              <div class="amt">R$ 49,90</div>
-            </div>
-
-            <div class="row">
-              <div class="dot.p dot p"></div>
-              <div class="meta">
-                <div class="t">Pagamento aprovado</div>
-                <div class="d">Vitor • teste@exemplo.com • provider • test_005</div>
-              </div>
-              <div class="amt">R$ 29,90</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sideGrid">
-
-        <div class="panel">
-          <div class="ph">
-            <b>Atalhos</b>
-            <span class="chip">admin</span>
-          </div>
-          <div class="list">
-            <button class="btn" type="button" id="goAdd">Adicionar fornecedor</button>
-            <div style="height:10px"></div>
-            <button class="btn" type="button" id="goLogs">Logs</button>
-            <div style="height:10px"></div>
-            <button class="btn" type="button" id="goChart">Grafico</button>
-            <div style="height:10px"></div>
-            <button class="btn" type="button" id="goPay">Pagamentos</button>
-
-            <div class="hint" style="margin-top:10px">
-              Esses botoes por enquanto so mostram avisos. Depois liga em paginas reais.
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="ph">
-            <b>Status</b>
-            <span class="chip" id="statusChip">travado</span>
-          </div>
-          <div class="list">
-            <div class="mini">
-              <div>
-                <b>Admin</b><br/>
-                <small id="whoTxt">nao autenticado</small>
-              </div>
-              <div class="righty">
-                <span class="chip" id="authChip">off</span>
-              </div>
-            </div>
-            <div style="height:10px"></div>
-            <div class="mini">
-              <div>
-                <b>Dispositivo</b><br/>
-                <small id="devTxt">salvo nesse navegador</small>
-              </div>
-              <div class="righty">
-                <span class="chip">local</span>
-              </div>
-            </div>
-
-            <div class="hint" style="margin-top:10px">
-              Se voce limpar dados do navegador, vai precisar entrar de novo.
+              <div class="amt">2</div>
             </div>
           </div>
         </div>
@@ -547,7 +570,6 @@
         <div class="footer">
           © Conexão Street
         </div>
-
       </div>
 
     </div>
@@ -556,145 +578,125 @@
   <script>
     "use strict";
 
-    const PIN = "Euteamoluptameuamor010324c";
-    const KEY = "cs_admin_ok";
+    const $ = (sel) => document.querySelector(sel);
 
-    const el = (id) => document.getElementById(id);
-
-    const loader = el("loader");
-    const pin = el("pin");
-    const enter = el("enter");
-    const leave = el("leave");
-    const gateBox = el("gateBox");
-    const kpis = el("kpis");
-    const orders = el("orders");
-
-    const statusChip = el("statusChip");
-    const whoTxt = el("whoTxt");
-    const authChip = el("authChip");
-
-    const kpiSales = el("kpiSales");
-    const kpiPend = el("kpiPend");
-    const kpiLogs = el("kpiLogs");
-
-    const show = (node) => node && (node.style.display = "");
-    const hide = (node) => node && (node.style.display = "none");
-
-    function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-    function setBadges(isOn){
-      if(isOn){
-        statusChip.textContent = "liberado";
-        statusChip.className = "chip ok";
-        whoTxt.textContent = "autenticado";
-        authChip.textContent = "on";
-        authChip.className = "chip ok";
-      }else{
-        statusChip.textContent = "travado";
-        statusChip.className = "chip warn";
-        whoTxt.textContent = "nao autenticado";
-        authChip.textContent = "off";
-        authChip.className = "chip";
-      }
+    function scrollToId(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.scrollIntoView({behavior:"smooth", block:"start"});
     }
 
-    function isAuthed(){
-      return localStorage.getItem(KEY) === "1";
-    }
-
-    async function setAuthed(v){
-      if(v){
-        localStorage.setItem(KEY, "1");
-
-        // mini carregando bonito pra entrar
-        show(loader);
-        await sleep(450);
-
-        hide(gateBox);
-        show(kpis);
-        show(orders);
-        show(leave);
-
-        // preencher KPIs demo
-        kpiSales.textContent = "R$ 29,90";
-        kpiPend.textContent = "1";
-        kpiLogs.textContent = "18";
-
-        setBadges(true);
-
-        await sleep(250);
-        loader.classList.add("off");
-      }else{
-        localStorage.removeItem(KEY);
-
-        show(gateBox);
-        hide(kpis);
-        hide(orders);
-        hide(leave);
-
-        pin.value = "";
-        setBadges(false);
-      }
-    }
-
-    function toast(msg){
-      alert(msg);
-    }
+    const loader = document.getElementById("loader");
 
     function initLoader(){
-      // some assim que a tela estiver pronta
       requestAnimationFrame(() => {
-        loader.classList.add("off");
+        setTimeout(() => loader.classList.add("off"), 200);
       });
     }
 
-    enter.addEventListener("click", async () => {
-      const v = (pin.value || "").trim();
-      if(v === PIN){
-        await setAuthed(true);
-      }else{
-        toast("PIN incorreto");
-        pin.focus();
-      }
-    });
-
-    pin.addEventListener("keydown", async (e) => {
-      if(e.key === "Enter"){
-        e.preventDefault();
-        enter.click();
-      }
-    });
-
-    leave.addEventListener("click", () => setAuthed(false));
-
-    el("goAdd").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
-      toast("Adicionar fornecedor em breve");
-    });
-
-    el("goLogs").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
-      toast("Logs em breve");
-    });
-
-    el("goChart").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
-      toast("Grafico em breve");
-    });
-
-    el("goPay").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
-      el("orders").scrollIntoView({behavior:"smooth"});
-    });
-
-    // Boot
-    initLoader();
-    if(isAuthed()){
-      // entra direto se ja estava salvo
-      setAuthed(true);
-    }else{
-      setAuthed(false);
+    function openMenu(){
+      const o = document.getElementById("menuOverlay");
+      if(!o) return;
+      o.style.display = "block";
+      requestAnimationFrame(() => o.classList.add("on"));
     }
+
+    function closeMenu(){
+      const o = document.getElementById("menuOverlay");
+      if(!o) return;
+      o.classList.remove("on");
+      setTimeout(() => { o.style.display = "none"; }, 160);
+    }
+
+    function wireMenu(){
+      const avatarBtn = document.getElementById("avatarBtn");
+      const overlay = document.getElementById("menuOverlay");
+
+      if(avatarBtn){
+        avatarBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          openMenu();
+          e.stopPropagation();
+        });
+      }
+
+      if(overlay){
+        overlay.addEventListener("click", (e) => {
+          if(e.target === overlay) closeMenu();
+        });
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if(e.key === "Escape") closeMenu();
+      });
+
+      const miClose = document.getElementById("miClose");
+      if(miClose) miClose.addEventListener("click", closeMenu);
+
+      const miHow = document.getElementById("miHow");
+      if(miHow) miHow.addEventListener("click", () => { closeMenu(); scrollToId("sec-como"); });
+
+      const miSupport = document.getElementById("miSupport");
+      if(miSupport) miSupport.addEventListener("click", () => { closeMenu(); scrollToId("sec-suporte"); });
+
+      const miAdmin = document.getElementById("miAdmin");
+      if(miAdmin) miAdmin.addEventListener("click", () => {
+        closeMenu();
+        window.location.href = "./admin.html";
+      });
+    }
+
+    function wireButtons(){
+      const btnProdutos = document.getElementById("btnProdutos");
+      const btnComo = document.getElementById("btnComo");
+      const btnSuporte = document.getElementById("btnSuporte");
+
+      if(btnProdutos) btnProdutos.addEventListener("click", (e) => { e.preventDefault(); scrollToId("sec-fornecedores"); });
+      if(btnComo) btnComo.addEventListener("click", (e) => { e.preventDefault(); scrollToId("sec-como"); });
+      if(btnSuporte) btnSuporte.addEventListener("click", (e) => { e.preventDefault(); scrollToId("sec-suporte"); });
+
+      const buyLojista = document.getElementById("buyLojista");
+      const buyFinal = document.getElementById("buyFinal");
+      const seeLojista = document.getElementById("seeLojista");
+      const seeFinal = document.getElementById("seeFinal");
+
+      if(buyLojista) buyLojista.addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("Checkout lojistas em breve");
+      });
+
+      if(buyFinal) buyFinal.addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("Checkout consumidor final em breve");
+      });
+
+      if(seeLojista) seeLojista.addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("Detalhes lojistas em breve");
+      });
+
+      if(seeFinal) seeFinal.addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("Detalhes consumidor final em breve");
+      });
+    }
+
+    function animateCards(){
+      const k1 = document.getElementById("k1");
+      const k2 = document.getElementById("k2");
+      const k3 = document.getElementById("k3");
+      const add = (el, t) => el && setTimeout(() => el.classList.add("show"), t);
+      add(k1, 120);
+      add(k2, 200);
+      add(k3, 280);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initLoader();
+      wireMenu();
+      wireButtons();
+      animateCards();
+    });
   </script>
 </body>
 </html>
