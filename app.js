@@ -1,11 +1,5 @@
 "use strict";
 
-/*
-  Conexao Street - app.js (demo)
-  Observacao: GitHub Pages nao protege admin de verdade.
-  Isso aqui e so UI. Seguranca real vem do Supabase (auth) + RLS.
-*/
-
 const $ = (sel) => document.querySelector(sel);
 
 function scrollToEl(id) {
@@ -14,50 +8,41 @@ function scrollToEl(id) {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-/* ===== ADMIN (demo) ===== */
-const ADMIN_STORAGE_KEY = "cs_admin_ok";
-
-/* TROQUE AQUI */
-const ADMIN_PIN = "9017";
+const ADMIN_KEY = "cs_admin_ok";
 
 function isAdmin() {
-  return localStorage.getItem(ADMIN_STORAGE_KEY) === "1";
+  return localStorage.getItem(ADMIN_KEY) === "1";
 }
 
-function setAdmin(on) {
-  if (on) localStorage.setItem(ADMIN_STORAGE_KEY, "1");
-  else localStorage.removeItem(ADMIN_STORAGE_KEY);
-}
+function setStatusUI() {
+  const statusTxt = $("#statusTxt");
+  const roleChip = $("#roleChip");
+  const statusPill = $("#statusPill");
+  const miAdmin = $("#miAdmin");
 
-function setStatus(text) {
-  const s = $("#statusTxt");
-  if (s) s.textContent = text;
-}
-
-function showAdminPanel(show) {
-  const p = $("#adminPanel");
-  if (p) p.style.display = show ? "block" : "none";
-}
-
-function applyRoleUI() {
   if (isAdmin()) {
-    setStatus("Admin");
-    showAdminPanel(true);
-
-    const pend = $("#admPend");
-    const sales = $("#admSales");
-    const logs = $("#admLogs");
-
-    if (pend) pend.textContent = "1";
-    if (sales) sales.textContent = "R$ 29,90";
-    if (logs) logs.textContent = "18";
+    if (statusTxt) statusTxt.textContent = "admin";
+    if (roleChip) {
+      roleChip.textContent = "on";
+      roleChip.className = "chip";
+      roleChip.style.borderColor = "rgba(36,209,141,.35)";
+      roleChip.style.background = "rgba(36,209,141,.10)";
+    }
+    if (statusPill) statusPill.textContent = "Admin";
+    if (miAdmin) miAdmin.classList.remove("hide");
   } else {
-    setStatus("Visitante");
-    showAdminPanel(false);
+    if (statusTxt) statusTxt.textContent = "visitante";
+    if (roleChip) {
+      roleChip.textContent = "off";
+      roleChip.className = "chip";
+      roleChip.style.borderColor = "rgba(255,255,255,.12)";
+      roleChip.style.background = "rgba(255,255,255,.04)";
+    }
+    if (statusPill) statusPill.textContent = "Visitante";
+    if (miAdmin) miAdmin.classList.add("hide");
   }
 }
 
-/* ===== MENU (overlay) ===== */
 function openMenu() {
   const overlay = $("#menuOverlay");
   if (!overlay) return;
@@ -72,21 +57,17 @@ function closeMenu() {
   overlay.setAttribute("aria-hidden", "true");
 }
 
-function isMenuOpen() {
-  const overlay = $("#menuOverlay");
-  if (!overlay) return false;
-  return overlay.style.display === "block";
-}
-
 function toggleMenu() {
-  if (isMenuOpen()) closeMenu();
+  const overlay = $("#menuOverlay");
+  if (!overlay) return;
+  const isOpen = overlay.style.display === "block";
+  if (isOpen) closeMenu();
   else openMenu();
 }
 
 function wireMenu() {
   const avatarBtn = $("#avatarBtn");
   const overlay = $("#menuOverlay");
-  const menuBox = $("#menuBox"); // opcional: se existir no HTML
 
   if (avatarBtn) {
     avatarBtn.addEventListener("click", (e) => {
@@ -96,127 +77,79 @@ function wireMenu() {
     });
   }
 
-  // Clique fora fecha (se overlay existir)
   if (overlay) {
     overlay.addEventListener("click", (e) => {
-      // Se existir menuBox, so fecha quando clicar fora dele
-      if (menuBox) {
-        if (!menuBox.contains(e.target)) closeMenu();
-        return;
-      }
-      // Se nao existir menuBox, fecha clicando no fundo
       if (e.target === overlay) closeMenu();
     });
   }
 
-  // ESC fecha
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeMenu();
   });
 
-  // Itens do menu (ids do seu HTML)
-  const miAdmin = $("#miAdmin");
-  if (miAdmin) {
-    miAdmin.addEventListener("click", (e) => {
-      e.preventDefault();
+  document.addEventListener("click", (e) => {
+    const overlayNow = $("#menuOverlay");
+    if (!overlayNow) return;
+    const clickedAvatar = avatarBtn && avatarBtn.contains(e.target);
+    const menuBox = overlayNow.querySelector(".menuBox");
+    const clickedInsideMenu = menuBox && menuBox.contains(e.target);
+
+    if (!clickedAvatar && !clickedInsideMenu) closeMenu();
+  });
+
+  document.addEventListener("click", (e) => {
+    const item = e.target.closest("[data-go]");
+    if (!item) return;
+
+    e.preventDefault();
+    const go = item.getAttribute("data-go");
+
+    if (go === "close") {
       closeMenu();
-      if (!isAdmin()) return alert("Acesso admin: somente o dono.");
-      scrollToEl("adminPanel");
-    });
-  }
+      return;
+    }
 
-  const miAdd = $("#miAdd");
-  if (miAdd) {
-    miAdd.addEventListener("click", (e) => {
-      e.preventDefault();
+    if (go === "buy") {
       closeMenu();
-      if (!isAdmin()) return alert("Somente o admin pode adicionar fornecedor.");
-      alert("Adicionar fornecedor (em breve)");
-    });
-  }
+      scrollToEl("sec-comprar");
+      return;
+    }
 
-  const miLogs = $("#miLogs");
-  if (miLogs) {
-    miLogs.addEventListener("click", (e) => {
-      e.preventDefault();
+    if (go === "products") {
       closeMenu();
-      if (!isAdmin()) return alert("Somente o admin pode ver logs.");
-      alert("Logs (em breve)");
-    });
-  }
+      alert("Seus produtos em breve");
+      return;
+    }
 
-  const miGraf = $("#miGraf");
-  if (miGraf) {
-    miGraf.addEventListener("click", (e) => {
-      e.preventDefault();
+    if (go === "admin") {
       closeMenu();
-      if (!isAdmin()) return alert("Somente o admin pode ver grafico.");
-      alert("Grafico (em breve)");
-    });
-  }
-
-  const miPay = $("#miPay");
-  if (miPay) {
-    miPay.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeMenu();
-      if (!isAdmin()) return alert("Somente o admin pode ver pagamentos.");
-      alert("Pagamentos (em breve)");
-    });
-  }
-
-  // Login admin
-  const miLogin = $("#miLogin");
-  if (miLogin) {
-    miLogin.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeMenu();
-
-      const pin = prompt("Digite o PIN do admin:");
-      if (!pin) return;
-
-      if (pin === ADMIN_PIN) {
-        setAdmin(true);
-        applyRoleUI();
-        alert("Admin ativado.");
-      } else {
-        alert("PIN incorreto.");
+      if (!isAdmin()) {
+        alert("Acesso admin somente o dono");
+        return;
       }
-    });
-  }
-
-  // Logout
-  const miLogout = $("#miLogout");
-  if (miLogout) {
-    miLogout.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeMenu();
-      setAdmin(false);
-      applyRoleUI();
-      alert("Saiu.");
-    });
-  }
+      window.location.href = "./admin.html";
+      return;
+    }
+  });
 }
 
-/* ===== BOTOES PRINCIPAIS ===== */
 function wireButtons() {
-  const btnProdutos = $("#btnProdutos");
-  if (btnProdutos) {
-    btnProdutos.addEventListener("click", (e) => {
+  const btnComprar = $("#btnComprar");
+  const btnComo = $("#btnComo");
+  const btnSuporte = $("#btnSuporte");
+
+  if (btnComprar) {
+    btnComprar.addEventListener("click", (e) => {
       e.preventDefault();
-      scrollToEl("sec-fornecedores");
+      scrollToEl("sec-comprar");
     });
   }
-
-  const btnComo = $("#btnComo");
   if (btnComo) {
     btnComo.addEventListener("click", (e) => {
       e.preventDefault();
       scrollToEl("sec-como");
     });
   }
-
-  const btnSuporte = $("#btnSuporte");
   if (btnSuporte) {
     btnSuporte.addEventListener("click", (e) => {
       e.preventDefault();
@@ -225,25 +158,48 @@ function wireButtons() {
   }
 
   const buyLojista = $("#buyLojista");
+  const buyFinal = $("#buyFinal");
+  const detLojista = $("#detLojista");
+  const detFinal = $("#detFinal");
+
   if (buyLojista) {
     buyLojista.addEventListener("click", (e) => {
       e.preventDefault();
-      alert("Abrir checkout: Fornecedores Logistas R$ 30,00 (em breve)");
+      alert("Checkout Fornecedores logistas R$ 30,00 em breve");
     });
   }
-
-  const buyFinal = $("#buyFinal");
   if (buyFinal) {
     buyFinal.addEventListener("click", (e) => {
       e.preventDefault();
-      alert("Abrir checkout: Fornecedores Consumidor Final R$ 25,00 (em breve)");
+      alert("Checkout Fornecedores consumidor final R$ 25,00 em breve");
+    });
+  }
+
+  if (detLojista) {
+    detLojista.addEventListener("click", (e) => {
+      e.preventDefault();
+      alert("Lista para quem vende e revende. Conteudo e acesso em breve");
+    });
+  }
+  if (detFinal) {
+    detFinal.addEventListener("click", (e) => {
+      e.preventDefault();
+      alert("Lista para compra pessoal. Conteudo e acesso em breve");
     });
   }
 }
 
-/* ===== INIT ===== */
+function initLoader() {
+  const loader = $("#loader");
+  if (!loader) return;
+  requestAnimationFrame(() => {
+    loader.classList.add("off");
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  applyRoleUI();
+  initLoader();
+  setStatusUI();
   wireMenu();
   wireButtons();
 });
