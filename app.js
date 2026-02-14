@@ -1,6 +1,15 @@
-// app.js — menu do avatar (overlay) + loader
+// app.js — menu do avatar (overlay) + loader + rotas GitHub Pages safe
 (() => {
   function $(id){ return document.getElementById(id); }
+
+  // resolve links relativo ao URL atual (GitHub Pages safe, mesmo com querystring)
+  function resolveHref(to){
+    return new URL(to, window.location.href).toString();
+  }
+
+  function go(to){
+    window.location.assign(resolveHref(to));
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
     const avatarBtn = $("avatarBtn");
@@ -8,9 +17,7 @@
     const loader = $("loader");
 
     // some com loader quando carregar
-    if (loader) {
-      setTimeout(() => loader.classList.add("off"), 250);
-    }
+    if (loader) setTimeout(() => loader.classList.add("off"), 250);
 
     if (!avatarBtn || !menuOverlay) {
       console.warn("[menu] Elementos não encontrados:", {
@@ -46,7 +53,6 @@
 
     // fecha clicando fora do card
     menuOverlay.addEventListener("click", (e) => {
-      // só fecha se clicar no fundo (overlay), não dentro do card
       if (e.target === menuOverlay) closeMenu();
     });
 
@@ -55,24 +61,34 @@
       if (e.key === "Escape") closeMenu();
     });
 
-    // ==== Navegação dos itens do menu (troca os links aqui se quiser) ====
-    function go(url){ window.location.href = url; }
-
+    // ✅ Rotas corrigidas para os arquivos que EXISTEM no repo
+    // (e deixa pronto pra adicionar "Painel membro" com id="miMember")
     const routes = {
-      miAdmin:  "admin.html",
-      miAdminP: "adminp.html",
-      miAdd:    "add.html",
-      miLogs:   "logs.html",
-      miGraf:   "grafico.html",
-      miPay:    "pagamentos.html",
-      miLogin:  "login.html",
-      miLogout: "index.html"
+      miAdmin:  "./admin.html",
+      miAdminP: "./admin-p.html",
+
+      // se você adicionar esse item no HTML do menu:
+      // <div class="mi" id="miMember"><b>Painel membro</b><small>quem já comprou</small></div>
+      miMember: "./member.html",
+
+      // Esses itens podem apontar para seções do admin-p (sem criar páginas novas)
+      miAdd:    "./admin-p.html#add",
+      miLogs:   "./admin-p.html#logs",
+      miGraf:   "./admin-p.html#grafico",
+      miPay:    "./admin-p.html#pagamentos",
+      miLogin:  "./admin-p.html#login",
+
+      miLogout: "./index.html"
     };
 
     Object.keys(routes).forEach((id) => {
       const el = $(id);
       if (!el) return;
-      el.addEventListener("click", () => go(routes[id]));
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeMenu();
+        go(routes[id]);
+      });
     });
   });
 })();
