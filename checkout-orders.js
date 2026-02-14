@@ -78,7 +78,6 @@
     const chip = $("payStatusChip") || $("statusChip");
     if(!chip) return;
     chip.textContent = txt;
-    // não depende de css extra: só troca a classe já existente
     chip.classList.remove("ok","warn");
     chip.classList.add(isOk ? "ok" : "warn");
   }
@@ -99,7 +98,6 @@
     const buyer_email = safeText($("buyerEmail")?.value);
     const buyer_phone = safeText($("buyerPhone")?.value);
 
-    // Se tiver input de email e estiver vazio, avisar (pra identificar no admin)
     if ($("buyerEmail") && !buyer_email) {
       alert("Coloque um e-mail pra gente identificar seu pedido 🙂");
       return;
@@ -147,16 +145,22 @@
     if (error) {
       console.error("[checkout-orders] insert error:", error);
       setChip("erro", false);
-      alert("Não consegui criar o pedido. Tenta novamente.");
+
+      const msg =
+        `Não consegui criar o pedido.\n\n` +
+        `message: ${error.message || ""}\n` +
+        `code: ${error.code || ""}\n` +
+        `details: ${error.details || ""}\n` +
+        `hint: ${error.hint || ""}`;
+
+      alert(msg);
       return;
     }
 
-    // salva pra você poder usar depois (status / member)
     try{ localStorage.setItem("cs_last_order_id", String(data.id)); }catch{}
 
     setChip("pendente", false);
 
-    // opcional: mostrar numa área da tela
     const box = $("orderStatusBox");
     if (box) box.textContent = `Pedido criado: ${data.id} (PENDENTE)`;
 
