@@ -1,84 +1,78 @@
-"use strict";
+// app.js — menu do avatar (overlay) + loader
+(() => {
+  function $(id){ return document.getElementById(id); }
 
-const $ = (sel) => document.querySelector(sel);
+  document.addEventListener("DOMContentLoaded", () => {
+    const avatarBtn = $("avatarBtn");
+    const menuOverlay = $("menuOverlay");
+    const loader = $("loader");
 
-function scrollToEl(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
-}
+    // some com loader quando carregar
+    if (loader) {
+      setTimeout(() => loader.classList.add("off"), 250);
+    }
 
-function setStatus(text) {
-  const s = $("#statusTxt");
-  if (s) s.textContent = text;
-}
+    if (!avatarBtn || !menuOverlay) {
+      console.warn("[menu] Elementos não encontrados:", {
+        avatarBtn: !!avatarBtn,
+        menuOverlay: !!menuOverlay
+      });
+      return;
+    }
 
-function applyRoleUI() {
-  try {
-    if (window.UI && UI.isAdmin && UI.isAdmin()) setStatus("admin");
-    else setStatus("Lista VIP");
-  } catch {
-    setStatus("Lista VIP");
-  }
-}
+    function openMenu(){
+      menuOverlay.classList.add("on");
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
 
-function wireButtons() {
-  const btnProdutos = $("#btnProdutos");
-  if (btnProdutos) {
-    btnProdutos.addEventListener("click", (e) => {
+    function closeMenu(){
+      menuOverlay.classList.remove("on");
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    function toggleMenu(){
+      if (menuOverlay.classList.contains("on")) closeMenu();
+      else openMenu();
+    }
+
+    // abre/fecha pelo avatar
+    avatarBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      window.location.href = "./products.html";
+      e.stopPropagation();
+      toggleMenu();
+    }, { passive:false });
+
+    // fecha clicando fora do card
+    menuOverlay.addEventListener("click", (e) => {
+      // só fecha se clicar no fundo (overlay), não dentro do card
+      if (e.target === menuOverlay) closeMenu();
     });
-  }
 
-  const btnComo = $("#btnComo");
-  if (btnComo) {
-    btnComo.addEventListener("click", (e) => {
-      e.preventDefault();
-      scrollToEl("sec-como");
+    // fecha no ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
     });
-  }
 
-  const btnSuporte = $("#btnSuporte");
-  if (btnSuporte) {
-    btnSuporte.addEventListener("click", (e) => {
-      e.preventDefault();
-      scrollToEl("sec-suporte");
+    // ==== Navegação dos itens do menu (troca os links aqui se quiser) ====
+    function go(url){ window.location.href = url; }
+
+    const routes = {
+      miAdmin:  "admin.html",
+      miAdminP: "adminp.html",
+      miAdd:    "add.html",
+      miLogs:   "logs.html",
+      miGraf:   "grafico.html",
+      miPay:    "pagamentos.html",
+      miLogin:  "login.html",
+      miLogout: "index.html"
+    };
+
+    Object.keys(routes).forEach((id) => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener("click", () => go(routes[id]));
     });
-  }
-
-  const buyLojista = $("#buyLojista");
-  if (buyLojista) {
-    buyLojista.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href = "./checkout.html?id=lojista";
-    });
-  }
-
-  const buyFinal = $("#buyFinal");
-  if (buyFinal) {
-    buyFinal.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href = "./checkout.html?id=final";
-    });
-  }
-
-  const detLojista = $("#detLojista");
-  if (detLojista) detLojista.addEventListener("click", () => alert("Detalhes do plano Lojista (em breve)"));
-
-  const detFinal = $("#detFinal");
-  if (detFinal) detFinal.addEventListener("click", () => alert("Detalhes do plano Consumidor Final (em breve)"));
-}
-
-function initLoader() {
-  const loader = $("#loader");
-  if (!loader) return;
-  setTimeout(() => loader.classList.add("off"), 220);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  initLoader();
-  try { if (window.UI && UI.wireMenu) UI.wireMenu(); } catch {}
-  applyRoleUI();
-  wireButtons();
-});
+  });
+})();
