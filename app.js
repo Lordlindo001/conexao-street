@@ -179,14 +179,16 @@ function wireMenu() {
 }
 
 function wireButtons() {
+  // ✅ Ver fornecedores -> abre a vitrine
   const btnProdutos = $("#btnProdutos");
   if (btnProdutos) {
     btnProdutos.addEventListener("click", (e) => {
       e.preventDefault();
-      scrollToEl("sec-fornecedores");
+      window.location.href = "./products.html";
     });
   }
 
+  // mantém scroll pro "Como funciona"
   const btnComo = $("#btnComo");
   if (btnComo) {
     btnComo.addEventListener("click", (e) => {
@@ -195,6 +197,7 @@ function wireButtons() {
     });
   }
 
+  // mantém scroll pro "Suporte"
   const btnSuporte = $("#btnSuporte");
   if (btnSuporte) {
     btnSuporte.addEventListener("click", (e) => {
@@ -203,11 +206,12 @@ function wireButtons() {
     });
   }
 
+  // ✅ Comprar -> abre checkout único com o produto correto
   const buyLojista = $("#buyLojista");
   if (buyLojista) {
     buyLojista.addEventListener("click", (e) => {
       e.preventDefault();
-      alert("Abrir checkout: Fornecedores Logistas R$ 30,00 (em breve)");
+      window.location.href = "./checkout.html?id=lojista";
     });
   }
 
@@ -215,10 +219,11 @@ function wireButtons() {
   if (buyFinal) {
     buyFinal.addEventListener("click", (e) => {
       e.preventDefault();
-      alert("Abrir checkout: Fornecedores Consumidor Final R$ 25,00 (em breve)");
+      window.location.href = "./checkout.html?id=final";
     });
   }
 
+  // Detalhes (se quiser depois eu transformo em modal/página)
   const detLojista = $("#detLojista");
   if (detLojista) detLojista.addEventListener("click", () => alert("Detalhes do plano Lojista (em breve)"));
 
