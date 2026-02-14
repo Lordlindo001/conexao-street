@@ -14,8 +14,12 @@ function setStatus(text) {
 }
 
 function applyRoleUI() {
-  if (UI && UI.isAdmin && UI.isAdmin()) setStatus("admin");
-  else setStatus("Lista VIP");
+  try {
+    if (window.UI && UI.isAdmin && UI.isAdmin()) setStatus("admin");
+    else setStatus("Lista VIP");
+  } catch {
+    setStatus("Lista VIP");
+  }
 }
 
 function wireButtons() {
@@ -74,7 +78,7 @@ function initLoader() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initLoader();
-  if (window.UI && UI.wireMenu) UI.wireMenu();
+  try { if (window.UI && UI.wireMenu) UI.wireMenu(); } catch {}
   applyRoleUI();
   wireButtons();
 });
