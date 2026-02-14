@@ -1,17 +1,12 @@
 "use strict";
 
 const el = (id) => document.getElementById(id);
-
 const loader = el("loader");
 
 function showLoader(on){
   if(!loader) return;
   if(on) loader.classList.remove("off");
   else loader.classList.add("off");
-}
-
-function moneyBRL(v){
-  return (Number(v)||0).toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
 }
 
 function getParam(name){
@@ -33,6 +28,10 @@ function getPricingRules(){
   const raw = localStorage.getItem("cs_pricing_rules");
   if(!raw) return {};
   try { return JSON.parse(raw); } catch { return {}; }
+}
+
+function moneyBRL(v){
+  return (Number(v)||0).toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
 }
 
 function calcPrice(basePrice, rule){
@@ -61,7 +60,6 @@ function loadJSON(key, fallback) {
   if (!raw) return fallback;
   try { return JSON.parse(raw); } catch { return fallback; }
 }
-
 function saveJSON(key, val) {
   localStorage.setItem(key, JSON.stringify(val));
 }
@@ -96,7 +94,7 @@ async function boot(){
   showLoader(true);
 
   try{
-    if (window.UI && UI.wireMenu) UI.wireMenu();
+    try { if (window.UI && UI.wireMenu) UI.wireMenu(); } catch {}
 
     const id = getParam("id");
     if(!id) throw new Error("Produto não informado (sem ?id=...)");
@@ -121,12 +119,12 @@ async function boot(){
     if(desc) desc.textContent = p.description || "";
     if(price) price.textContent = moneyBRL(pricing.final);
 
-    if(pricing.note){
+    if(pricing.note && promoHint && statusChip){
       promoHint.style.display = "";
       promoHint.textContent = pricing.note;
       statusChip.textContent = "promo";
       statusChip.className = "chip ok";
-    }else{
+    } else if (promoHint && statusChip){
       promoHint.style.display = "none";
       statusChip.textContent = "valor único";
       statusChip.className = "chip ok";
@@ -134,7 +132,7 @@ async function boot(){
 
     const copyPix = el("copyPix");
     const payKey = el("payKey");
-    if(copyPix){
+    if(copyPix && payKey){
       copyPix.addEventListener("click", async () => {
         try{
           await navigator.clipboard.writeText(payKey.value || "");
@@ -158,28 +156,35 @@ async function boot(){
     function refreshAccessState(email){
       const approved = isApproved(email, p.id);
 
-      accessBox.style.display = "";
+      if (accessBox) accessBox.style.display = "";
       if(!approved){
-        accessHint.textContent = "Pagamento registrado. Agora aguarde a aprovação do admin para liberar o acesso.";
-        accessBtn.disabled = true;
-        accessBtn.textContent = "Aguardando aprovação";
+        if (accessHint) accessHint.textContent = "Pagamento registrado. Agora aguarde a aprovação do admin para liberar o acesso.";
+        if (accessBtn){
+          accessBtn.disabled = true;
+          accessBtn.textContent = "Aguardando aprovação";
+          accessBtn.onclick = null;
+        }
         return;
       }
 
       if(p.whatsapp_invite){
-        accessHint.textContent = "Aprovado ✅ Clique para entrar no Grupo VIP.";
-        accessBtn.disabled = false;
-        accessBtn.textContent = "Entrar no Grupo VIP";
-        accessBtn.onclick = () => window.open(p.whatsapp_invite, "_blank", "noopener,noreferrer");
+        if (accessHint) accessHint.textContent = "Aprovado ✅ Clique para entrar no Grupo VIP.";
+        if (accessBtn){
+          accessBtn.disabled = false;
+          accessBtn.textContent = "Entrar no Grupo VIP";
+          accessBtn.onclick = () => window.open(p.whatsapp_invite, "_blank", "noopener,noreferrer");
+        }
       }else{
-        accessHint.textContent = "Aprovado ✅ Acesse sua Área Membro para ver seu conteúdo.";
-        accessBtn.disabled = false;
-        accessBtn.textContent = "Abrir Área Membro";
-        accessBtn.onclick = () => window.location.href = "./member.html";
+        if (accessHint) accessHint.textContent = "Aprovado ✅ Acesse sua Área Membro para ver seu conteúdo.";
+        if (accessBtn){
+          accessBtn.disabled = false;
+          accessBtn.textContent = "Abrir Área Membro";
+          accessBtn.onclick = () => window.location.href = "./member.html";
+        }
       }
     }
 
-    if(confirmBtn){
+    if(confirmBtn && buyerName && buyerEmail){
       confirmBtn.addEventListener("click", () => {
         const nm = (buyerName.value || "").trim();
         const em = (buyerEmail.value || "").trim().toLowerCase();
@@ -187,7 +192,7 @@ async function boot(){
         if(!nm || nm.length < 2) return alert("Digite seu nome.");
         if(!em || !em.includes("@")) return alert("Digite um e-mail válido.");
 
-        if (window.UI && UI.setUser) UI.setUser({ name: nm, email: em });
+        try { if (window.UI && UI.setUser) UI.setUser({ name: nm, email: em }); } catch {}
 
         ensureOrder(em, nm, p);
 
@@ -196,12 +201,16 @@ async function boot(){
       });
     }
 
-    if (window.UI && UI.isLogged && UI.getUser) {
-      const u = UI.getUser();
-      if (u && u.email) {
-        accessBox.style.display = "";
-        refreshAccessState(u.email.toLowerCase());
+    // Se já logado, já mostra status
+    try {
+      if (window.UI && UI.isLogged && UI.getUser && UI.isLogged()) {
+        const u = UI.getUser();
+        if (u && u.email) refreshAccessState(String(u.email).toLowerCase());
+      } else {
+        if (accessBox) accessBox.style.display = "";
       }
+    } catch {
+      if (accessBox) accessBox.style.display = "";
     }
 
   }catch(e){
