@@ -1,14 +1,11 @@
-// app.js — menu do avatar (overlay) + loader + rotas GitHub Pages safe
+// app.js — menu do avatar (overlay) + loader + rotas (GitHub Pages safe)
 (() => {
   function $(id){ return document.getElementById(id); }
 
-  // resolve links relativo ao URL atual (GitHub Pages safe, mesmo com querystring)
-  function resolveHref(to){
-    return new URL(to, window.location.href).toString();
-  }
-
-  function go(to){
-    window.location.assign(resolveHref(to));
+  // navegação segura pra GitHub Pages (evita path quebrado)
+  function go(path){
+    const url = new URL(path, window.location.href);
+    window.location.href = url.toString();
   }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -61,34 +58,33 @@
       if (e.key === "Escape") closeMenu();
     });
 
-    // ✅ Rotas corrigidas para os arquivos que EXISTEM no repo
-    // (e deixa pronto pra adicionar "Painel membro" com id="miMember")
+    // ✅ ROTAS REAIS DO SEU REPO (sem 404)
+    // (e o que não tem página própria vai pro admin.html#secao)
     const routes = {
-      miAdmin:  "./admin.html",
-      miAdminP: "./admin-p.html",
+      miAdmin:  "admin.html",
+      miAdminP: "admin-p.html",
+      miMember: "member.html",
 
-      // se você adicionar esse item no HTML do menu:
-      // <div class="mi" id="miMember"><b>Painel membro</b><small>quem já comprou</small></div>
-      miMember: "./member.html",
+      miAdd:    "admin.html#add",
+      miLogs:   "admin.html#logs",
+      miGraf:   "admin.html#grafico",
+      miPay:    "admin.html#pagamentos",
+      miLogin:  "admin.html#login",
 
-      // Esses itens podem apontar para seções do admin-p (sem criar páginas novas)
-      miAdd:    "./admin-p.html#add",
-      miLogs:   "./admin-p.html#logs",
-      miGraf:   "./admin-p.html#grafico",
-      miPay:    "./admin-p.html#pagamentos",
-      miLogin:  "./admin-p.html#login",
-
-      miLogout: "./index.html"
+      // "Sair" volta pra home (pode trocar se quiser)
+      miLogout: "index.html"
     };
 
     Object.keys(routes).forEach((id) => {
       const el = $(id);
       if (!el) return;
+
       el.addEventListener("click", (e) => {
         e.preventDefault();
         closeMenu();
-        go(routes[id]);
-      });
+        // micro delay só pra animação fechar antes de navegar
+        setTimeout(() => go(routes[id]), 60);
+      }, { passive:false });
     });
   });
 })();
