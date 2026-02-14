@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin | Conexão Street</title>
+
   <style>
     :root{
       --bg:#07070A;
@@ -29,7 +30,7 @@
     html{background:var(--bg)}
     body{
       margin:0;
-      background:transparent; /* <- antes tinha radial-gradient aqui */
+      background:transparent;
       color:var(--txt);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
       overflow-x:hidden;
@@ -339,6 +340,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Loader -->
@@ -523,7 +525,7 @@
             <div class="mini">
               <div>
                 <b>Admin</b><br/>
-                <small id="whoTxt">nao autenticado</small>
+                <small id="whoTxt">Nao autenticado</small>
               </div>
               <div class="righty">
                 <span class="chip" id="authChip">off</span>
@@ -533,7 +535,7 @@
             <div class="mini">
               <div>
                 <b>Dispositivo</b><br/>
-                <small id="devTxt">salvo nesse navegador</small>
+                <small id="devTxt">Salvo nesse navegador</small>
               </div>
               <div class="righty">
                 <span class="chip">local</span>
@@ -547,7 +549,7 @@
         </div>
 
         <div class="footer">
-          © Conexão Street
+          © Conexão Street | Fornecedores 
         </div>
 
       </div>
@@ -555,147 +557,7 @@
     </div>
   </div>
 
-  <script>
-    "use strict";
-
-    const PIN = "Euteamoluptameuamor010324c";
-    const KEY = "cs_admin_ok";
-
-    const el = (id) => document.getElementById(id);
-
-    const loader = el("loader");
-    const pin = el("pin");
-    const enter = el("enter");
-    const leave = el("leave");
-    const gateBox = el("gateBox");
-    const kpis = el("kpis");
-    const orders = el("orders");
-
-    const statusChip = el("statusChip");
-    const whoTxt = el("whoTxt");
-    const authChip = el("authChip");
-
-    const kpiSales = el("kpiSales");
-    const kpiPend = el("kpiPend");
-    const kpiLogs = el("kpiLogs");
-
-    const show = (node) => node && (node.style.display = "");
-    const hide = (node) => node && (node.style.display = "none");
-
-    function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-    function setBadges(isOn){
-      if(isOn){
-        statusChip.textContent = "liberado";
-        statusChip.className = "chip ok";
-        whoTxt.textContent = "autenticado";
-        authChip.textContent = "on";
-        authChip.className = "chip ok";
-      }else{
-        statusChip.textContent = "travado";
-        statusChip.className = "chip warn";
-        whoTxt.textContent = "nao autenticado";
-        authChip.textContent = "off";
-        authChip.className = "chip";
-      }
-    }
-
-    function isAuthed(){
-      return localStorage.getItem(KEY) === "1";
-    }
-
-    async function setAuthed(v){
-      if(v){
-        localStorage.setItem(KEY, "1");
-
-        // mini carregando bonito pra entrar
-        show(loader);
-        loader.classList.remove("off");
-        await sleep(450);
-
-        hide(gateBox);
-        show(kpis);
-        show(orders);
-        show(leave);
-
-        // preencher KPIs demo
-        kpiSales.textContent = "R$ 29,90";
-        kpiPend.textContent = "1";
-        kpiLogs.textContent = "18";
-
-        setBadges(true);
-
-        await sleep(220);
-        loader.classList.add("off");
-      }else{
-        localStorage.removeItem(KEY);
-
-        show(gateBox);
-        hide(kpis);
-        hide(orders);
-        hide(leave);
-
-        pin.value = "";
-        setBadges(false);
-      }
-    }
-
-    function toast(msg){
-      alert(msg);
-    }
-
-    function initLoader(){
-      requestAnimationFrame(() => {
-        loader.classList.add("off");
-      });
-    }
-
-    enter.addEventListener("click", async () => {
-      const v = (pin.value || "").trim();
-      if(v === PIN){
-        await setAuthed(true);
-      }else{
-        toast("PIN incorreto");
-        pin.focus();
-      }
-    });
-
-    pin.addEventListener("keydown", async (e) => {
-      if(e.key === "Enter"){
-        e.preventDefault();
-        enter.click();
-      }
-    });
-
-    leave.addEventListener("click", () => setAuthed(false));
-
-    el("goAdd").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
-      toast("Adicionar fornecedor em breve");
-    });
-
-    el("goLogs").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
-      toast("Logs em breve");
-    });
-
-    el("goChart").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
-      toast("Grafico em breve");
-    });
-
-    el("goPay").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
-      el("orders").scrollIntoView({behavior:"smooth"});
-    });
-
-    // Boot
-    initLoader();
-    if(isAuthed()){
-      setAuthed(true);
-    }else{
-      setAuthed(false);
-    }
-  </script>
+  <!-- ✅ Script separado -->
+  <script src="./admin.js"></script>
 </body>
 </html>
