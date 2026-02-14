@@ -2,9 +2,15 @@
 
 /*
   UI + Auth mock (funciona sem Supabase)
-  - Logo no topo direito abre mini menu
+  - Menu abre por vários botões (se existirem):
+      #logoMenuBtn  (topo direito)
+      #brandBtn     (área da marca topo esquerdo)
+      #logoBtn      (quadrado da logo topo esquerdo)
+      #avatarBtn    (opcional)
+      .logoMenuBtn  (fallback por classe)
+  - Fix Android: evita "toggle duplo" (pointerdown + click) no mesmo toque
   - Usuário "logado" = localStorage.cs_user
-  - Admin UI continua sendo cs_admin_ok (seu padrão)
+  - Admin UI = localStorage.cs_admin_ok
 */
 
 const UI = (() => {
@@ -39,7 +45,6 @@ const UI = (() => {
   function ensureLogged() {
     if (isLogged()) return true;
 
-    // login simples (mock)
     const name = prompt("Seu nome:");
     if (!name) return false;
 
@@ -77,38 +82,89 @@ const UI = (() => {
     const miMember = $("#miMember");
     const miLogin = $("#miLogin");
     const miLogout = $("#miLogout");
-    const miAdmin = $("#miAdmin");     // opcional (se quiser)
-    const miAdminP = $("#miAdminP");   // opcional (se quiser)
+    const miAdmin = $("#miAdmin");
+    const miAdminP = $("#miAdminP");
 
     const logged = isLogged();
     const admin = isAdmin();
 
     if (miHome) miHome.style.display = "";
-    if (miMember) miMember.style.display = logged ? "" : "none";
+
+    // Área membro sempre visível; valida login no clique
+    if (miMember) miMember.style.display = "";
 
     if (miLogin) miLogin.style.display = logged ? "none" : "";
     if (miLogout) miLogout.style.display = logged ? "" : "none";
 
-    // Se quiser manter admin acessível pelo menu (só quando admin)
     if (miAdmin) miAdmin.style.display = admin ? "" : "none";
     if (miAdminP) miAdminP.style.display = admin ? "" : "none";
   }
 
-  function wireMenu() {
-    const btn = $("#logoMenuBtn");
-    const overlay = $("#menuBackdrop");
+  // ✅ Evita toggle duplo (pointerdown + click) no mesmo toque
+  function bindMenuOpener(el) {
+    if (!el) return;
 
-    if (btn) {
-      btn.addEventListener("pointerdown", (e) => {
+    // flag por elemento
+    el.__cs_skip_click = false;
+
+    const openHandler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      applyMenuVisibility();
+      toggleMenu();
+    };
+
+    // pointerdown/touchstart disparam primeiro: marcamos pra ignorar o click que vem depois
+    const firstHandler = (e) => {
+      el.__cs_skip_click = true;
+      setTimeout(() => (el.__cs_skip_click = false), 450);
+      openHandler(e);
+    };
+
+    const clickHandler = (e) => {
+      if (el.__cs_skip_click) {
         e.preventDefault();
         e.stopPropagation();
-        applyMenuVisibility();
-        toggleMenu();
-      });
+        return;
+      }
+      openHandler(e);
+    };
+
+    el.addEventListener("pointerdown", firstHandler);
+    el.addEventListener("touchstart", firstHandler, { passive: false });
+    el.addEventListener("click", clickHandler);
+  }
+
+  function wireMenu() {
+    const overlay = $("#menuBackdrop");
+    const menu = $("#userMenu");
+
+    // ✅ Abre menu por esses IDs (se existirem na página)
+    bindMenuOpener($("#logoMenuBtn"));
+    bindMenuOpener($("#brandBtn"));
+    bindMenuOpener($("#logoBtn"));
+    bindMenuOpener($("#avatarBtn"));
+
+    // ✅ fallback por classe (caso tenha só .logoMenuBtn)
+    document.querySelectorAll(".logoMenuBtn").forEach((btn) => bindMenuOpener(btn));
+
+    // Fecha clicando fora
+    if (overlay) {
+      const close = (e) => {
+        e.preventDefault();
+        closeMenu();
+      };
+      overlay.addEventListener("pointerdown", close);
+      overlay.addEventListener("touchstart", close, { passive: false });
+      overlay.addEventListener("click", close);
     }
 
-    if (overlay) {
-      overlay.addEventListener("pointerdown", () => closeMenu());
+    // Impede clique “vazar” dentro do menu
+    if (menu) {
+      menu.addEventListener("pointerdown", (e) => e.stopPropagation());
+      menu.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
+      menu.addEventListener("click", (e) => e.stopPropagation());
     }
 
     document.addEventListener("keydown", (e) => {
@@ -145,7 +201,6 @@ const UI = (() => {
       applyMenuVisibility();
     });
 
-    // Admin (opcional)
     const miAdmin = $("#miAdmin");
     if (miAdmin) miAdmin.addEventListener("click", () => {
       closeMenu();
