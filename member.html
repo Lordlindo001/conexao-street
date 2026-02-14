@@ -36,12 +36,19 @@
     }
     .wrap{max-width:1100px; margin:0 auto; padding:14px}
     .bar{display:flex; align-items:center; justify-content:space-between; gap:12px}
-    .brand{display:flex; align-items:center; gap:10px}
+
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
     .logo{
       width:38px; height:38px; border-radius:12px;
       background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.35));
       box-shadow:0 10px 30px rgba(122,43,255,.25);
       border:1px solid rgba(255,255,255,.12);
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     /* Logo button (top-right) */
@@ -56,7 +63,11 @@
       -webkit-tap-highlight-color: transparent;
       position:relative;
     }
-    .logoMenuBtn img{width:100%; height:100%; object-fit:cover; display:block}
+    .logoMenuBtn img{
+      width:100%; height:100%;
+      object-fit:cover; display:block;
+      pointer-events:none;
+    }
     .logoMenuBtn:after{
       content:""; position:absolute; inset:-1px; border-radius:14px;
       border:1px solid rgba(122,43,255,.35);
@@ -187,8 +198,6 @@
     <div class="mi" id="miMember"><b>Área membro</b><small>seus acessos</small></div>
     <div class="mi" id="miLogin"><b>Entrar</b><small>login</small></div>
     <div class="mi" id="miLogout"><b>Sair</b><small>limpar</small></div>
-
-    <!-- (opcional) admin -->
     <div class="mi" id="miAdmin"><b>Painel administrador</b><small>dono</small></div>
     <div class="mi" id="miAdminP"><b>Painel Administrador P.</b><small>dono</small></div>
   </div>
@@ -196,8 +205,8 @@
   <div class="top">
     <div class="wrap">
       <div class="bar">
-        <div class="brand">
-          <div class="logo"></div>
+        <div class="brand" id="brandBtn">
+          <div class="logo" id="logoBtn"></div>
           <div>
             <b>Conexão Street</b><br/>
             <small style="color:var(--muted); font-size:12px;">Área Membro</small>
