@@ -30,11 +30,11 @@
     html{background:var(--bg)}
     body{
       margin:0;
-      background:transparent; /* <- antes tinha radial-gradient aqui */
+      background:transparent;
       color:var(--txt);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
       overflow-x:hidden;
-      position:relative; /* pro ::before funcionar */
+      position:relative;
     }
 
     /* ✅ Roxo só no começo (topo) */
@@ -42,7 +42,7 @@
       content:"";
       position:absolute;
       top:0; left:0; right:0;
-      height:280px; /* controla até onde o roxo aparece */
+      height:280px;
       background:
         radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.16), transparent 55%),
         radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.10), transparent 60%);
@@ -53,7 +53,7 @@
     a{color:inherit; text-decoration:none}
     button{font-family:inherit}
 
-    /* ✅ FIX ANDROID: backdrop-filter dá faixa roxa (bug do Chrome Android) */
+    /* ✅ FIX ANDROID: sem backdrop-filter */
     .top{
       position:sticky; top:0; z-index:40;
       backdrop-filter:none;
@@ -231,9 +231,7 @@
       display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px;
     }
 
-    .steps{
-      display:grid; gap:10px;
-    }
+    .steps{display:grid; gap:10px}
     .step{
       border:1px solid rgba(255,255,255,.08);
       background: rgba(255,255,255,.02);
@@ -259,7 +257,7 @@
       border-top:1px solid var(--line);
     }
 
-    /* Menu overlay (sem blur pra não buggar no Android) */
+    /* Menu overlay */
     .menuOverlay{
       position:fixed; inset:0;
       z-index:80;
@@ -270,7 +268,6 @@
     }
     .menuOverlay.on{display:block}
 
-    /* animação do menu */
     .menuCard{
       width:min(520px, 96vw);
       margin:70px auto 0;
@@ -395,7 +392,7 @@
     <div class="menuCard" role="dialog" aria-modal="true">
       <div class="menuList">
         <div class="mi" id="miAdmin"><b>Painel administrador</b><small>somente dono</small></div>
-        <div class="mi" id="miAdmin"><b>Painel administradorP.</b><small>somente dono</small></div>
+        <div class="mi" id="miAdminP"><b>Painel Administrador P.</b><small>somente dono</small></div>
         <div class="mi" id="miAdd"><b>Adicionar fornecedor</b><small>admin</small></div>
         <div class="mi" id="miLogs"><b>Logs</b><small>admin</small></div>
         <div class="mi" id="miGraf"><b>Grafico</b><small>admin</small></div>
