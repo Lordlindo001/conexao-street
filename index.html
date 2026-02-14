@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#07070A" />
+  <link rel="icon" href="./logo.png" />
   <title>Conexão Street</title>
 
   <style>
@@ -63,19 +65,13 @@
     .wrap{max-width:1100px; margin:0 auto; padding:14px 14px}
     .bar{display:flex; align-items:center; gap:12px; justify-content:space-between}
 
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .brand{display:flex; align-items:center; gap:10px}
     .logo{
       width:38px; height:38px; border-radius:12px;
       background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.35));
       box-shadow:0 10px 30px rgba(122,43,255,.25);
       border:1px solid rgba(255,255,255,.12);
       flex:0 0 auto;
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
     }
     .brand b{letter-spacing:.2px}
     .brand small{color:var(--muted)}
@@ -96,6 +92,7 @@
     .pill:active{transform: scale(.98)}
     .pill:hover{border-color: rgba(122,43,255,.30); background: rgba(122,43,255,.10)}
 
+    /* ✅ Botão superior direito com LOGO */
     .logoMenuBtn{
       width:38px; height:38px;
       border-radius:14px;
@@ -106,17 +103,16 @@
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
       position:relative;
+      flex:0 0 auto;
     }
-    .logoMenuBtn img{
-      width:100%; height:100%; object-fit:cover; display:block;
-      pointer-events:none;
-    }
+    .logoMenuBtn img{width:100%; height:100%; object-fit:cover; display:block}
     .logoMenuBtn:after{
       content:""; position:absolute; inset:-1px; border-radius:14px;
       border:1px solid rgba(122,43,255,.35);
       pointer-events:none;
     }
 
+    /* Mini menu (dropdown) */
     .menuBackdrop{
       position:fixed; inset:0; z-index:79;
       background: rgba(0,0,0,.35);
@@ -159,56 +155,204 @@
     .mi b{font-size:14px}
     .mi small{color:var(--muted)}
 
-    /* ... (restante do seu CSS continua igual) ... */
-    .grid{display:grid; gap:14px; grid-template-columns: 1.2fr .8fr; align-items:start; padding:16px 14px 28px;}
-    @media (max-width: 920px){ .grid{grid-template-columns: 1fr} }
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: 1.2fr .8fr;
+      align-items:start;
+      padding:16px 14px 28px;
+    }
+    @media (max-width: 920px){
+      .grid{grid-template-columns: 1fr}
+    }
 
-    .panel, .hero, .card{border:1px solid var(--line); background:rgba(255,255,255,.03); border-radius: var(--r);}
-    .hero{position:relative; overflow:hidden; box-shadow: var(--shadow); transform: translateZ(0);}
-    .heroGlow{position:absolute; inset:-2px; background: radial-gradient(520px 240px at 20% 10%, rgba(122,43,255,.22), transparent 60%), radial-gradient(480px 260px at 90% 20%, rgba(155,107,255,.14), transparent 65%); pointer-events:none; opacity:.95; z-index:0;}
+    .panel, .hero, .card{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      border-radius: var(--r);
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      transform: translateZ(0);
+    }
+    .heroGlow{
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(520px 240px at 20% 10%, rgba(122,43,255,.22), transparent 60%),
+        radial-gradient(480px 260px at 90% 20%, rgba(155,107,255,.14), transparent 65%);
+      pointer-events:none;
+      opacity:.95;
+      z-index:0;
+    }
     .hwrap{padding:18px; position:relative; z-index:1}
 
-    .tag{display:inline-flex; align-items:center; gap:8px; font-size:12px; color:rgba(255,255,255,.92); background:rgba(122,43,255,.16); border:1px solid rgba(122,43,255,.25); padding:7px 10px; border-radius:999px;}
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px;
+      color:rgba(255,255,255,.92);
+      background:rgba(122,43,255,.16);
+      border:1px solid rgba(122,43,255,.25);
+      padding:7px 10px;
+      border-radius:999px;
+    }
     .tag i{width:8px;height:8px;border-radius:99px;background:var(--ok);display:inline-block}
 
     h1{margin:12px 0 8px; font-size:24px; line-height:1.2}
     .sub{color:var(--muted); line-height:1.45}
 
     .btnRow{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
-    .btn{padding:11px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--txt); display:inline-flex; align-items:center; justify-content:center; gap:10px; font-weight:800; cursor:pointer; transition: transform .12s ease, background .15s ease, border-color .15s ease; user-select:none; -webkit-tap-highlight-color: transparent;}
+    .btn{
+      padding:11px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--txt);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .12s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
     .btn:hover{border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.06)}
     .btn:active{transform: scale(.985)}
-    .btn.primary{border-color: rgba(122,43,255,.55); background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55)); box-shadow:0 14px 35px rgba(122,43,255,.22);}
+    .btn.primary{
+      border-color: rgba(122,43,255,.55);
+      background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
+      box-shadow:0 14px 35px rgba(122,43,255,.22);
+    }
 
-    .sectionTitle{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:14px 0 10px;}
+    .sectionTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin:14px 0 10px;
+    }
     .sectionTitle b{font-size:14px}
-    .chip{font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.12); color:rgba(255,255,255,.92); background:rgba(255,255,255,.04); white-space:nowrap;}
+    .chip{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.92);
+      background:rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
     .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
     .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
 
-    .card{padding:16px; background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)); position:relative; overflow:hidden; transform: translateZ(0);}
-    .cardGlow{position:absolute; inset:-2px; background: radial-gradient(420px 220px at 20% 10%, rgba(122,43,255,.14), transparent 62%), radial-gradient(380px 220px at 90% 10%, rgba(155,107,255,.10), transparent 65%); pointer-events:none; opacity:.9; z-index:0;}
+    .card{
+      padding:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
+      position:relative;
+      overflow:hidden;
+      transform: translateZ(0);
+    }
+
+    .cardGlow{
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(420px 220px at 20% 10%, rgba(122,43,255,.14), transparent 62%),
+        radial-gradient(380px 220px at 90% 10%, rgba(155,107,255,.10), transparent 65%);
+      pointer-events:none;
+      opacity:.9;
+      z-index:0;
+    }
     .cardInner{position:relative; z-index:1}
+
     .planTitle{color:var(--muted); font-size:12px}
     .planName{font-size:22px; font-weight:900; margin-top:6px}
     .price{font-size:26px; font-weight:950; margin:8px 0 10px}
     .ul{margin:0; padding-left:18px; color:rgba(255,255,255,.88)}
     .ul li{margin:6px 0}
-    .twoBtn{display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px;}
+    .twoBtn{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:14px;
+    }
+
     .steps{display:grid; gap:10px}
-    .step{border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.02); border-radius:16px; padding:12px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+    .step{
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      border-radius:16px;
+      padding:12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
     .step b{font-size:13px}
     .step small{display:block; color:var(--muted); margin-top:4px; line-height:1.35}
-    .supportCard{border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.02); border-radius:16px; padding:12px;}
+
+    .supportCard{
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      border-radius:16px;
+      padding:12px;
+    }
     .hint{color:var(--muted); font-size:12px; line-height:1.45}
-    .footer{color:rgba(255,255,255,.55); padding:20px 14px; text-align:center; border-top:1px solid var(--line);}
-    .loaderWrap{position:fixed; inset:0; z-index:9999; background: radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.18), transparent 55%), radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.12), transparent 60%), rgba(7,7,10,.92); display:flex; align-items:center; justify-content:center; padding:18px; transition: opacity .25s ease, visibility .25s ease; transform: translateZ(0);}
-    .loaderWrap.off{opacity:0; visibility:hidden; pointer-events:none;}
-    .loaderCard{width:min(520px, 96vw); border-radius:22px; border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.03); box-shadow: 0 26px 90px rgba(0,0,0,.55); overflow:hidden; position:relative;}
-    .shine{position:absolute; inset:-2px; background: linear-gradient(120deg, transparent 0%, rgba(122,43,255,.18) 25%, rgba(155,107,255,.12) 45%, transparent 70%); transform: translateX(-60%); animation: shine 1.2s linear infinite; opacity:.9; pointer-events:none;}
-    @keyframes shine{0%{transform: translateX(-60%)} 100%{transform: translateX(60%)}}
-    .loaderInner{padding:18px; display:flex; gap:14px; align-items:center;}
-    .spinner{width:44px; height:44px; border-radius:99px; border:3px solid rgba(255,255,255,.12); border-top-color: rgba(122,43,255,.9); border-right-color: rgba(155,107,255,.55); animation: spin .75s linear infinite; box-shadow: 0 10px 30px rgba(122,43,255,.18);}
+
+    .footer{
+      color:rgba(255,255,255,.55);
+      padding:20px 14px;
+      text-align:center;
+      border-top:1px solid var(--line);
+    }
+
+    .loaderWrap{
+      position:fixed; inset:0;
+      z-index:9999;
+      background:
+        radial-gradient(1200px 700px at 30% -10%, rgba(122,43,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(155,107,255,.12), transparent 60%),
+        rgba(7,7,10,.92);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      transition: opacity .25s ease, visibility .25s ease;
+      transform: translateZ(0);
+    }
+    .loaderWrap.off{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+    .loaderCard{
+      width:min(520px, 96vw);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      box-shadow: 0 26px 90px rgba(0,0,0,.55);
+      overflow:hidden;
+      position:relative;
+    }
+    .shine{
+      position:absolute; inset:-2px;
+      background: linear-gradient(120deg, transparent 0%, rgba(122,43,255,.18) 25%, rgba(155,107,255,.12) 45%, transparent 70%);
+      transform: translateX(-60%);
+      animation: shine 1.2s linear infinite;
+      opacity:.9;
+      pointer-events:none;
+    }
+    @keyframes shine{
+      0%{transform: translateX(-60%)}
+      100%{transform: translateX(60%)}
+    }
+    .loaderInner{
+      padding:18px;
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+    .spinner{
+      width:44px; height:44px;
+      border-radius:99px;
+      border:3px solid rgba(255,255,255,.12);
+      border-top-color: rgba(122,43,255,.9);
+      border-right-color: rgba(155,107,255,.55);
+      animation: spin .75s linear infinite;
+      box-shadow: 0 10px 30px rgba(122,43,255,.18);
+    }
     @keyframes spin{to{transform: rotate(360deg)}}
     .loaderTxt b{display:block; font-size:14px}
     .loaderTxt small{display:block; color:var(--muted); margin-top:4px; line-height:1.35}
@@ -217,17 +361,20 @@
 
 <body>
 
-  <div class="menuBackdrop" id="menuBackdrop"></div>
-  <div class="userMenu" id="userMenu" role="dialog" aria-modal="true">
+  <!-- mini menu -->
+  <div class="menuBackdrop" id="menuBackdrop" aria-hidden="true"></div>
+  <div class="userMenu" id="userMenu" role="dialog" aria-modal="true" aria-label="Menu do usuário">
     <div class="mi" id="miHome"><b>Página inicial</b><small>voltar</small></div>
     <div class="mi" id="miMember"><b>Área membro</b><small>seus acessos</small></div>
     <div class="mi" id="miLogin"><b>Entrar</b><small>login</small></div>
     <div class="mi" id="miLogout"><b>Sair</b><small>limpar</small></div>
+
+    <!-- (opcional) admin -->
     <div class="mi" id="miAdmin"><b>Painel administrador</b><small>dono</small></div>
     <div class="mi" id="miAdminP"><b>Painel Administrador P.</b><small>dono</small></div>
   </div>
 
-  <div class="loaderWrap" id="loader">
+  <div class="loaderWrap" id="loader" aria-label="Carregando">
     <div class="loaderCard">
       <div class="shine"></div>
       <div class="loaderInner">
@@ -243,8 +390,8 @@
   <div class="top">
     <div class="wrap">
       <div class="bar">
-        <div class="brand" id="brandBtn">
-          <div class="logo" id="logoBtn" aria-hidden="true"></div>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
           <div>
             <b>Conexão Street</b><br/>
             <small id="statusTxt">Lista VIP</small>
@@ -252,8 +399,12 @@
         </div>
 
         <div class="right">
-          <div class="pill">🛒 <b style="color:var(--txt)" id="cartCount">2</b> <span style="color:var(--muted)">listas</span></div>
-          <button class="logoMenuBtn" id="logoMenuBtn" type="button" title="Menu">
+          <div class="pill" aria-label="Quantidade de listas">
+            🛒 <b style="color:var(--txt)" id="cartCount">2</b>
+            <span style="color:var(--muted)">listas</span>
+          </div>
+
+          <button class="logoMenuBtn" id="logoMenuBtn" type="button" title="Menu" aria-label="Abrir menu">
             <img src="./logo.png" alt="Logo" />
           </button>
         </div>
@@ -265,6 +416,7 @@
     <div class="grid">
 
       <div>
+
         <div class="hero" id="topo">
           <div class="heroGlow"></div>
           <div class="hwrap">
@@ -283,11 +435,121 @@
           </div>
         </div>
 
-        <!-- resto do HTML continua igual ao seu -->
-        <!-- ... -->
+        <div style="height:14px"></div>
+
+        <div id="sec-fornecedores" class="panel">
+          <div style="padding:14px 14px 0">
+            <div class="sectionTitle">
+              <b>Fornecedores para comprar</b>
+              <span class="chip">2 opcoes</span>
+            </div>
+          </div>
+
+          <div style="padding:14px; display:grid; gap:12px">
+
+            <div class="card">
+              <div class="cardGlow"></div>
+              <div class="cardInner">
+                <div class="planTitle">Plano</div>
+                <div class="planName">Fornecedores logistas</div>
+                <div class="price">R$ 30,00</div>
+                <ul class="ul">
+                  <li>Lista focada em quem revende e tem loja</li>
+                  <li>Curadoria e atualizacoes futuras</li>
+                  <li>Acesso na area de produtos</li>
+                </ul>
+
+                <div class="twoBtn">
+                  <button class="btn primary" id="buyLojista" type="button">Comprar</button>
+                  <button class="btn" id="detLojista" type="button">Detalhes</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="cardGlow"></div>
+              <div class="cardInner">
+                <div class="planTitle">Plano</div>
+                <div class="planName">Fornecedores consumidor final</div>
+                <div class="price">R$ 25,00</div>
+                <ul class="ul">
+                  <li>Lista para compra pessoal</li>
+                  <li>Curadoria e atualizacoes futuras</li>
+                  <li>Acesso na area de produtos</li>
+                </ul>
+
+                <div class="twoBtn">
+                  <button class="btn primary" id="buyFinal" type="button">Comprar</button>
+                  <button class="btn" id="detFinal" type="button">Detalhes</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div id="sec-como" class="panel">
+          <div style="padding:14px">
+            <div class="sectionTitle">
+              <b>Como funciona</b>
+              <span class="chip">passo a passo</span>
+            </div>
+          </div>
+          <div style="padding:14px">
+            <div class="steps">
+              <div class="step">
+                <div>
+                  <b>1. Compra</b>
+                  <small>voce escolhe a lista e paga</small>
+                </div>
+                <span class="chip ok">ok</span>
+              </div>
+              <div class="step">
+                <div>
+                  <b>2. Login</b>
+                  <small>entra e acessa seus produtos</small>
+                </div>
+                <span class="chip">ok</span>
+              </div>
+              <div class="step">
+                <div>
+                  <b>3. Acesso</b>
+                  <small>conteudo liberado apos aprovacao</small>
+                </div>
+                <span class="chip">manual</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div id="sec-suporte" class="panel">
+          <div style="padding:14px">
+            <div class="sectionTitle">
+              <b>Suporte</b>
+              <span class="chip">contato</span>
+            </div>
+          </div>
+          <div style="padding:14px">
+            <div class="supportCard">
+              <b>Atendimento</b>
+              <div class="hint" style="margin-top:6px">
+                Canal de suporte em breve.
+              </div>
+            </div>
+            <div class="hint" style="margin-top:10px">
+              Se der algum problema, chama o suporte pelo canal oficial do grupo.
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div>
+
         <div class="panel">
           <div style="padding:14px">
             <div class="sectionTitle">
@@ -297,19 +559,44 @@
           </div>
           <div style="padding:14px">
             <div class="hint">
-              Toque na logo no topo direito OU na marca do topo esquerdo para abrir o menu.<br/>
+              Toque na logo no topo direito para abrir o menu.<br/>
               Usuário logado vê: Área Membro + Página Inicial.
+            </div>
+
+            <div style="height:10px"></div>
+
+            <div class="supportCard">
+              <b>Dica</b>
+              <div class="hint" style="margin-top:6px">
+                Se o menu nao abrir, atualiza a pagina ou limpa cache do navegador.
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="footer">© Conexão Street</div>
+        <div class="footer">
+          © Conexão Street
+        </div>
+
       </div>
 
     </div>
   </div>
 
   <script src="./ui.js"></script>
+
+  <!-- ✅ FAILSAFE: se app.js falhar, ainda assim o menu da logo fica ligado -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        if (window.UI && typeof UI.wireMenu === "function") UI.wireMenu();
+      } catch (e) {
+        // não trava a página
+        console.warn("Falha ao iniciar UI.wireMenu:", e);
+      }
+    });
+  </script>
+
   <script src="./app.js"></script>
 </body>
 </html>
