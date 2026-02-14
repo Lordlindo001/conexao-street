@@ -13,12 +13,14 @@
     window.CS_SUPABASE_URL ||
     window.SUPABASE_URL ||
     window.__SUPABASE_URL__ ||
+    (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) ||
     "";
 
   const SUPABASE_ANON_KEY =
     window.CS_SUPABASE_ANON_KEY ||
     window.SUPABASE_ANON_KEY ||
     window.__SUPABASE_ANON_KEY__ ||
+    (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_ANON_KEY) ||
     "";
 
   function $(id){ return document.getElementById(id); }
@@ -58,10 +60,14 @@
   }
 
   async function loadProducts(){
-    const res = await fetch("./products.json", { cache:"no-store" });
-    if(!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data : [];
+    try{
+      const res = await fetch("./products.json", { cache:"no-store" });
+      if(!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    }catch{
+      return [];
+    }
   }
 
   function toCents(price){
@@ -107,6 +113,10 @@
     if (btn) btn.disabled = true;
     setChip("criando…", false);
 
+    // id local (pra rastrear mesmo sem retornar row por RLS)
+    const local_ref =
+      (crypto?.randomUUID ? crypto.randomUUID() : `ref_${Date.now()}`);
+
     const payload = {
       buyer_name: buyer_name || null,
       buyer_email: buyer_email || null,
@@ -125,7 +135,7 @@
 
       payment_provider: "manual",
       provider: "manual",
-      provider_ref: (crypto?.randomUUID ? crypto.randomUUID() : `ref_${Date.now()}`),
+      provider_ref: local_ref,
 
       raw: {
         source: "checkout",
@@ -134,11 +144,12 @@
       }
     };
 
-    const { data, error } = await sb
+    // ✅ MUITO IMPORTANTE:
+    // Não fazemos .select().single() aqui, porque tua policy de SELECT é só admin.
+    // O INSERT pode estar liberado, mas o RETURNING cai na SELECT e quebra por RLS.
+    const { error } = await sb
       .from("cs_orders")
-      .insert(payload)
-      .select("id, created_at, buyer_email, product_id, payment_status, order_status")
-      .single();
+      .insert(payload);
 
     if (btn) btn.disabled = false;
 
@@ -157,15 +168,18 @@
       return;
     }
 
-    try{ localStorage.setItem("cs_last_order_id", String(data.id)); }catch{}
+    // salva “ref” local pra tu bater no admin e achar
+    try{ localStorage.setItem("cs_last_order_ref", String(local_ref)); }catch{}
+    try{ localStorage.setItem("cs_last_order_email", String(buyer_email || "")); }catch{}
+    try{ localStorage.setItem("cs_last_order_product", String(productId || "")); }catch{}
 
     setChip("pendente", false);
 
     const box = $("orderStatusBox");
-    if (box) box.textContent = `Pedido criado: ${data.id} (PENDENTE)`;
+    if (box) box.textContent = `Pedido criado (PENDENTE). Ref: ${local_ref}`;
 
-    alert(`Pedido criado ✅\nStatus: PENDENTE\nID: ${data.id}`);
-    console.log("[checkout-orders] pedido criado:", data);
+    alert(`Pedido criado ✅\nStatus: PENDENTE\nRef: ${local_ref}\n(agora o admin aprova)`);
+    console.log("[checkout-orders] pedido criado (sem retorno por RLS de SELECT). ref:", local_ref);
   }
 
   document.addEventListener("DOMContentLoaded", () => {
