@@ -2,15 +2,13 @@
 
 /*
   UI + Auth mock (funciona sem Supabase)
-  - Menu abre por vários botões (se existirem):
-      #logoMenuBtn  (topo direito)
-      #brandBtn     (área da marca topo esquerdo)
-      #logoBtn      (quadrado da logo topo esquerdo)
-      #avatarBtn    (opcional)
-      .logoMenuBtn  (fallback por classe)
-  - Fix Android: evita "toggle duplo" (pointerdown + click) no mesmo toque
+  - Logo no topo direito abre mini menu
   - Usuário "logado" = localStorage.cs_user
-  - Admin UI = localStorage.cs_admin_ok
+  - Admin UI continua sendo cs_admin_ok (seu padrão)
+  Fixes:
+  - Compatibilidade total: click + pointerdown + touchstart
+  - Não quebra se elementos não existirem
+  - Fecha ao clicar fora + ESC
 */
 
 const UI = (() => {
@@ -89,9 +87,7 @@ const UI = (() => {
     const admin = isAdmin();
 
     if (miHome) miHome.style.display = "";
-
-    // Área membro sempre visível; valida login no clique
-    if (miMember) miMember.style.display = "";
+    if (miMember) miMember.style.display = logged ? "" : "none";
 
     if (miLogin) miLogin.style.display = logged ? "none" : "";
     if (miLogout) miLogout.style.display = logged ? "" : "none";
@@ -100,89 +96,64 @@ const UI = (() => {
     if (miAdminP) miAdminP.style.display = admin ? "" : "none";
   }
 
-  // ✅ Evita toggle duplo (pointerdown + click) no mesmo toque
-  function bindMenuOpener(el) {
-    if (!el) return;
+  function safeGo(href) {
+    try { window.location.href = href; } catch {}
+  }
 
-    // flag por elemento
-    el.__cs_skip_click = false;
+  function wireMenu() {
+    const btn = $("#logoMenuBtn");
+    const overlay = $("#menuBackdrop");
+    const menu = $("#userMenu");
 
-    const openHandler = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+    // Se a página não tem menu/topo, não quebra.
+    if (!btn || !menu || !overlay) return;
 
+    const open = (e) => {
+      if (e) {
+        e.preventDefault?.();
+        e.stopPropagation?.();
+      }
       applyMenuVisibility();
       toggleMenu();
     };
 
-    // pointerdown/touchstart disparam primeiro: marcamos pra ignorar o click que vem depois
-    const firstHandler = (e) => {
-      el.__cs_skip_click = true;
-      setTimeout(() => (el.__cs_skip_click = false), 450);
-      openHandler(e);
-    };
+    // ✅ Compatibilidade máxima
+    btn.addEventListener("click", open, { passive: false });
+    btn.addEventListener("pointerdown", open, { passive: false });
+    btn.addEventListener("touchstart", open, { passive: false });
 
-    const clickHandler = (e) => {
-      if (el.__cs_skip_click) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-      openHandler(e);
-    };
+    const close = () => closeMenu();
 
-    el.addEventListener("pointerdown", firstHandler);
-    el.addEventListener("touchstart", firstHandler, { passive: false });
-    el.addEventListener("click", clickHandler);
-  }
-
-  function wireMenu() {
-    const overlay = $("#menuBackdrop");
-    const menu = $("#userMenu");
-
-    // ✅ Abre menu por esses IDs (se existirem na página)
-    bindMenuOpener($("#logoMenuBtn"));
-    bindMenuOpener($("#brandBtn"));
-    bindMenuOpener($("#logoBtn"));
-    bindMenuOpener($("#avatarBtn"));
-
-    // ✅ fallback por classe (caso tenha só .logoMenuBtn)
-    document.querySelectorAll(".logoMenuBtn").forEach((btn) => bindMenuOpener(btn));
-
-    // Fecha clicando fora
-    if (overlay) {
-      const close = (e) => {
-        e.preventDefault();
-        closeMenu();
-      };
-      overlay.addEventListener("pointerdown", close);
-      overlay.addEventListener("touchstart", close, { passive: false });
-      overlay.addEventListener("click", close);
-    }
-
-    // Impede clique “vazar” dentro do menu
-    if (menu) {
-      menu.addEventListener("pointerdown", (e) => e.stopPropagation());
-      menu.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
-      menu.addEventListener("click", (e) => e.stopPropagation());
-    }
+    overlay.addEventListener("click", close, { passive: true });
+    overlay.addEventListener("pointerdown", close, { passive: true });
+    overlay.addEventListener("touchstart", close, { passive: true });
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeMenu();
     });
 
+    // Fecha se clicar em qualquer lugar fora do menu
+    document.addEventListener("click", (e) => {
+      const m = $("#userMenu");
+      if (!m) return;
+      if (!m.classList.contains("on")) return;
+      const target = e.target;
+      if (!target) return;
+
+      const clickedBtn = target.closest?.("#logoMenuBtn");
+      const clickedMenu = target.closest?.("#userMenu");
+      if (!clickedBtn && !clickedMenu) closeMenu();
+    });
+
     // Itens
     const miHome = $("#miHome");
-    if (miHome) miHome.addEventListener("click", () => {
-      closeMenu();
-      window.location.href = "./";
-    });
+    if (miHome) miHome.addEventListener("click", () => { closeMenu(); safeGo("./"); });
 
     const miMember = $("#miMember");
     if (miMember) miMember.addEventListener("click", () => {
       closeMenu();
       if (!ensureLogged()) return;
-      window.location.href = "./member.html";
+      safeGo("./member.html");
     });
 
     const miLogin = $("#miLogin");
@@ -205,14 +176,14 @@ const UI = (() => {
     if (miAdmin) miAdmin.addEventListener("click", () => {
       closeMenu();
       if (!isAdmin()) return alert("Acesso admin: somente o dono.");
-      window.location.href = "./admin.html";
+      safeGo("./admin.html");
     });
 
     const miAdminP = $("#miAdminP");
     if (miAdminP) miAdminP.addEventListener("click", () => {
       closeMenu();
       if (!isAdmin()) return alert("Acesso admin: somente o dono.");
-      window.location.href = "./admin-p.html";
+      safeGo("./admin-p.html");
     });
 
     applyMenuVisibility();
@@ -227,5 +198,7 @@ const UI = (() => {
     applyMenuVisibility,
     logout,
     setUser,
+    closeMenu,
+    openMenu
   };
 })();
