@@ -25,8 +25,6 @@
 
     *{box-sizing:border-box}
     html,body{height:100%}
-
-    /* ✅ Fundo base SEM roxo (pra não aparecer faixa no scroll) */
     html{background:var(--bg)}
     body{
       margin:0;
@@ -37,7 +35,6 @@
       position:relative;
     }
 
-    /* ✅ Roxo só no começo (topo) */
     body::before{
       content:"";
       position:absolute;
@@ -53,15 +50,12 @@
     a{color:inherit; text-decoration:none}
     button{font-family:inherit}
 
-    /* ✅ FIX ANDROID: sem backdrop-filter */
     .top{
       position:sticky; top:0; z-index:40;
       backdrop-filter:none;
       -webkit-backdrop-filter:none;
-
       background: rgba(7,7,10,.92);
       border-bottom:1px solid var(--line);
-
       transform: translateZ(0);
       will-change: transform;
     }
@@ -96,23 +90,67 @@
     .pill:active{transform: scale(.98)}
     .pill:hover{border-color: rgba(122,43,255,.30); background: rgba(122,43,255,.10)}
 
-    .avatarBtn{
-      width:38px; height:38px; border-radius:14px;
+    /* ✅ Botão superior direito com LOGO */
+    .logoMenuBtn{
+      width:38px; height:38px;
+      border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 45%),
-        linear-gradient(135deg, rgba(122,43,255,.75), rgba(7,7,10,.6));
-      position:relative;
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
       cursor:pointer;
-      flex:0 0 auto;
       -webkit-tap-highlight-color: transparent;
-      transform: translateZ(0);
+      position:relative;
     }
-    .avatarBtn:after{
+    .logoMenuBtn img{width:100%; height:100%; object-fit:cover; display:block}
+    .logoMenuBtn:after{
       content:""; position:absolute; inset:-1px; border-radius:14px;
       border:1px solid rgba(122,43,255,.35);
       pointer-events:none;
     }
+
+    /* Mini menu (dropdown) */
+    .menuBackdrop{
+      position:fixed; inset:0; z-index:79;
+      background: rgba(0,0,0,.35);
+      display:none;
+      transform: translateZ(0);
+    }
+    .menuBackdrop.on{display:block}
+
+    .userMenu{
+      position:fixed;
+      z-index:80;
+      top:64px;
+      right:14px;
+      width:min(320px, 92vw);
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(15,15,20,.96);
+      box-shadow: 0 26px 90px rgba(0,0,0,.55);
+      overflow:hidden;
+      display:none;
+      transform: translateY(8px) scale(.99);
+      opacity:0;
+      transition: transform .16s ease, opacity .16s ease;
+    }
+    .userMenu.on{
+      display:block;
+      transform: translateY(0) scale(1);
+      opacity:1;
+    }
+    .mi{
+      display:flex; justify-content:space-between; gap:10px;
+      padding:14px 14px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mi:last-child{border-bottom:none}
+    .mi:hover{background: rgba(255,255,255,.04)}
+    .mi b{font-size:14px}
+    .mi small{color:var(--muted)}
 
     .grid{
       display:grid; gap:14px;
@@ -257,61 +295,6 @@
       border-top:1px solid var(--line);
     }
 
-    /* Menu overlay */
-    .menuOverlay{
-      position:fixed; inset:0;
-      z-index:80;
-      background: rgba(0,0,0,.42);
-      display:none;
-      padding:16px;
-      transform: translateZ(0);
-    }
-    .menuOverlay.on{display:block}
-
-    .menuCard{
-      width:min(520px, 96vw);
-      margin:70px auto 0;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(15,15,20,.96);
-      box-shadow: 0 26px 90px rgba(0,0,0,.55);
-      overflow:hidden;
-      position:relative;
-
-      transform: translateY(10px) scale(.99);
-      opacity:0;
-      transition: transform .18s ease, opacity .18s ease;
-      will-change: transform, opacity;
-    }
-    .menuOverlay.on .menuCard{
-      transform: translateY(0) scale(1);
-      opacity:1;
-    }
-
-    .menuCard:before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(420px 240px at 20% 0%, rgba(122,43,255,.16), transparent 60%),
-        radial-gradient(420px 240px at 90% 0%, rgba(155,107,255,.10), transparent 65%);
-      pointer-events:none;
-      opacity:.9;
-      z-index:0;
-    }
-    .menuList{position:relative; z-index:1}
-    .mi{
-      display:flex; justify-content:space-between; gap:10px;
-      padding:14px 14px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .mi:last-child{border-bottom:none}
-    .mi:hover{background: rgba(255,255,255,.04)}
-    .mi b{font-size:14px}
-    .mi small{color:var(--muted)}
-
     .loaderWrap{
       position:fixed; inset:0;
       z-index:9999;
@@ -375,6 +358,19 @@
 
 <body>
 
+  <!-- mini menu -->
+  <div class="menuBackdrop" id="menuBackdrop"></div>
+  <div class="userMenu" id="userMenu" role="dialog" aria-modal="true">
+    <div class="mi" id="miHome"><b>Página inicial</b><small>voltar</small></div>
+    <div class="mi" id="miMember"><b>Área membro</b><small>seus acessos</small></div>
+    <div class="mi" id="miLogin"><b>Entrar</b><small>login</small></div>
+    <div class="mi" id="miLogout"><b>Sair</b><small>limpar</small></div>
+
+    <!-- (opcional) admin -->
+    <div class="mi" id="miAdmin"><b>Painel administrador</b><small>dono</small></div>
+    <div class="mi" id="miAdminP"><b>Painel Administrador P.</b><small>dono</small></div>
+  </div>
+
   <div class="loaderWrap" id="loader">
     <div class="loaderCard">
       <div class="shine"></div>
@@ -384,21 +380,6 @@
           <b>Carregando</b>
           <small>Conexão Street</small>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="menuOverlay" id="menuOverlay">
-    <div class="menuCard" role="dialog" aria-modal="true">
-      <div class="menuList">
-        <div class="mi" id="miAdmin"><b>Painel administrador</b><small>somente dono</small></div>
-        <div class="mi" id="miAdminP"><b>Painel Administrador P.</b><small>somente dono</small></div>
-        <div class="mi" id="miAdd"><b>Adicionar fornecedor</b><small>admin</small></div>
-        <div class="mi" id="miLogs"><b>Logs</b><small>admin</small></div>
-        <div class="mi" id="miGraf"><b>Grafico</b><small>admin</small></div>
-        <div class="mi" id="miPay"><b>Pagamentos</b><small>admin</small></div>
-        <div class="mi" id="miLogin"><b>Entrar como admin</b><small>senha</small></div>
-        <div class="mi" id="miLogout"><b>Sair</b><small>limpar</small></div>
       </div>
     </div>
   </div>
@@ -416,7 +397,9 @@
 
         <div class="right">
           <div class="pill">🛒 <b style="color:var(--txt)" id="cartCount">2</b> <span style="color:var(--muted)">listas</span></div>
-          <div class="avatarBtn" id="avatarBtn" title="Conta"></div>
+          <button class="logoMenuBtn" id="logoMenuBtn" type="button" title="Menu">
+            <img src="./logo.png" alt="Logo" />
+          </button>
         </div>
       </div>
     </div>
@@ -521,14 +504,14 @@
                   <b>2. Login</b>
                   <small>entra e acessa seus produtos</small>
                 </div>
-                <span class="chip">em breve</span>
+                <span class="chip">ok</span>
               </div>
               <div class="step">
                 <div>
                   <b>3. Acesso</b>
                   <small>conteudo liberado apos aprovacao</small>
                 </div>
-                <span class="chip">em breve</span>
+                <span class="chip">manual</span>
               </div>
             </div>
           </div>
@@ -564,13 +547,13 @@
           <div style="padding:14px">
             <div class="sectionTitle">
               <b>Conta</b>
-              <span class="chip">menu do avatar</span>
+              <span class="chip">logo no topo</span>
             </div>
           </div>
           <div style="padding:14px">
             <div class="hint">
-              Toque no avatar no topo direito para abrir o menu.
-              Para admin, entre com a senha do dono.
+              Toque na logo no topo direito para abrir o menu.<br/>
+              Usuário logado vê: Área Membro + Página Inicial.
             </div>
 
             <div style="height:10px"></div>
@@ -593,6 +576,7 @@
     </div>
   </div>
 
+  <script src="./ui.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
