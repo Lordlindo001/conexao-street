@@ -14,7 +14,6 @@ function setStatus(text) {
 }
 
 function applyRoleUI() {
-  // só muda o textinho (admin continua pelo seu localStorage cs_admin_ok)
   if (UI && UI.isAdmin && UI.isAdmin()) setStatus("admin");
   else setStatus("Lista VIP");
 }
@@ -75,7 +74,7 @@ function initLoader() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initLoader();
-  if (window.UI && UI.wireMenu) UI.wireMenu(); // mini menu da logo
+  if (window.UI && UI.wireMenu) UI.wireMenu();
   applyRoleUI();
   wireButtons();
 });
