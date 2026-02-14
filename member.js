@@ -17,10 +17,6 @@ function loadJSON(key, fallback) {
   try { return JSON.parse(raw); } catch { return fallback; }
 }
 
-function moneyBRL(v){
-  return (Number(v)||0).toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
-}
-
 async function getCatalog(){
   const override = localStorage.getItem("cs_catalog_override");
   if(override){
@@ -69,10 +65,8 @@ function orderRowHTML(o, catalogItem, approved) {
 }
 
 async function boot() {
-  // menu
   UI.wireMenu();
 
-  // login obrigatório
   if (!UI.ensureLogged()) {
     alert("Você precisa fazer login pra acessar a Área Membro.");
     window.location.href = "./";
@@ -104,7 +98,6 @@ async function boot() {
 
     list.innerHTML = html;
 
-    // ações
     list.querySelectorAll("button[data-open]").forEach(btn => {
       btn.addEventListener("click", () => {
         const url = decodeURIComponent(btn.getAttribute("data-open"));
