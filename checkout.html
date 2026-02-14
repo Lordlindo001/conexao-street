@@ -4,6 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pagamento | Conexão Street</title>
+
+  <!-- (opcional, mas recomendado) favicon + cor do tema -->
+  <link rel="icon" href="favicon.png" type="image/png">
+  <meta name="theme-color" content="#7A2BFF">
+  <meta name="description" content="Conexão Street — pagamento e liberação de acesso após aprovação.">
+
   <style>
     :root{
       --bg:#07070A; --txt:#f3f3f7; --muted:#a6a6b3;
@@ -258,7 +264,7 @@
         <div style="display:flex; align-items:center; gap:10px">
           <a class="pill" href="./products.html">Voltar</a>
           <button class="logoMenuBtn" id="logoMenuBtn" type="button" title="Menu">
-            <img src="./logo.png" alt="Logo" />
+            <img src="./img/logo.png" alt="Logo" onerror="this.style.display='none'" />
           </button>
         </div>
       </div>
@@ -289,7 +295,7 @@
       <div class="panel">
         <div class="ph">
           <b>Pagamento (único)</b>
-          <span class="chip warn">layout</span>
+          <span class="chip warn" id="payStatusChip">pendente</span>
         </div>
         <div class="content">
 
@@ -332,7 +338,14 @@
     </div>
   </div>
 
+  <!-- ✅ Supabase (necessário pro pedido ir pro cs_orders) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Seus scripts -->
   <script src="./ui.js"></script>
   <script src="./checkout.js"></script>
+
+  <!-- ✅ Novo: aqui vai a lógica de criar pedido + atualizar status -->
+  <script src="./checkout-orders.js"></script>
 </body>
 </html>
