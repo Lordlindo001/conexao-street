@@ -441,29 +441,19 @@
 
         <div style="height:14px"></div>
 
+        <!-- ✅ Agora essa área vira REAL (lista Supabase) -->
         <div class="panel" id="orders" style="display:none">
           <div class="ph">
             <b>Pagamentos pendentes</b>
-            <span class="chip">demo</span>
+            <span class="chip" id="ordersChip">real</span>
           </div>
           <div class="list">
-            <div class="row">
-              <div class="dot w"></div>
-              <div class="meta">
-                <div class="t">Pagamento recebido pendente de liberacao</div>
-                <div class="d">Vitor • teste2@exemplo.com • provider • test_seed_pending_001</div>
-              </div>
-              <div class="amt">R$ 49,90</div>
-            </div>
+            <!-- ✅ adminp-orders.js escreve mensagens aqui -->
+            <div class="hint" id="adminMsg">Entre no admin para carregar os pedidos.</div>
+            <div style="height:10px"></div>
 
-            <div class="row">
-              <div class="dot p"></div>
-              <div class="meta">
-                <div class="t">Pagamento aprovado</div>
-                <div class="d">Vitor • teste@exemplo.com • provider • test_005</div>
-              </div>
-              <div class="amt">R$ 29,90</div>
-            </div>
+            <!-- ✅ adminp-orders.js renderiza os pedidos aqui -->
+            <div id="ordersBox"></div>
           </div>
         </div>
       </div>
@@ -529,6 +519,7 @@
     </div>
   </div>
 
+  <!-- ✅ mantém sua trava simples (PIN) -->
   <script>
     "use strict";
 
@@ -588,12 +579,13 @@
 
         hide(gateBox);
         show(kpis);
-        show(orders);
+        show(orders);   // ✅ agora mostra a área real de pedidos
         show(leave);
 
-        kpiSales.textContent = "R$ 29,90";
-        kpiPend.textContent = "1";
-        kpiLogs.textContent = "18";
+        // KPIs continuam demo (pode virar real depois)
+        kpiSales.textContent = "R$ 0,00";
+        kpiPend.textContent = "0";
+        kpiLogs.textContent = "0";
 
         setBadges(true);
 
@@ -655,15 +647,19 @@
       toast("Pagamentos (em breve)");
     });
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      initLoader();
-      setBadges(false);
-
-      // se já tá autenticado no device, entra direto
-      if(isAuthed()){
-        await setAuthed(true);
-      }
-    });
+    // init
+    initLoader();
+    setAuthed(isAuthed());
   </script>
+
+  <!-- ✅ Supabase + Config + Admin (ordem importa) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+
+  <!-- se você já tem ui.js no repo, pode manter -->
+  <script src="./ui.js"></script>
+
+  <!-- ✅ lista pedidos + aprovar -->
+  <script src="./adminp-orders.js"></script>
 </body>
 </html>
