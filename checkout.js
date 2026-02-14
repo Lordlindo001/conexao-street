@@ -60,54 +60,21 @@ function calcPrice(basePrice, rule){
   return { final: basePrice, note: null };
 }
 
+function paidKey(productId){
+  return `cs_paid_${String(productId||"")}`;
+}
+
+function isMarkedPaid(productId){
+  return localStorage.getItem(paidKey(productId)) === "1";
+}
+
+function markPaid(productId){
+  localStorage.setItem(paidKey(productId), "1");
+}
+
 async function boot(){
   showLoader(true);
 
   const id = getParam("id");
   const catalog = await getCatalog();
-  const p = catalog.find(x => String(x.id) === String(id)) || catalog[0];
-
-  if(!p) throw new Error("Produto não encontrado");
-
-  const rules = getPricingRules();
-  const rule = rules[p.id];
-  const priced = calcPrice(p.price, rule);
-
-  el("img").style.backgroundImage = `url('${String(p.image||"").replaceAll("'","%27")}')`;
-  el("name").textContent = p.name || "Produto";
-  el("desc").textContent = p.description || "";
-  el("price").textContent = moneyBRL(priced.final);
-
-  const promoHint = el("promoHint");
-  if(priced.note){
-    promoHint.style.display = "";
-    promoHint.textContent = priced.note;
-  }else{
-    promoHint.style.display = "none";
-  }
-
-  // copiar chave pix
-  el("copyPix").addEventListener("click", async () => {
-    const v = el("payKey").value || "";
-    try{
-      await navigator.clipboard.writeText(v);
-      alert("Copiado ✅");
-    }catch{
-      alert("Não deu pra copiar automaticamente. Segura e copia manualmente.");
-    }
-  });
-
-  // “já paguei” (layout)
-  el("confirmBtn").addEventListener("click", () => {
-    alert("Ok! Agora seu sistema real vai confirmar o pagamento e liberar acesso (próximo passo).");
-  });
-
-  setTimeout(() => showLoader(false), 250);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  boot().catch(e => {
-    showLoader(false);
-    alert(String(e.message || e));
-  });
-});
+  const p = catalog.find
