@@ -134,6 +134,7 @@
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
     }
+    .btn2:disabled{cursor:not-allowed}
 
     .loaderWrap{
       position:fixed; inset:0; z-index:9999;
@@ -207,6 +208,15 @@
           <span class="chip warn">layout</span>
         </div>
         <div class="content">
+
+          <div class="box" id="accessBox" style="display:none;">
+            <b>Acesso</b>
+            <div class="hint" id="accessHint" style="margin-top:6px">...</div>
+            <button class="btn2" id="accessBtn" type="button" disabled>Entrar no Grupo VIP</button>
+          </div>
+
+          <div style="height:12px"></div>
+
           <div class="box">
             <b>Seus dados</b>
             <div class="hint" style="margin-top:6px">Use o mesmo nome/e-mail do pagamento.</div>
