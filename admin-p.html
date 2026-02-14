@@ -202,25 +202,6 @@
     .kpi{display:flex; align-items:flex-end; justify-content:space-between; gap:10px}
     .kpi b{letter-spacing:.2px}
 
-    .row{
-      display:flex;
-      gap:10px;
-      padding:12px;
-      border-radius:16px;
-      border:1px solid transparent;
-      align-items:flex-start;
-      transition: background .15s ease, border-color .15s ease, transform .15s ease;
-    }
-    .row:hover{border-color: rgba(255,255,255,.10); background: rgba(255,255,255,.02)}
-    .row:active{transform: scale(.995)}
-    .dot{width:10px;height:10px;border-radius:99px;margin-top:4px}
-    .dot.p{background:var(--p)}
-    .dot.w{background:var(--warn)}
-    .meta{flex:1}
-    .meta .t{font-weight:800}
-    .meta .d{color:var(--muted); font-size:12px; margin-top:3px}
-    .amt{font-weight:900}
-
     .gate{
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.03);
@@ -448,12 +429,13 @@
             <span class="chip" id="ordersChip">real</span>
           </div>
           <div class="list">
-            <!-- ✅ adminp-orders.js escreve mensagens aqui -->
             <div class="hint" id="adminMsg">Entre no admin para carregar os pedidos.</div>
             <div style="height:10px"></div>
-
-            <!-- ✅ adminp-orders.js renderiza os pedidos aqui -->
             <div id="ordersBox"></div>
+
+            <div class="hint" style="margin-top:12px">
+              * O botão <b>Aprovar</b> só libera quando <b>payment_status = PAGO</b>.
+            </div>
           </div>
         </div>
       </div>
@@ -523,7 +505,7 @@
   <script>
     "use strict";
 
-    const PIN = "Euteamoluptameuamor010324c";
+    const PIN = (window.APP_CONFIG && window.APP_CONFIG.ADMIN_UI_CODE) || "Euteamoluptameuamor010324c";
     const KEY = "cs_admin_ok";
 
     const el = (id) => document.getElementById(id);
@@ -553,7 +535,7 @@
       if(isOn){
         statusChip.textContent = "liberado";
         statusChip.className = "chip ok";
-        whoTxt.textContent = "autenticado";
+        whoTxt.textContent = "autenticado (UI)";
         authChip.textContent = "on";
         authChip.className = "chip ok";
       }else{
@@ -579,10 +561,10 @@
 
         hide(gateBox);
         show(kpis);
-        show(orders);   // ✅ agora mostra a área real de pedidos
+        show(orders);
         show(leave);
 
-        // KPIs continuam demo (pode virar real depois)
+        // KPIs continuam demo por enquanto
         kpiSales.textContent = "R$ 0,00";
         kpiPend.textContent = "0";
         kpiLogs.textContent = "0";
@@ -655,11 +637,7 @@
   <!-- ✅ Supabase + Config + Admin (ordem importa) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
-
-  <!-- se você já tem ui.js no repo, pode manter -->
-  <script src="./ui.js"></script>
-
-  <!-- ✅ lista pedidos + aprovar -->
   <script src="./adminp-orders.js"></script>
+
 </body>
 </html>
