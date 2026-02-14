@@ -115,8 +115,7 @@ function wireMenu() {
     });
   }
 
-  // ✅ Painel antigo em arquivo novo: admin_old.html
-  // (Você só precisa adicionar no HTML do menu um item com id="miAdminP")
+  // ✅ Painel antigo em arquivo novo: admin-p.html
   const miAdminP = $("#miAdminP");
   if (miAdminP) {
     miAdminP.addEventListener("click", () => {
@@ -125,7 +124,7 @@ function wireMenu() {
         alert("Acesso admin: somente o dono.");
         return;
       }
-      window.location.href = "./admin_old.html";
+      window.location.href = "./admin-p.html";
     });
   }
 
@@ -239,7 +238,6 @@ function wireButtons() {
     });
   }
 
-  // Detalhes (se quiser depois eu transformo em modal/página)
   const detLojista = $("#detLojista");
   if (detLojista) detLojista.addEventListener("click", () => alert("Detalhes do plano Lojista (em breve)"));
 
