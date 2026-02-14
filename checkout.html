@@ -341,11 +341,14 @@
   <!-- ✅ Supabase (necessário pro pedido ir pro cs_orders) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- ✅ IMPORTANTE: config vem ANTES de ui/checkout/checkout-orders -->
+  <script src="./config.js"></script>
+
   <!-- Seus scripts -->
   <script src="./ui.js"></script>
   <script src="./checkout.js"></script>
 
-  <!-- ✅ Novo: aqui vai a lógica de criar pedido + atualizar status -->
+  <!-- ✅ Novo: cria pedido no cs_orders -->
   <script src="./checkout-orders.js"></script>
 </body>
 </html>
