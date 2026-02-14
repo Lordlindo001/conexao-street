@@ -1,11 +1,5 @@
 "use strict";
 
-/*
-  Estrutura local (mock):
-  - cs_orders: [{id, email, name, productId, productName, paidAt, status:"paid_pending"|"approved"}]
-  - cs_approvals: { "<email>": { approved: ["lojista","final","grupo_vip"] } }
-*/
-
 const ORDERS_KEY = "cs_orders";
 const APPROVALS_KEY = "cs_approvals";
 
@@ -65,38 +59,45 @@ function orderRowHTML(o, catalogItem, approved) {
 }
 
 async function boot() {
-  UI.wireMenu();
+  try { if (window.UI && UI.wireMenu) UI.wireMenu(); } catch {}
 
-  if (!UI.ensureLogged()) {
-    alert("Você precisa fazer login pra acessar a Área Membro.");
-    window.location.href = "./";
+  // login obrigatório
+  try {
+    if (!window.UI || !UI.ensureLogged || !UI.ensureLogged()) {
+      alert("Você precisa fazer login pra acessar a Área Membro.");
+      window.location.href = "./";
+      return;
+    }
+  } catch {
+    alert("Erro no login (UI). Atualize a página.");
     return;
   }
 
-  const user = UI.getUser();
-  el("whoPill").textContent = user ? user.email : "logado";
-  el("statusChip").textContent = "ok";
+  const user = UI.getUser ? UI.getUser() : null;
+  if (el("whoPill")) el("whoPill").textContent = user ? user.email : "logado";
+  if (el("statusChip")) el("statusChip").textContent = "ok";
 
   const ordersAll = loadJSON(ORDERS_KEY, []);
-  const myOrders = ordersAll.filter(o => String(o.email || "").toLowerCase() === String(user.email).toLowerCase());
+  const myOrders = ordersAll.filter(o =>
+    String(o.email || "").toLowerCase() === String(user.email || "").toLowerCase()
+  );
 
   const catalog = await getCatalog();
-
   const list = el("list");
+  if (!list) return;
+
   if (!myOrders.length) {
-    el("statusChip").textContent = "vazio";
+    if (el("statusChip")) el("statusChip").textContent = "vazio";
     list.innerHTML = `<div class="row"><b>Nenhuma compra encontrada</b><div class="hint" style="margin-top:6px">Se você acabou de pagar, finalize no checkout e aguarde aprovação.</div></div>`;
   } else {
-    const html = myOrders
+    list.innerHTML = myOrders
       .sort((a,b) => (b.paidAt||0) - (a.paidAt||0))
       .map(o => {
         const item = catalog.find(p => String(p.id) === String(o.productId));
-        const approved = isApproved(user.email, o.productId);
+        const approved = isApproved(String(user.email).toLowerCase(), o.productId);
         return orderRowHTML(o, item, approved);
       })
       .join("");
-
-    list.innerHTML = html;
 
     list.querySelectorAll("button[data-open]").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -112,7 +113,8 @@ async function boot() {
     });
   }
 
-  el("goShop").addEventListener("click", () => window.location.href = "./products.html");
+  const goShop = el("goShop");
+  if (goShop) goShop.addEventListener("click", () => window.location.href = "./products.html");
 }
 
 document.addEventListener("DOMContentLoaded", boot);
