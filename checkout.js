@@ -96,7 +96,6 @@ async function boot(){
   showLoader(true);
 
   try{
-    // UI menu (logo)
     if (window.UI && UI.wireMenu) UI.wireMenu();
 
     const id = getParam("id");
@@ -106,7 +105,6 @@ async function boot(){
     const p = catalog.find(x => String(x.id) === String(id));
     if(!p) throw new Error("Produto não encontrado");
 
-    // UI refs
     const img = el("img");
     const name = el("name");
     const desc = el("desc");
@@ -114,12 +112,10 @@ async function boot(){
     const promoHint = el("promoHint");
     const statusChip = el("statusChip");
 
-    // pricing
     const rules = getPricingRules();
     const rule = rules[p.id];
     const pricing = calcPrice(Number(p.price||0), rule);
 
-    // fill
     if(img) img.style.backgroundImage = `url('${String(p.image||"").replaceAll("'","%27")}')`;
     if(name) name.textContent = p.name || p.id;
     if(desc) desc.textContent = p.description || "";
@@ -136,7 +132,6 @@ async function boot(){
       statusChip.className = "chip ok";
     }
 
-    // Copy pix
     const copyPix = el("copyPix");
     const payKey = el("payKey");
     if(copyPix){
@@ -152,7 +147,6 @@ async function boot(){
       });
     }
 
-    // confirm paid
     const confirmBtn = el("confirmBtn");
     const buyerName = el("buyerName");
     const buyerEmail = el("buyerEmail");
@@ -172,7 +166,6 @@ async function boot(){
         return;
       }
 
-      // aprovado
       if(p.whatsapp_invite){
         accessHint.textContent = "Aprovado ✅ Clique para entrar no Grupo VIP.";
         accessBtn.disabled = false;
@@ -194,24 +187,18 @@ async function boot(){
         if(!nm || nm.length < 2) return alert("Digite seu nome.");
         if(!em || !em.includes("@")) return alert("Digite um e-mail válido.");
 
-        // salva login mock automaticamente (pra ficar “logado”)
         if (window.UI && UI.setUser) UI.setUser({ name: nm, email: em });
 
-        // cria pedido
         ensureOrder(em, nm, p);
 
         alert("Pagamento marcado ✅\nAgora aguarde a aprovação do admin.");
-
-        // mostra caixa de acesso
         refreshAccessState(em);
       });
     }
 
-    // Se o user já estiver logado e tiver aprovação, já mostra acesso
     if (window.UI && UI.isLogged && UI.getUser) {
       const u = UI.getUser();
       if (u && u.email) {
-        // exibe box sempre (pra não ficar “sumido”)
         accessBox.style.display = "";
         refreshAccessState(u.email.toLowerCase());
       }
@@ -220,7 +207,6 @@ async function boot(){
   }catch(e){
     alert(String(e.message || e));
   }finally{
-    // sem loop e sem travar loader
     setTimeout(() => showLoader(false), 200);
   }
 }
