@@ -1,204 +1,80 @@
-"use strict";
+// ui.js — helpers + mini-menu (checkout/member) + login simples (localStorage)
+(() => {
+  "use strict";
+  const KEY_USER = "cs_user";
 
-/*
-  UI + Auth mock (funciona sem Supabase)
-  - Logo no topo direito abre mini menu
-  - Usuário "logado" = localStorage.cs_user
-  - Admin UI continua sendo cs_admin_ok (seu padrão)
-  Fixes:
-  - Compatibilidade total: click + pointerdown + touchstart
-  - Não quebra se elementos não existirem
-  - Fecha ao clicar fora + ESC
-*/
+  function go(path){
+    const url = new URL(path, window.location.href);
+    window.location.href = url.toString();
+  }
 
-const UI = (() => {
-  const USER_KEY = "cs_user"; // {name,email}
-  const ADMIN_KEY = "cs_admin_ok";
-
-  const $ = (sel) => document.querySelector(sel);
-
-  function getUser() {
-    const raw = localStorage.getItem(USER_KEY);
-    if (!raw) return null;
+  function readUser(){
+    const raw = localStorage.getItem(KEY_USER);
+    if(!raw) return null;
     try { return JSON.parse(raw); } catch { return null; }
   }
 
-  function isLogged() {
-    const u = getUser();
+  function writeUser(u){
+    localStorage.setItem(KEY_USER, JSON.stringify(u || null));
+  }
+
+  function clearUser(){
+    localStorage.removeItem(KEY_USER);
+  }
+
+  function isLogged(){
+    const u = readUser();
     return !!(u && u.email);
   }
 
-  function isAdmin() {
-    return localStorage.getItem(ADMIN_KEY) === "1";
+  function ensureLogged(){
+    if(isLogged()) return true;
+    alert("Você precisa entrar primeiro.");
+    return false;
   }
 
-  function setUser(userObj) {
-    localStorage.setItem(USER_KEY, JSON.stringify(userObj));
-  }
+  function wireMenu(){
+    const btn = document.getElementById("logoMenuBtn");
+    const back = document.getElementById("menuBackdrop");
+    const menu = document.getElementById("userMenu");
+    if(!btn || !back || !menu) return;
 
-  function logout() {
-    localStorage.removeItem(USER_KEY);
-  }
+    const open = () => { back.classList.add("on"); menu.classList.add("on"); };
+    const close = () => { back.classList.remove("on"); menu.classList.remove("on"); };
 
-  function ensureLogged() {
-    if (isLogged()) return true;
+    btn.addEventListener("click", (e) => { e.preventDefault(); open(); }, { passive:false });
+    back.addEventListener("click", close);
+    document.addEventListener("keydown", (e) => { if(e.key === "Escape") close(); });
 
-    const name = prompt("Seu nome:");
-    if (!name) return false;
-
-    const email = prompt("Seu e-mail (o mesmo do pagamento):");
-    if (!email) return false;
-
-    setUser({ name: name.trim(), email: email.trim().toLowerCase() });
-    return true;
-  }
-
-  function closeMenu() {
-    const menu = $("#userMenu");
-    const overlay = $("#menuBackdrop");
-    if (menu) menu.classList.remove("on");
-    if (overlay) overlay.classList.remove("on");
-  }
-
-  function openMenu() {
-    const menu = $("#userMenu");
-    const overlay = $("#menuBackdrop");
-    if (menu) menu.classList.add("on");
-    if (overlay) overlay.classList.add("on");
-  }
-
-  function toggleMenu() {
-    const menu = $("#userMenu");
-    if (!menu) return;
-    const on = menu.classList.contains("on");
-    if (on) closeMenu();
-    else openMenu();
-  }
-
-  function applyMenuVisibility() {
-    const miHome = $("#miHome");
-    const miMember = $("#miMember");
-    const miLogin = $("#miLogin");
-    const miLogout = $("#miLogout");
-    const miAdmin = $("#miAdmin");
-    const miAdminP = $("#miAdminP");
-
-    const logged = isLogged();
-    const admin = isAdmin();
-
-    if (miHome) miHome.style.display = "";
-    if (miMember) miMember.style.display = logged ? "" : "none";
-
-    if (miLogin) miLogin.style.display = logged ? "none" : "";
-    if (miLogout) miLogout.style.display = logged ? "" : "none";
-
-    if (miAdmin) miAdmin.style.display = admin ? "" : "none";
-    if (miAdminP) miAdminP.style.display = admin ? "" : "none";
-  }
-
-  function safeGo(href) {
-    try { window.location.href = href; } catch {}
-  }
-
-  function wireMenu() {
-    const btn = $("#logoMenuBtn");
-    const overlay = $("#menuBackdrop");
-    const menu = $("#userMenu");
-
-    // Se a página não tem menu/topo, não quebra.
-    if (!btn || !menu || !overlay) return;
-
-    const open = (e) => {
-      if (e) {
-        e.preventDefault?.();
-        e.stopPropagation?.();
-      }
-      applyMenuVisibility();
-      toggleMenu();
+    const routes = {
+      miHome:   "index.html",
+      miMember: "member.html",
+      miLogin:  "member.html#login",
+      miLogout: "index.html",
+      miAdmin:  "admin.html",
+      miAdminP: "admin-p.html"
     };
 
-    // ✅ Compatibilidade máxima
-    btn.addEventListener("click", open, { passive: false });
-    btn.addEventListener("pointerdown", open, { passive: false });
-    btn.addEventListener("touchstart", open, { passive: false });
+    Object.keys(routes).forEach((id) => {
+      const el = document.getElementById(id);
+      if(!el) return;
 
-    const close = () => closeMenu();
-
-    overlay.addEventListener("click", close, { passive: true });
-    overlay.addEventListener("pointerdown", close, { passive: true });
-    overlay.addEventListener("touchstart", close, { passive: true });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeMenu();
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        if(id === "miLogout") clearUser();
+        close();
+        setTimeout(() => go(routes[id]), 50);
+      }, { passive:false });
     });
-
-    // Fecha se clicar em qualquer lugar fora do menu
-    document.addEventListener("click", (e) => {
-      const m = $("#userMenu");
-      if (!m) return;
-      if (!m.classList.contains("on")) return;
-      const target = e.target;
-      if (!target) return;
-
-      const clickedBtn = target.closest?.("#logoMenuBtn");
-      const clickedMenu = target.closest?.("#userMenu");
-      if (!clickedBtn && !clickedMenu) closeMenu();
-    });
-
-    // Itens
-    const miHome = $("#miHome");
-    if (miHome) miHome.addEventListener("click", () => { closeMenu(); safeGo("./"); });
-
-    const miMember = $("#miMember");
-    if (miMember) miMember.addEventListener("click", () => {
-      closeMenu();
-      if (!ensureLogged()) return;
-      safeGo("./member.html");
-    });
-
-    const miLogin = $("#miLogin");
-    if (miLogin) miLogin.addEventListener("click", () => {
-      closeMenu();
-      const ok = ensureLogged();
-      if (ok) alert("Login feito ✅");
-      applyMenuVisibility();
-    });
-
-    const miLogout = $("#miLogout");
-    if (miLogout) miLogout.addEventListener("click", () => {
-      closeMenu();
-      logout();
-      alert("Saiu ✅");
-      applyMenuVisibility();
-    });
-
-    const miAdmin = $("#miAdmin");
-    if (miAdmin) miAdmin.addEventListener("click", () => {
-      closeMenu();
-      if (!isAdmin()) return alert("Acesso admin: somente o dono.");
-      safeGo("./admin.html");
-    });
-
-    const miAdminP = $("#miAdminP");
-    if (miAdminP) miAdminP.addEventListener("click", () => {
-      closeMenu();
-      if (!isAdmin()) return alert("Acesso admin: somente o dono.");
-      safeGo("./admin-p.html");
-    });
-
-    applyMenuVisibility();
   }
 
-  return {
-    getUser,
+  window.UI = {
+    go,
+    getUser: readUser,
+    setUser: writeUser,
+    clearUser,
     isLogged,
     ensureLogged,
-    isAdmin,
-    wireMenu,
-    applyMenuVisibility,
-    logout,
-    setUser,
-    closeMenu,
-    openMenu
+    wireMenu
   };
 })();
