@@ -101,6 +101,8 @@ function wireMenu() {
   });
 
   // 4) Itens do menu
+
+  // Painel novo (admin.html)
   const miAdmin = $("#miAdmin");
   if (miAdmin) {
     miAdmin.addEventListener("click", () => {
@@ -110,6 +112,20 @@ function wireMenu() {
         return;
       }
       window.location.href = "./admin.html";
+    });
+  }
+
+  // ✅ Painel antigo em arquivo novo: admin_old.html
+  // (Você só precisa adicionar no HTML do menu um item com id="miAdminP")
+  const miAdminP = $("#miAdminP");
+  if (miAdminP) {
+    miAdminP.addEventListener("click", () => {
+      closeMenu();
+      if (!isAdmin()) {
+        alert("Acesso admin: somente o dono.");
+        return;
+      }
+      window.location.href = "./admin_old.html";
     });
   }
 
