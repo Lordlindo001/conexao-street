@@ -24,10 +24,10 @@
     ]
   },
   {
-    "id": "grupo_vip",
-    "name": "Grupo VIP",
+    "id": "vip",
+    "name": "Grupo VIP (acesso)",
     "price": 10.0,
-    "image": "https://images.unsplash.com/photo-1520975732137-6a6a3189f4f9?auto=format&fit=crop&w=1200&q=80",
+    "image": "./img/vip.jpg",
     "description": "Acesso ao Grupo VIP no WhatsApp. Link liberado após confirmação.",
     "bullets": [
       "Acesso liberado após aprovação",
