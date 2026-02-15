@@ -1,7 +1,9 @@
-// ui.js — helpers + mini-menu (checkout/member) + login simples (localStorage)
-// + gate admin: só mostra botões admin se for admin de verdade no Supabase
+// ui.js — menu mini (checkout/member) + gate admin REAL (Supabase cs_admins)
+// + guard de páginas admin (admin.html / admin-p.html)
+// + modo visitante: esconde admin sempre
 (() => {
   "use strict";
+
   const KEY_USER = "cs_user";
 
   function go(path){
@@ -14,14 +16,8 @@
     if(!raw) return null;
     try { return JSON.parse(raw); } catch { return null; }
   }
-
-  function writeUser(u){
-    localStorage.setItem(KEY_USER, JSON.stringify(u || null));
-  }
-
-  function clearUser(){
-    localStorage.removeItem(KEY_USER);
-  }
+  function writeUser(u){ localStorage.setItem(KEY_USER, JSON.stringify(u || null)); }
+  function clearUser(){ localStorage.removeItem(KEY_USER); }
 
   function isLogged(){
     const u = readUser();
@@ -43,19 +39,38 @@
     };
   }
 
-  // ✅ checa admin REAL (cs_admins) usando Supabase Auth
-  async function isAdmin(){
+  // ✅ singleton do client
+  let _sb = null;
+  function getClient(){
+    if(_sb) return _sb;
+    if(!window.supabase?.createClient) return null;
+
+    const cfg = getCfg();
+    if(!cfg.url || !cfg.key) return null;
+
+    _sb = window.supabase.createClient(cfg.url, cfg.key);
+    return _sb;
+  }
+
+  // ✅ cache admin (15s)
+  let _adminCache = { v:false, ts:0 };
+  async function isAdmin({ force=false } = {}){
     try{
-      if(!window.supabase?.createClient) return false;
+      const now = Date.now();
+      if(!force && (now - _adminCache.ts) < 15000) return _adminCache.v;
 
-      const cfg = getCfg();
-      if(!cfg.url || !cfg.key) return false;
-
-      const client = window.supabase.createClient(cfg.url, cfg.key);
+      const client = getClient();
+      if(!client){
+        _adminCache = { v:false, ts: now };
+        return false;
+      }
 
       const { data: auth } = await client.auth.getUser();
       const uid = auth?.user?.id;
-      if(!uid) return false;
+      if(!uid){
+        _adminCache = { v:false, ts: now };
+        return false;
+      }
 
       const { data, error } = await client
         .from("cs_admins")
@@ -63,42 +78,51 @@
         .eq("user_id", uid)
         .maybeSingle();
 
-      if(error) return false;
-      return !!data;
+      const ok = !error && !!data;
+      _adminCache = { v: ok, ts: now };
+      return ok;
     }catch{
+      _adminCache = { v:false, ts: Date.now() };
       return false;
     }
   }
 
-  // ✅ esconde/mostra itens admin no menu
-  async function applyAdminUI(){
-    const admin = await isAdmin();
-
+  // ✅ mostra/esconde itens admin no menu
+  async function applyMenuVisibility(){
     const miAdmin  = document.getElementById("miAdmin");
     const miAdminP = document.getElementById("miAdminP");
 
-    if(miAdmin)  miAdmin.style.display  = admin ? "" : "none";
-    if(miAdminP) miAdminP.style.display = admin ? "" : "none";
+    // seguro: escondido por padrão
+    if(miAdmin)  miAdmin.style.display  = "none";
+    if(miAdminP) miAdminP.style.display = "none";
 
+    const admin = await isAdmin();
+    if(admin){
+      if(miAdmin)  miAdmin.style.display  = "";
+      if(miAdminP) miAdminP.style.display = "";
+    }
     return admin;
   }
 
+  // ✅ menu mini (member/checkout)
   function wireMenu(){
-    const btn = document.getElementById("logoMenuBtn");
+    const btn  = document.getElementById("logoMenuBtn");
     const back = document.getElementById("menuBackdrop");
     const menu = document.getElementById("userMenu");
     if(!btn || !back || !menu) return;
 
-    const open = () => { back.classList.add("on"); menu.classList.add("on"); };
-    const close = () => { back.classList.remove("on"); menu.classList.remove("on"); };
+    const open = async () => {
+      await applyMenuVisibility();
+      back.classList.add("on");
+      menu.classList.add("on");
+    };
 
-    // ✅ toda vez que abrir menu, atualiza admin UI
-    btn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      await applyAdminUI();
-      open();
-    }, { passive:false });
+    const close = () => {
+      back.classList.remove("on");
+      menu.classList.remove("on");
+    };
 
+    btn.addEventListener("click", (e) => { e.preventDefault(); open(); }, { passive:false });
     back.addEventListener("click", close);
     document.addEventListener("keydown", (e) => { if(e.key === "Escape") close(); });
 
@@ -120,9 +144,9 @@
 
         if(id === "miLogout") clearUser();
 
-        // ✅ trava REAL: admin/admin-p só navega se for admin de verdade
+        // trava REAL
         if(id === "miAdmin" || id === "miAdminP"){
-          const admin = await isAdmin();
+          const admin = await isAdmin({ force:true });
           if(!admin){
             alert("Sem permissão de administrador.");
             close();
@@ -136,6 +160,24 @@
     });
   }
 
+  // ✅ guard: bloqueia acesso direto às páginas admin
+  async function guardAdminPages(){
+    const p = (location.pathname || "").toLowerCase();
+    const isAdminPage = p.endsWith("/admin.html") || p.endsWith("admin.html") || p.endsWith("/admin-p.html") || p.endsWith("admin-p.html");
+    if(!isAdminPage) return;
+
+    const ok = await isAdmin({ force:true });
+    if(!ok){
+      alert("Acesso restrito ao administrador.");
+      go("index.html");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    try { wireMenu(); } catch {}
+    try { guardAdminPages(); } catch {}
+  });
+
   window.UI = {
     go,
     getUser: readUser,
@@ -145,6 +187,6 @@
     ensureLogged,
     wireMenu,
     isAdmin,
-    applyAdminUI
+    applyMenuVisibility
   };
 })();
