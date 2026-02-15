@@ -58,7 +58,6 @@
       align-items:start;
     }
     @media(max-width:920px){ .grid{grid-template-columns:1fr} }
-
     .panel{
       border:1px solid var(--line);
       background:rgba(255,255,255,.03);
@@ -73,7 +72,6 @@
     }
     .ph b{font-size:14px}
     .hint{color:var(--muted); font-size:12px; line-height:1.45}
-
     .tabs{display:flex; gap:10px; padding:14px; flex-wrap:wrap}
     .tab{
       padding:9px 12px; border-radius:999px;
@@ -87,7 +85,6 @@
       border-color: rgba(122,43,255,.55);
       background: rgba(122,43,255,.14);
     }
-
     .content{padding:14px}
     .inp{
       width:100%;
@@ -115,7 +112,6 @@
       background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
       box-shadow:0 14px 35px rgba(122,43,255,.22);
     }
-
     .row{
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.02);
@@ -124,10 +120,6 @@
       margin-top:10px;
     }
     .rowTop{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
-    .rowTop b{font-size:14px}
-    .miniGrid{display:grid; gap:10px; grid-template-columns: 1fr 1fr}
-    @media(max-width:720px){ .miniGrid{grid-template-columns:1fr} }
-
     .chip{
       font-size:12px; padding:6px 10px; border-radius:999px;
       border:1px solid rgba(255,255,255,.12);
@@ -137,6 +129,7 @@
     }
     .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
     .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
+    .chip.bad{border-color: rgba(255,59,92,.35); background: rgba(255,59,92,.10)}
     .footer{color:rgba(255,255,255,.55); padding:20px 0; text-align:center; border-top:1px solid var(--line)}
   </style>
 </head>
@@ -168,7 +161,7 @@
 
         <div class="content" id="gate">
           <b>Senha do admin</b>
-          <div class="hint" style="margin-top:6px">Isso é só UI. Segurança real depois.</div>
+          <div class="hint" style="margin-top:6px">Isso é só UI. Segurança REAL é Supabase (guard já barra não-admin).</div>
           <div style="height:10px"></div>
           <input class="inp" id="pin" placeholder="Digite a senha" autocomplete="off" />
           <button class="btn primary" id="enter" type="button">Entrar</button>
@@ -215,6 +208,10 @@
     </div>
   </div>
 
+  <!-- ✅ Ordem certa -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script src="./ui.js"></script>
   <script src="./admin.js"></script>
 </body>
 </html>
