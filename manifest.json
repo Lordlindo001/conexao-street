@@ -1,0 +1,22 @@
+{
+  "name": "Conexão Street",
+  "short_name": "Conexão Street",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07070A",
+  "theme_color": "#7A2BFF",
+  "description": "Fornecedores + VIP • Curadoria • Atualizações",
+  "icons": [
+    {
+      "src": "./favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

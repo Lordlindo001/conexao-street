@@ -1,0 +1,39 @@
+[
+  {
+    "id": "lojista",
+    "name": "Fornecedores Logistas",
+    "price": 30.0,
+    "image": "./img/lojista.jpg",
+    "description": "Lista focada em quem revende e tem loja. Curadoria + atualizações futuras.",
+    "bullets": [
+      "Acesso liberado após aprovação",
+      "1 dispositivo por pessoa",
+      "Atualizações futuras inclusas"
+    ]
+  },
+  {
+    "id": "final",
+    "name": "Fornecedores Consumidor Final",
+    "price": 25.0,
+    "image": "./img/final.jpg",
+    "description": "Lista para compra pessoal. Curadoria + atualizações futuras.",
+    "bullets": [
+      "Acesso liberado após aprovação",
+      "1 dispositivo por pessoa",
+      "Atualizações futuras inclusas"
+    ]
+  },
+  {
+    "id": "vip",
+    "name": "Grupo VIP (acesso)",
+    "price": 10.0,
+    "image": "./img/vip.jpg",
+    "description": "Acesso ao Grupo VIP no WhatsApp. Link liberado após confirmação.",
+    "bullets": [
+      "Acesso liberado após aprovação",
+      "Link do grupo enviado/mostrado após confirmação",
+      "Suporte pelo canal oficial"
+    ],
+    "whatsapp_invite": "https://chat.whatsapp.com/CJUnTEZwy0VIws6BKzGw8s?mode=gi_t"
+  }
+]

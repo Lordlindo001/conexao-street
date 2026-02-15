@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Produtos | Conexão Street</title>
+
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <meta name="theme-color" content="#7A2BFF" />
+  <meta name="description" content="Escolha seu acesso e finalize o pagamento." />
+
+  <meta property="og:title" content="Produtos | Conexão Street" />
+  <meta property="og:description" content="Escolha seu acesso e finalize o pagamento." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./img/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+</head>
+
+<body>
+
+<!-- mini menu (ui.js) -->
+  <div class="menuBackdrop" id="menuBackdrop"></div>
+  <div class="userMenu" id="userMenu" role="dialog" aria-modal="true">
+    <div class="mi" id="miHome"><b>Página inicial</b><small>voltar</small></div>
+    <div class="mi" id="miMember"><b>Área membro</b><small>seus acessos</small></div>
+    <div class="mi" id="miLogin"><b>Entrar</b><small>login</small></div>
+    <div class="mi" id="miLogout"><b>Sair</b><small>limpar</small></div>
+    <div class="mi" id="miAdmin"><b>Painel administrador</b><small>dono</small></div>
+    <div class="mi" id="miAdminP"><b>Painel Admin P.</b><small>pedidos</small></div>
+  </div>
+
+  <div class="top">
+    <div class="wrap">
+      <div class="bar">
+        <div class="brand" onclick="location.href='index.html'">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <b>Conexão Street</b><br/>
+            <small style="color:var(--muted); font-size:12px;">Produtos</small>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px">
+          <a class="pill" href="./index.html">Voltar</a>
+          <button class="logoMenuBtn" id="logoMenuBtn" type="button" title="Menu">
+            <img src="./img/logo.png" alt="Logo" onerror="this.style.display='none'" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap section">
+    <div class="panel" data-reveal>
+      <div class="ph">
+        <b>Catálogo</b>
+        <span class="chip">escolha e compre</span>
+      </div>
+      <div class="content">
+        <div class="hint">
+          Clique em <b>Comprar</b> pra abrir o checkout. A liberação acontece após aprovação do admin.
+        </div>
+        <div style="height:12px"></div>
+
+        <div id="productsGrid" style="display:grid; gap:14px; grid-template-columns: repeat(3, minmax(0,1fr));"></div>
+      </div>
+    </div>
+
+    <div class="footer">© Conexão Street</div>
+  </div>
+
+  <script src="./ui.js"></script>
+  <script src="./products.js"></script>
+  <script src="./effects.js"></script>
+  <script src="./enhance.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.UI && typeof window.UI.wireMenu === "function") window.UI.wireMenu();
+    });
+  </script>
+
+  <style>
+    @media(max-width:920px){
+      #productsGrid{grid-template-columns: repeat(2, minmax(0,1fr)) !important;}
+    }
+    @media(max-width:560px){
+      #productsGrid{grid-template-columns: 1fr !important;}
+    }
+    .pimg{height:150px; width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.10); object-fit:cover; background:#0f0f14}
+    .list{margin:10px 0 0; padding-left:18px; color:rgba(255,255,255,.85)}
+    .list li{margin:6px 0; font-size:13px; line-height:1.35}
+    .priceRow{display:flex; justify-content:space-between; gap:10px; align-items:flex-start; margin-top:10px}
+    .muted{color:var(--muted); font-size:12px}
+  </style>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Offline | Conexão Street</title>
+
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <meta name="theme-color" content="#7A2BFF" />
+  <meta name="description" content="Você está offline. Volte quando tiver internet." />
+
+  <meta property="og:title" content="Offline | Conexão Street" />
+  <meta property="og:description" content="Você está offline. Volte quando tiver internet." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./img/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+</head>
+
+<body>
+  <div class="wrap" style="padding:36px 0">
+    <div class="panel">
+      <div class="ph">
+        <b>Você está offline</b>
+        <span class="chip warn">sem internet</span>
+      </div>
+      <div class="content">
+        <div class="card" style="border-radius:16px">
+          <div class="cardGlow"></div>
+          <div class="cardInner">
+            <div style="display:flex; gap:14px; align-items:center">
+              <img src="./img/offline.jpg" alt="Offline" style="width:160px; height:90px; object-fit:cover; border-radius:12px; border:1px solid rgba(255,255,255,.12)">
+              <div>
+                <b>Sem conexão.</b>
+                <div class="hint" style="margin-top:6px">Quando voltar, tente recarregar a página.</div>
+                <div class="btnRow" style="margin-top:12px">
+                  <button class="btn" onclick="location.reload()">Recarregar</button>
+                  <a class="btn2" href="./index.html">Home</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+        <div class="hint">* Algumas páginas podem abrir em cache, dependendo do seu dispositivo.</div>
+      </div>
+    </div>
+
+    <div class="footer">© Conexão Street</div>
+  </div>
+
+  <script src="./effects.js"></script>
+  <script src="./enhance.js"></script>
+</body>
+</html>
