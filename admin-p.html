@@ -21,10 +21,8 @@
       --shadow: 0 18px 60px rgba(0,0,0,.38);
       font-synthesis-weight:none;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
-
     html{background:var(--bg)}
     body{
       margin:0;
@@ -34,7 +32,6 @@
       overflow-x:hidden;
       position:relative;
     }
-
     body::before{
       content:"";
       position:absolute;
@@ -46,19 +43,14 @@
       pointer-events:none;
       z-index:-1;
     }
-
     a{color:inherit; text-decoration:none}
-
     .top{
       position:sticky; top:0; z-index:20;
-      backdrop-filter:none;
-      -webkit-backdrop-filter:none;
       background: rgba(7,7,10,.92);
       border-bottom:1px solid var(--line);
       transform: translateZ(0);
       will-change: transform;
     }
-
     .wrap{max-width:1100px; margin:0 auto; padding:14px 14px}
     .bar{display:flex; align-items:center; gap:12px; justify-content:space-between}
     .brand{display:flex; align-items:center; gap:10px}
@@ -70,7 +62,6 @@
     }
     .brand b{letter-spacing:.2px}
     .right{display:flex; align-items:center; gap:10px}
-
     .pill{
       padding:9px 12px; border-radius:999px;
       border:1px solid var(--line);
@@ -84,7 +75,6 @@
     }
     .pill:active{transform: scale(.98)}
     .pill:hover{border-color: rgba(122,43,255,.30); background: rgba(122,43,255,.10)}
-
     .grid{
       display:grid; gap:14px;
       grid-template-columns: 1.2fr .8fr;
@@ -94,20 +84,17 @@
     @media (max-width: 920px){
       .grid{grid-template-columns: 1fr}
     }
-
     .panel, .hero, .card, .toast{
       border:1px solid var(--line);
       background:rgba(255,255,255,.03);
       border-radius: var(--r);
     }
-
     .hero{
       overflow:hidden;
       position:relative;
       box-shadow: var(--shadow);
       transform: translateZ(0);
     }
-
     .heroGlow{
       position:absolute; inset:-2px;
       background:
@@ -116,11 +103,9 @@
       pointer-events:none;
       opacity:.9;
     }
-
     .hwrap{padding:18px; position:relative}
     h1{margin:0 0 8px; font-size:22px; line-height:1.2}
     .sub{color:var(--muted); line-height:1.45}
-
     .tag{
       display:inline-flex; align-items:center; gap:8px;
       font-size:12px;
@@ -131,7 +116,6 @@
       border-radius:999px;
     }
     .tag i{width:8px;height:8px;border-radius:99px;background:var(--ok);display:inline-block}
-
     .btn{
       width:100%;
       padding:11px 14px;
@@ -156,7 +140,6 @@
       background: linear-gradient(135deg, rgba(122,43,255,.95), rgba(155,107,255,.55));
       box-shadow:0 14px 35px rgba(122,43,255,.22);
     }
-
     .panel{overflow:hidden}
     .ph{
       padding:14px;
@@ -179,10 +162,8 @@
     .chip.ok{border-color: rgba(36,209,141,.35); background: rgba(36,209,141,.10)}
     .chip.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
     .chip.bad{border-color: rgba(255,59,92,.35); background: rgba(255,59,92,.10)}
-
     .list{padding:12px}
     .hint{color:var(--muted); font-size:12px; line-height:1.45}
-
     .cards{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
@@ -201,7 +182,6 @@
     .card b{font-size:20px}
     .kpi{display:flex; align-items:flex-end; justify-content:space-between; gap:10px}
     .kpi b{letter-spacing:.2px}
-
     .gate{
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.03);
@@ -223,9 +203,7 @@
       border-color: rgba(122,43,255,.45);
       background: rgba(122,43,255,.08);
     }
-
     .sideGrid{display:grid; gap:12px}
-
     .mini{
       display:flex;
       align-items:center;
@@ -239,14 +217,12 @@
     .mini b{font-size:13px}
     .mini small{color:var(--muted)}
     .mini .righty{display:flex; align-items:center; gap:8px}
-
     .footer{
       color:rgba(255,255,255,.55);
       padding:20px 14px;
       text-align:center;
       border-top:1px solid var(--line);
     }
-
     .loaderWrap{
       position:fixed; inset:0;
       z-index:9999;
@@ -293,7 +269,6 @@
     @keyframes spin{to{transform: rotate(360deg)}}
     .loaderTxt b{display:block; font-size:14px}
     .loaderTxt small{display:block; color:var(--muted); margin-top:4px; line-height:1.35}
-
     .fadeIn{animation: fadeIn .22s ease both;}
     @keyframes fadeIn{from{opacity:0; transform: translateY(6px)}to{opacity:1; transform: translateY(0)}}
   </style>
@@ -332,16 +307,13 @@
 
   <div class="wrap">
     <div class="grid">
-
       <div>
         <div class="hero">
           <div class="heroGlow"></div>
           <div class="hwrap">
             <span class="tag"><i></i> painel antigo</span>
             <h1>Painel Administrador P.</h1>
-            <div class="sub">
-              Esse é o painel antigo separado, pra não atrapalhar o painel novo.
-            </div>
+            <div class="sub">Esse é o painel antigo separado, pra não atrapalhar o painel novo.</div>
 
             <div class="cards" id="kpis" style="display:none">
               <div class="card fadeIn">
@@ -368,13 +340,13 @@
             </div>
 
             <div class="gate" id="gateBox">
-              <b>Trava simples do admin</b>
+              <b>Trava do admin</b>
               <div class="hint" style="margin-top:6px">
-                Digite a senha e entre. Isso fica salvo nesse aparelho.
+                Agora é: <b>Admin REAL no Supabase</b> + <b>PIN</b>.
               </div>
               <div style="height:10px"></div>
 
-              <input id="pin" class="inp" placeholder="Digite a senha" autocomplete="off" />
+              <input id="pin" class="inp" placeholder="Digite o PIN" autocomplete="off" />
               <div style="height:10px"></div>
 
               <div style="display:grid; gap:10px; grid-template-columns: 1fr 1fr">
@@ -383,7 +355,7 @@
               </div>
 
               <div class="hint" style="margin-top:10px">
-                Dica: se trocar a senha, talvez precise sair e entrar de novo.
+                * O “salvo no navegador” só vale pro <b>mesmo UID logado</b>.
               </div>
             </div>
 
@@ -408,7 +380,7 @@
                 <div class="mini">
                   <div>
                     <b>Seguranca</b><br/>
-                    <small>Depois vira Supabase</small>
+                    <small>Agora é Supabase + PIN</small>
                   </div>
                   <div class="righty">
                     <span class="chip ok">ok</span>
@@ -422,7 +394,6 @@
 
         <div style="height:14px"></div>
 
-        <!-- ✅ Agora essa área vira REAL (lista Supabase) -->
         <div class="panel" id="orders" style="display:none">
           <div class="ph">
             <b>Pagamentos pendentes</b>
@@ -493,20 +464,21 @@
           </div>
         </div>
 
-        <div class="footer">
-          © Conexão Street
-        </div>
+        <div class="footer">© Conexão Street</div>
       </div>
-
     </div>
   </div>
 
-  <!-- ✅ mantém sua trava simples (PIN) -->
+  <!-- ✅ ordem IMPORTA -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script src="./ui.js"></script>
+
   <script>
     "use strict";
 
     const PIN = (window.APP_CONFIG && window.APP_CONFIG.ADMIN_UI_CODE) || "Euteamoluptameuamor010324c";
-    const KEY = "cs_admin_ok";
+    const KEY = "cs_admin_ok_v2"; // { ok:1, uid:"..." }
 
     const el = (id) => document.getElementById(id);
 
@@ -530,12 +502,13 @@
     const hide = (node) => node && (node.style.display = "none");
 
     function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+    function toast(msg){ alert(msg); }
 
-    function setBadges(isOn){
+    function setBadges(isOn, label){
       if(isOn){
         statusChip.textContent = "liberado";
         statusChip.className = "chip ok";
-        whoTxt.textContent = "autenticado (UI)";
+        whoTxt.textContent = label || "admin autenticado";
         authChip.textContent = "on";
         authChip.className = "chip ok";
       }else{
@@ -547,13 +520,48 @@
       }
     }
 
-    function isAuthed(){
-      return localStorage.getItem(KEY) === "1";
+    function readGate(){
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return null;
+      try{ return JSON.parse(raw); }catch{ return null; }
+    }
+
+    async function getUid(){
+      try{
+        const client = window.supabase?.createClient?.(
+          window.APP_CONFIG?.SUPABASE_URL,
+          window.APP_CONFIG?.SUPABASE_ANON_KEY
+        );
+        if(!client) return null;
+        const { data } = await client.auth.getUser();
+        return data?.user?.id || null;
+      }catch{ return null; }
+    }
+
+    async function isRealAdmin(){
+      if(window.UI?.isAdmin) return await window.UI.isAdmin({ force:true });
+      return false;
+    }
+
+    async function isAuthed(){
+      const g = readGate();
+      if(!g || !g.ok || !g.uid) return false;
+
+      const uid = await getUid();
+      if(!uid) return false;
+
+      return String(g.uid) === String(uid);
     }
 
     async function setAuthed(v){
       if(v){
-        localStorage.setItem(KEY, "1");
+        const uid = await getUid();
+        if(!uid){
+          toast("Você precisa estar logado no Supabase Auth (admin).");
+          return;
+        }
+
+        localStorage.setItem(KEY, JSON.stringify({ ok:1, uid }));
 
         show(loader);
         loader.classList.remove("off");
@@ -564,12 +572,11 @@
         show(orders);
         show(leave);
 
-        // KPIs continuam demo por enquanto
         kpiSales.textContent = "R$ 0,00";
         kpiPend.textContent = "0";
         kpiLogs.textContent = "0";
 
-        setBadges(true);
+        setBadges(true, "admin + PIN ok");
 
         await sleep(220);
         loader.classList.add("off");
@@ -586,13 +593,17 @@
       }
     }
 
-    function toast(msg){ alert(msg); }
-
     function initLoader(){
       requestAnimationFrame(() => loader.classList.add("off"));
     }
 
     enter.addEventListener("click", async () => {
+      const admin = await isRealAdmin();
+      if(!admin){
+        toast("Sem permissão de administrador (Supabase).");
+        return;
+      }
+
       const v = (pin.value || "").trim();
       if(v === PIN){
         await setAuthed(true);
@@ -602,7 +613,7 @@
       }
     });
 
-    pin.addEventListener("keydown", async (e) => {
+    pin.addEventListener("keydown", (e) => {
       if(e.key === "Enter"){
         e.preventDefault();
         enter.click();
@@ -612,32 +623,37 @@
     leave.addEventListener("click", () => setAuthed(false));
 
     // atalhos demo
-    el("goAdd").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
+    el("goAdd").addEventListener("click", async () => {
+      if(!(await isAuthed())) return toast("Entre no admin primeiro");
       toast("Adicionar fornecedor (em breve)");
     });
-    el("goLogs").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
+    el("goLogs").addEventListener("click", async () => {
+      if(!(await isAuthed())) return toast("Entre no admin primeiro");
       toast("Logs (em breve)");
     });
-    el("goChart").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
+    el("goChart").addEventListener("click", async () => {
+      if(!(await isAuthed())) return toast("Entre no admin primeiro");
       toast("Grafico (em breve)");
     });
-    el("goPay").addEventListener("click", () => {
-      if(!isAuthed()) return toast("Entre no admin primeiro");
+    el("goPay").addEventListener("click", async () => {
+      if(!(await isAuthed())) return toast("Entre no admin primeiro");
       toast("Pagamentos (em breve)");
     });
 
-    // init
-    initLoader();
-    setAuthed(isAuthed());
+    (async () => {
+      initLoader();
+
+      const admin = await isRealAdmin();
+      if(!admin){
+        await setAuthed(false);
+        setBadges(false);
+        return;
+      }
+
+      await setAuthed(await isAuthed());
+    })();
   </script>
 
-  <!-- ✅ Supabase + Config + Admin (ordem importa) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./config.js"></script>
   <script src="./adminp-orders.js"></script>
-
 </body>
 </html>
