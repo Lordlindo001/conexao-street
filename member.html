@@ -215,7 +215,7 @@
         <div style="display:flex; align-items:center; gap:10px">
           <div class="pill" id="whoPill">...</div>
           <button class="logoMenuBtn" id="logoMenuBtn" type="button" title="Menu">
-            <img src="./logo.png" alt="Logo" />
+            <img src="./img/logo.png" alt="Logo" onerror="this.style.display='none'"/>
           </button>
         </div>
       </div>
@@ -243,7 +243,16 @@
     <div class="footer">© Conexão Street</div>
   </div>
 
+  <!-- ✅ ordem certa (NUNCA fora do body) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
   <script src="./ui.js"></script>
   <script src="./member.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.UI && typeof window.UI.wireMenu === "function") window.UI.wireMenu();
+    });
+  </script>
 </body>
 </html>
